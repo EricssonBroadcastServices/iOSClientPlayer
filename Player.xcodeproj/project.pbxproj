@@ -10,6 +10,11 @@
 		76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8434E1EA77DF700BDAF2C /* Player.framework */; };
 		76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */; };
 		76A8435F1EA77DF700BDAF2C /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		76A843691EA77EC300BDAF2C /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 76A843681EA77EC300BDAF2C /* Cartfile */; };
+		76A8436F1EA7811200BDAF2C /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8436B1EA7811200BDAF2C /* Alamofire.framework */; };
+		76A843701EA7811200BDAF2C /* Exposure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8436C1EA7811200BDAF2C /* Exposure.framework */; };
+		76A843711EA7811200BDAF2C /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8436D1EA7811200BDAF2C /* SwiftyJSON.framework */; };
+		76A843721EA7811200BDAF2C /* Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8436E1EA7811200BDAF2C /* Utilities.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +34,11 @@
 		76A843571EA77DF700BDAF2C /* PlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTests.swift; sourceTree = "<group>"; };
 		76A8435E1EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		76A843681EA77EC300BDAF2C /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
+		76A8436B1EA7811200BDAF2C /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		76A8436C1EA7811200BDAF2C /* Exposure.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Exposure.framework; path = Carthage/Build/iOS/Exposure.framework; sourceTree = "<group>"; };
+		76A8436D1EA7811200BDAF2C /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
+		76A8436E1EA7811200BDAF2C /* Utilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Utilities.framework; path = Carthage/Build/iOS/Utilities.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +46,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76A8436F1EA7811200BDAF2C /* Alamofire.framework in Frameworks */,
+				76A843701EA7811200BDAF2C /* Exposure.framework in Frameworks */,
+				76A843711EA7811200BDAF2C /* SwiftyJSON.framework in Frameworks */,
+				76A843721EA7811200BDAF2C /* Utilities.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,6 +70,7 @@
 				76A843501EA77DF700BDAF2C /* Player */,
 				76A8435B1EA77DF700BDAF2C /* PlayerTests */,
 				76A8434F1EA77DF700BDAF2C /* Products */,
+				76A8436A1EA7811200BDAF2C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +86,7 @@
 		76A843501EA77DF700BDAF2C /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				76A843681EA77EC300BDAF2C /* Cartfile */,
 				76A843511EA77DF700BDAF2C /* Player.h */,
 				76A843521EA77DF700BDAF2C /* Info.plist */,
 			);
@@ -84,6 +100,17 @@
 				76A8435E1EA77DF700BDAF2C /* Info.plist */,
 			);
 			path = PlayerTests;
+			sourceTree = "<group>";
+		};
+		76A8436A1EA7811200BDAF2C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				76A8436B1EA7811200BDAF2C /* Alamofire.framework */,
+				76A8436C1EA7811200BDAF2C /* Exposure.framework */,
+				76A8436D1EA7811200BDAF2C /* SwiftyJSON.framework */,
+				76A8436E1EA7811200BDAF2C /* Utilities.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,6 +208,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76A843691EA77EC300BDAF2C /* Cartfile in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,8 +356,13 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Player/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -347,8 +380,13 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Player/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -400,6 +438,7 @@
 				76A843641EA77DF700BDAF2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		76A843651EA77DF700BDAF2C /* Build configuration list for PBXNativeTarget "PlayerTests" */ = {
 			isa = XCConfigurationList;
@@ -408,6 +447,7 @@
 				76A843671EA77DF700BDAF2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
