@@ -11,10 +11,6 @@
 		76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */; };
 		76A8435F1EA77DF700BDAF2C /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		76A843691EA77EC300BDAF2C /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 76A843681EA77EC300BDAF2C /* Cartfile */; };
-		76A8436F1EA7811200BDAF2C /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8436B1EA7811200BDAF2C /* Alamofire.framework */; };
-		76A843701EA7811200BDAF2C /* Exposure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8436C1EA7811200BDAF2C /* Exposure.framework */; };
-		76A843711EA7811200BDAF2C /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8436D1EA7811200BDAF2C /* SwiftyJSON.framework */; };
-		76A843721EA7811200BDAF2C /* Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8436E1EA7811200BDAF2C /* Utilities.framework */; };
 		76A8438B1EA7819D00BDAF2C /* BitrateChangedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843741EA7819D00BDAF2C /* BitrateChangedEvent.swift */; };
 		76A8438C1EA7819D00BDAF2C /* PlayerEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843751EA7819D00BDAF2C /* PlayerEventPublisher.swift */; };
 		76A8438D1EA7819D00BDAF2C /* AVAsset+LoadableKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843771EA7819D00BDAF2C /* AVAsset+LoadableKeys.swift */; };
@@ -34,6 +30,7 @@
 		76A8439B1EA7819D00BDAF2C /* MediaPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843871EA7819D00BDAF2C /* MediaPlayback.swift */; };
 		76A8439C1EA7819D00BDAF2C /* MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843881EA7819D00BDAF2C /* MediaRendering.swift */; };
 		76A8439D1EA7819D00BDAF2C /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8438A1EA7819D00BDAF2C /* PlayerView.swift */; };
+		76A8447A1EA7A15B00BDAF2C /* Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A844791EA7A15B00BDAF2C /* Utilities.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,10 +51,6 @@
 		76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTests.swift; sourceTree = "<group>"; };
 		76A8435E1EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		76A843681EA77EC300BDAF2C /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
-		76A8436B1EA7811200BDAF2C /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
-		76A8436C1EA7811200BDAF2C /* Exposure.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Exposure.framework; path = Carthage/Build/iOS/Exposure.framework; sourceTree = "<group>"; };
-		76A8436D1EA7811200BDAF2C /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
-		76A8436E1EA7811200BDAF2C /* Utilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Utilities.framework; path = Carthage/Build/iOS/Utilities.framework; sourceTree = "<group>"; };
 		76A843741EA7819D00BDAF2C /* BitrateChangedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitrateChangedEvent.swift; sourceTree = "<group>"; };
 		76A843751EA7819D00BDAF2C /* PlayerEventPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerEventPublisher.swift; sourceTree = "<group>"; };
 		76A843771EA7819D00BDAF2C /* AVAsset+LoadableKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAsset+LoadableKeys.swift"; sourceTree = "<group>"; };
@@ -77,6 +70,7 @@
 		76A843871EA7819D00BDAF2C /* MediaPlayback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayback.swift; sourceTree = "<group>"; };
 		76A843881EA7819D00BDAF2C /* MediaRendering.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaRendering.swift; sourceTree = "<group>"; };
 		76A8438A1EA7819D00BDAF2C /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		76A844791EA7A15B00BDAF2C /* Utilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Utilities.framework; path = "../../../../../../../Library/Developer/Xcode/DerivedData/iOSClient-gqrtyoluyawgxzelawxywyzbisfk/Build/Products/Debug-iphoneos/Utilities.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,10 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				76A8436F1EA7811200BDAF2C /* Alamofire.framework in Frameworks */,
-				76A843701EA7811200BDAF2C /* Exposure.framework in Frameworks */,
-				76A843711EA7811200BDAF2C /* SwiftyJSON.framework in Frameworks */,
-				76A843721EA7811200BDAF2C /* Utilities.framework in Frameworks */,
+				76A8447A1EA7A15B00BDAF2C /* Utilities.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,10 +142,7 @@
 		76A8436A1EA7811200BDAF2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				76A8436B1EA7811200BDAF2C /* Alamofire.framework */,
-				76A8436C1EA7811200BDAF2C /* Exposure.framework */,
-				76A8436D1EA7811200BDAF2C /* SwiftyJSON.framework */,
-				76A8436E1EA7811200BDAF2C /* Utilities.framework */,
+				76A844791EA7A15B00BDAF2C /* Utilities.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
