@@ -1,4 +1,6 @@
 github "Alamofire/Alamofire" "4.4.0"
+github "Quick/Nimble" "v6.1.0"
+github "Quick/Quick" "v1.1.0"
 github "SwiftyJSON/SwiftyJSON" "3.1.4"
-github "EricssonBroadcastServices/iOSClientExposure" "v0.1.1"
-github "EricssonBroadcastServices/iOSClientUtilities" "v0.1.1"
+github "EricssonBroadcastServices/iOSClientExposure" "v0.1.2"
+github "EricssonBroadcastServices/iOSClientUtilities" "v0.1.2"

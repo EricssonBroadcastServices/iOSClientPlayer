@@ -31,6 +31,10 @@
 		76A8439C1EA7819D00BDAF2C /* MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843881EA7819D00BDAF2C /* MediaRendering.swift */; };
 		76A8439D1EA7819D00BDAF2C /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8438A1EA7819D00BDAF2C /* PlayerView.swift */; };
 		76A8447A1EA7A15B00BDAF2C /* Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A844791EA7A15B00BDAF2C /* Utilities.framework */; };
+		76BBFBB11EA8D7BB001DBDDB /* Cartfile.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 76BBFBB01EA8D7BB001DBDDB /* Cartfile.resolved */; };
+		76BBFBB31EA8D7CD001DBDDB /* Cartfile.private in Resources */ = {isa = PBXBuildFile; fileRef = 76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */; };
+		76BBFBB51EA8DE29001DBDDB /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB41EA8DE29001DBDDB /* Quick.framework */; };
+		76BBFBB71EA8DE34001DBDDB /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB61EA8DE34001DBDDB /* Nimble.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +75,10 @@
 		76A843881EA7819D00BDAF2C /* MediaRendering.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaRendering.swift; sourceTree = "<group>"; };
 		76A8438A1EA7819D00BDAF2C /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		76A844791EA7A15B00BDAF2C /* Utilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Utilities.framework; path = "../../../../../../../Library/Developer/Xcode/DerivedData/iOSClient-gqrtyoluyawgxzelawxywyzbisfk/Build/Products/Debug-iphoneos/Utilities.framework"; sourceTree = "<group>"; };
+		76BBFBB01EA8D7BB001DBDDB /* Cartfile.resolved */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = SOURCE_ROOT; };
+		76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.private; sourceTree = SOURCE_ROOT; };
+		76BBFBB41EA8DE29001DBDDB /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "Carthage/Checkouts/Quick/build/Debug-iphoneos/Quick.framework"; sourceTree = "<group>"; };
+		76BBFBB61EA8DE34001DBDDB /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "Carthage/Checkouts/Nimble/build/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +95,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */,
+				76BBFBB51EA8DE29001DBDDB /* Quick.framework in Frameworks */,
+				76BBFBB71EA8DE34001DBDDB /* Nimble.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,6 +126,8 @@
 			isa = PBXGroup;
 			children = (
 				76A843681EA77EC300BDAF2C /* Cartfile */,
+				76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */,
+				76BBFBB01EA8D7BB001DBDDB /* Cartfile.resolved */,
 				76A843511EA77DF700BDAF2C /* Player.h */,
 				76A843521EA77DF700BDAF2C /* Info.plist */,
 				76A843821EA7819D00BDAF2C /* Player.swift */,
@@ -142,6 +154,8 @@
 		76A8436A1EA7811200BDAF2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				76BBFBB61EA8DE34001DBDDB /* Nimble.framework */,
+				76BBFBB41EA8DE29001DBDDB /* Quick.framework */,
 				76A844791EA7A15B00BDAF2C /* Utilities.framework */,
 			);
 			name = Frameworks;
@@ -295,6 +309,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				76A843691EA77EC300BDAF2C /* Cartfile in Resources */,
+				76BBFBB31EA8D7CD001DBDDB /* Cartfile.private in Resources */,
+				76BBFBB11EA8D7BB001DBDDB /* Cartfile.resolved in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,6 +524,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
+				);
 				INFOPLIST_FILE = PlayerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
@@ -521,6 +542,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
+				);
 				INFOPLIST_FILE = PlayerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
