@@ -31,6 +31,8 @@
 		76A8439C1EA7819D00BDAF2C /* MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843881EA7819D00BDAF2C /* MediaRendering.swift */; };
 		76A8439D1EA7819D00BDAF2C /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8438A1EA7819D00BDAF2C /* PlayerView.swift */; };
 		76A8447A1EA7A15B00BDAF2C /* Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A844791EA7A15B00BDAF2C /* Utilities.framework */; };
+		76BBFBB11EA8D7BB001DBDDB /* Cartfile.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 76BBFBB01EA8D7BB001DBDDB /* Cartfile.resolved */; };
+		76BBFBB31EA8D7CD001DBDDB /* Cartfile.private in Resources */ = {isa = PBXBuildFile; fileRef = 76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +73,8 @@
 		76A843881EA7819D00BDAF2C /* MediaRendering.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaRendering.swift; sourceTree = "<group>"; };
 		76A8438A1EA7819D00BDAF2C /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		76A844791EA7A15B00BDAF2C /* Utilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Utilities.framework; path = "../../../../../../../Library/Developer/Xcode/DerivedData/iOSClient-gqrtyoluyawgxzelawxywyzbisfk/Build/Products/Debug-iphoneos/Utilities.framework"; sourceTree = "<group>"; };
+		76BBFBB01EA8D7BB001DBDDB /* Cartfile.resolved */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = SOURCE_ROOT; };
+		76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.private; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +120,8 @@
 			isa = PBXGroup;
 			children = (
 				76A843681EA77EC300BDAF2C /* Cartfile */,
+				76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */,
+				76BBFBB01EA8D7BB001DBDDB /* Cartfile.resolved */,
 				76A843511EA77DF700BDAF2C /* Player.h */,
 				76A843521EA77DF700BDAF2C /* Info.plist */,
 				76A843821EA7819D00BDAF2C /* Player.swift */,
@@ -295,6 +301,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				76A843691EA77EC300BDAF2C /* Cartfile in Resources */,
+				76BBFBB31EA8D7CD001DBDDB /* Cartfile.private in Resources */,
+				76BBFBB11EA8D7BB001DBDDB /* Cartfile.resolved in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
