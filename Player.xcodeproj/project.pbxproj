@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
 		76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8434E1EA77DF700BDAF2C /* Player.framework */; };
 		76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */; };
 		76A8435F1EA77DF700BDAF2C /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -48,6 +49,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
 		76A8434E1EA77DF700BDAF2C /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A843511EA77DF700BDAF2C /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		76A843521EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */,
 				76BBFBB51EA8DE29001DBDDB /* Quick.framework in Frameworks */,
 				76BBFBB71EA8DE34001DBDDB /* Nimble.framework in Frameworks */,
+				7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,6 +157,7 @@
 		76A8436A1EA7811200BDAF2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */,
 				76BBFBB61EA8DE34001DBDDB /* Nimble.framework */,
 				76BBFBB41EA8DE29001DBDDB /* Quick.framework */,
 				76A844791EA7A15B00BDAF2C /* Utilities.framework */,
@@ -528,6 +532,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
 					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Mockingjay/build/Debug",
 				);
 				INFOPLIST_FILE = PlayerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -546,6 +551,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
 					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Mockingjay/build/Debug",
 				);
 				INFOPLIST_FILE = PlayerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

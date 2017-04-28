@@ -16,3 +16,6 @@
 [submodule "Carthage/Checkouts/iOSClientUtilities"]
 	path = Carthage/Checkouts/iOSClientUtilities
 	url = ssh://git@github.com/EricssonBroadcastServices/iOSClientUtilities.git
+[submodule "Carthage/Checkouts/Mockingjay"]
+	path = Carthage/Checkouts/Mockingjay
+	url = ssh://git@github.com/FredrikSjoberg/Mockingjay.git
