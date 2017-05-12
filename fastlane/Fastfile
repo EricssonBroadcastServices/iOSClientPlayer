@@ -69,7 +69,8 @@ platform :ios do
                  platform: "iOS",
                  use_submodules: true,
                  use_ssh: true,
-                 use_binaries: false
+                 use_binaries: false,
+                 no_build: true
                  )
     end
     
