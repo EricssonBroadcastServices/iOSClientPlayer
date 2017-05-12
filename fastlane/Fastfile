@@ -1,0 +1,118 @@
+# Customise this file, documentation can be found here:
+# https://github.com/fastlane/fastlane/tree/master/fastlane/docs
+# All available actions: https://docs.fastlane.tools/actions
+# can also be listed using the `fastlane actions` command
+
+# Change the syntax highlighting to Ruby
+# All lines starting with a # are ignored when running `fastlane`
+
+# If you want to automatically update fastlane if a new version is available:
+# update_fastlane
+
+# This is the minimum version number required.
+# Update this, if you use features of a newer version
+fastlane_version "2.28.7"
+
+default_platform :ios
+
+platform :ios do
+    before_all do
+        
+    end
+    
+    desc "Bumps build number and runs unit tests on each push to development branch"
+    desc "If successful, pushes the bumped version to git"
+    lane :development do
+        ensure_git_branch(branch: ENV["DEVELOPMENT_BRANCH"])
+        ensure_git_status_clean
+        checkout_dependencies
+        
+        bump_build_number
+        
+        run_unit_tests
+        
+        clean_build_artifacts
+        
+        push_to_git_remote
+        
+        notify_slack_dev_success
+    end
+    
+    
+    desc "Runs all the tests"
+    lane :run_unit_tests do
+        
+        scan(
+             workspace: ENV["UNIT_TEST_WORKSPACE"],
+             scheme: ENV["UNIT_TEST_SCHEME"]
+             )
+             
+             UI.success("====> TESTING DONE")
+    end
+    
+    
+    # Private lanes
+    
+    private_lane :bump_build_number do
+        new_build_number = increment_build_number(xcodeproj: ENV["XCODE_PROJECT"])
+        UI.message("Build: #{new_build_number}")
+        commit_version_bump(
+                            message: "Build number bumped: #{new_build_number}",
+                            xcodeproj: ENV["XCODE_PROJECT"]
+                            )
+    end
+    
+    desc "Checkout latest dependencies as declared in Cartfile.resolved"
+    private_lane :checkout_dependencies do
+        carthage(
+                 command: "bootstrap",
+                 platform: "iOS",
+                 use_submodules: true,
+                 use_ssh: true,
+                 use_binaries: false
+                 )
+    end
+    
+    desc "Posts a success notification for development integration"
+    desc "in the Players channel on Slack"
+    lane :notify_slack_dev_success do
+        current_build_number = get_build_number
+        current_time = Time.now.to_f
+        project_name = ENV["PROJECT_TITLE"]
+        
+        UI.message(current_time)
+        slack(
+              use_webhook_configured_username_and_icon: true,
+              default_payloads: [],
+              attachment_properties: {
+                    pretext: "#{project_name} build #{current_build_number} succesful!",
+                    color: "good",
+                    text: "Temporary placeholder for change log",
+                    footer: ENV["DEV_TEAM_NAME"],
+                    ts: current_time,
+                }
+              )
+    end
+    
+    after_all do |lane|
+        # This block is called, only if the executed lane was successful
+        
+    end
+    
+    error do |lane, exception|
+        
+        slack(
+              message: exception.message,
+              success: false
+              )
+              
+              UI.error("====> ERROR")
+    end
+end
+
+
+# More information about multiple platforms in fastlane: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Platforms.md
+# All available actions: https://docs.fastlane.tools/actions
+
+# fastlane reports which actions are used
+# No personal data is recorded. Learn more at https://github.com/fastlane/enhancer

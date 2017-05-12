@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
+		7667AEC51EC5C0FE00C308FC /* Appfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC31EC5C0FE00C308FC /* Appfile */; };
+		7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC41EC5C0FE00C308FC /* Fastfile */; };
+		7667AEC81EC5C12100C308FC /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC71EC5C12100C308FC /* .env */; };
 		76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8434E1EA77DF700BDAF2C /* Player.framework */; };
 		76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */; };
 		76A8435F1EA77DF700BDAF2C /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -50,6 +53,9 @@
 
 /* Begin PBXFileReference section */
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
+		7667AEC31EC5C0FE00C308FC /* Appfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
+		7667AEC41EC5C0FE00C308FC /* Fastfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		7667AEC71EC5C12100C308FC /* .env */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
 		76A8434E1EA77DF700BDAF2C /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A843511EA77DF700BDAF2C /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		76A843521EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -106,6 +112,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7667AEC21EC5C0FE00C308FC /* fastlane */ = {
+			isa = PBXGroup;
+			children = (
+				7667AEC31EC5C0FE00C308FC /* Appfile */,
+				7667AEC41EC5C0FE00C308FC /* Fastfile */,
+				7667AEC71EC5C12100C308FC /* .env */,
+			);
+			path = fastlane;
+			sourceTree = SOURCE_ROOT;
+		};
 		76A843441EA77DF700BDAF2C = {
 			isa = PBXGroup;
 			children = (
@@ -128,6 +144,7 @@
 		76A843501EA77DF700BDAF2C /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				7667AEC21EC5C0FE00C308FC /* fastlane */,
 				76A843681EA77EC300BDAF2C /* Cartfile */,
 				76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */,
 				76BBFBB01EA8D7BB001DBDDB /* Cartfile.resolved */,
@@ -312,7 +329,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */,
+				7667AEC51EC5C0FE00C308FC /* Appfile in Resources */,
 				76A843691EA77EC300BDAF2C /* Cartfile in Resources */,
+				7667AEC81EC5C12100C308FC /* .env in Resources */,
 				76BBFBB31EA8D7CD001DBDDB /* Cartfile.private in Resources */,
 				76BBFBB11EA8D7BB001DBDDB /* Cartfile.resolved in Resources */,
 			);
