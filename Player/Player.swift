@@ -12,7 +12,7 @@ import Exposure
 
 public final class Player {
     
-    fileprivate(set) public var avPlayer: AVPlayer
+    fileprivate var avPlayer: AVPlayer
     fileprivate var currentItem: AVPlayerItem?
     
     public init() {
