@@ -12,7 +12,7 @@ import Exposure
 
 public final class Player {
     
-    fileprivate let avPlayer: AVPlayer
+    fileprivate(set) public var avPlayer: AVPlayer
     fileprivate var currentItem: AVPlayerItem?
     
     public init() {
@@ -38,6 +38,11 @@ public final class Player {
                 }
             }
         }
+    }
+    
+    deinit {
+        itemObserver.stopObservingAll()
+        playerObserver.stopObservingAll()
     }
     
     /*
@@ -219,7 +224,9 @@ extension Player: MediaPlayback {
 // MARK: - ExposurePlayback
 extension Player: ExposurePlayback {
     public func stream(playback entitlement: PlaybackEntitlement) {
+        
         if let urlString = entitlement.mediaLocator, let url = URL(string: urlString) {
+            print("stream ",url)
             onCreated(self)
             
             let keys:[AVAsset.LoadableKeys] = [.duration, .tracks, .playable]
