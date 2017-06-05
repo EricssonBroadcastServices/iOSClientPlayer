@@ -226,10 +226,10 @@ extension Player: MediaPlayback {
 extension Player: ExposurePlayback {
     public func stream(playback entitlement: PlaybackEntitlement) {
         do {
-            let mediaAsset = try MediaAsset(entitlement: entitlement)
+            currentAsset = try MediaAsset(entitlement: entitlement)
             onCreated(self)
             
-            mediaAsset.prepare(loading: [.duration, .tracks, .playable]) { [unowned self] error in
+            currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [unowned self] error in
                 guard error == nil else {
                     self.onError(self, error!)
                     return
@@ -237,6 +237,7 @@ extension Player: ExposurePlayback {
                 
                 self.onInitCompleted(self)
                 
+                self.readyPlayback(with: self.currentAsset!)
             }
         }
         catch {
@@ -253,6 +254,8 @@ extension Player: ExposurePlayback {
         // Unsubscribe any current item
         currentAsset?.itemObserver.stopObservingAll()
         currentAsset?.itemObserver.unsubscribeAll()
+        
+        currentAsset = mediaAsset
         
         let playerItem = mediaAsset.playerItem
         

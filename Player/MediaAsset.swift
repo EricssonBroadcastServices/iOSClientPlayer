@@ -30,6 +30,7 @@ internal class MediaAsset {
         }
         
         urlAsset = AVURLAsset(url: url)
+        print(urlAsset.url)
         urlAsset.resourceLoader.setDelegate(fairplayRequester,
                                             queue: DispatchQueue(label: (entitlement.playSessionId ?? "Asset") + "-fairplayLoader"))
     }
@@ -45,6 +46,11 @@ internal class MediaAsset {
     lazy internal var itemObserver: PlayerItemObserver = { [unowned self] in
         return PlayerItemObserver()
         }()
+    
+    deinit {
+        itemObserver.stopObservingAll()
+        itemObserver.unsubscribeAll()
+    }
 }
 
 extension MediaAsset {
@@ -55,6 +61,10 @@ extension MediaAsset {
                 // Check for any issues preparing the loaded values
                 let errors = keys.flatMap{ key -> Error? in
                     var error: NSError?
+                    let t = self.urlAsset
+                    
+                    let k = keys
+                    
                     guard self.urlAsset.statusOfValue(forKey: key.rawValue, error: &error) != .failed else {
                         return error!
                     }

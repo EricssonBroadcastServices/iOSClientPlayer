@@ -91,6 +91,7 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
         
         fetchApplicationCertificate{ [unowned self] certificate, certificateError in
             if let certificateError = certificateError {
+                print("fetchApplicationCertificate ",certificateError.localizedDescription)
                 resourceLoadingRequest.finishLoading(with: certificateError)
                 return
             }
@@ -143,7 +144,7 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
             .validate()
             .responseData{ response in
                 if let error = response.error {
-                    callback(nil, .fairplay(reason: .invalidApplicationCertificateUrl(error: error)))
+                    callback(nil, .fairplay(reason: .applicationCertificateResponse(error: error)))
                     return
                 }
                 
