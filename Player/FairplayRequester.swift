@@ -85,7 +85,7 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
         
         print(url, " - ",assetIDString)
         
-        guard let contentIdentifier = assetIDString.data(using: String.Encoding.utf8) else {//?.base64EncodedData() else {
+        guard let contentIdentifier = assetIDString.data(using: String.Encoding.utf8) else {//
             resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .invalidContentIdentifier))
             return
         }
@@ -105,7 +105,11 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                 print("prepare SPC")
                 do {
                     let spcData = try resourceLoadingRequest.streamingContentKeyRequestData(forApp: certificate, contentIdentifier: contentIdentifier, options: resourceLoadingRequestOptions)
-                    self.fetchContentKeyContext(spc: spcData) { ckcData, ckcError in
+                    
+                    // Content Key Context fetch from licenseUrl requires base64 encoded data
+                    let base64 = spcData.base64EncodedData(options: Data.Base64EncodingOptions.endLineWithLineFeed)
+                    
+                    self.fetchContentKeyContext(spc: base64) { ckcData, ckcError in
                         print("fetchContentKeyContext")
                         if let ckcError = ckcError {
                             resourceLoadingRequest.finishLoading(with: ckcError)
@@ -116,9 +120,6 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                             resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
                             return
                         }
-                        
-                        let xml = SWXMLHash.parse(ckcData)
-                        print(xml)
                         
 //                        a CKC Blob Request Error Messages Error Message
 //                        020 can’t get db connection, server is busy
@@ -139,13 +140,30 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
 //                        587 bad private key for owner
 //                        588 fairplay error
                         
+                        let xml = SWXMLHash.parse(ckcData)
+                        print(xml)
+                        guard xml["error"].element == nil else {
+                            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
+                            return
+                        }
+                        
+                        guard let ckcString = xml["fps"]["ckc"].element?.text else {
+                            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
+                            return
+                        }
+                        
+                        guard let ckcBase64 = Data(base64Encoded: ckcString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters) else {
+                            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
+                            return
+                        }
+                        
                         guard let dataRequest = resourceLoadingRequest.dataRequest else {
                             resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingDataRequest))
                             return
                         }
                         
                         // Provide data to the loading request.
-                        dataRequest.respond(with: ckcData)
+                        dataRequest.respond(with: ckcBase64)
                         resourceLoadingRequest.finishLoading()  // Treat the processing of the request as complete.
                     }
                 }
@@ -199,6 +217,7 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                     
                     if let certString = xml["fps"]["cert"].element?.text {
                         let base64 = Data(base64Encoded: certString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)
+                        
                         
                         // http://iosdevelopertips.com/core-services/encode-decode-using-base64.html
                         /* HTML5 player
