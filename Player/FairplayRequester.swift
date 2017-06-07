@@ -77,14 +77,15 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
     
     
     fileprivate func handle(resourceLoadingRequest: AVAssetResourceLoadingRequest) {
-        guard let url = resourceLoadingRequest.request.url, let assetIDString = entitlement.fairplay?.secondaryMediaLocator else {//url.host else {//entitlement.mediaLocator else {//
+        
+        guard let url = resourceLoadingRequest.request.url, let assetIDString = url.host else {
             print("Failed to get url or assetIDString for the request object of the resource.")
             return
         }
         
         print(url, " - ",assetIDString)
         
-        guard let contentIdentifier = assetIDString.data(using: String.Encoding.utf8)?.base64EncodedData() else {
+        guard let contentIdentifier = assetIDString.data(using: String.Encoding.utf8) else {//?.base64EncodedData() else {
             resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .invalidContentIdentifier))
             return
         }
@@ -236,10 +237,17 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
             return
         }
         
+        let token = entitlement.playToken!
+        let headers = [
+            "AzukiApp": token,
+            "Content-type": "application/octet-stream"
+            ]
+        
         Alamofire
             .upload(spc,
                     to: url,
-                    method: .post)
+                    method: .post,
+                    headers: headers)
             .validate()
             .responseData{ response in
                 if let error = response.error {
@@ -251,6 +259,15 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                     callback(success,nil)
                 }
         }
+        /*
+        POST /blixt/client/fps?owner_uid=blixt&media_uid=orjbjeAladdin_qwerty&user_token=60122 HTTP/1.1
+        POST /blixt/client/fps?owner_uid=blixt&user_token=48000&media_uid=orjbjeAladdin_qwerty&segment=1 HTTP/1.1
+        
+        AzukiApp	CgVibGl4dBJoaHR0cDovL2Vic2NkbjEuZWJzdHYubmV0L2Rldi9hei9wcmVzdGFnZS8zLzM5MDkxL21hc3Rlci12Ml94ZjEtLWF6dWtpLXZvZF9ibGl4dF9wdGZfbXV4ZWRfZW5jXzNfMV8wLm0zdTgaDTE5Mi4zNi4yOS4xMjMiBTYwMTIyKJfJ4pjIKzIHQLfkkevIKzoEU1ZPREIFQmxpeHRKFG9yamJqZUFsYWRkaW5fcXdlcnR5|nb97E4PB75P7MWPf3asjQijknyVkhNGtyDHsGsdlKLc=
+        AzukiApp	CgVibGl4dBIUb3JqYmplQWxhZGRpbl9xd2VydHkaDTE5Mi4zNi4yOS4xMjMiBTQ4MDAwKLqs5ZjIKzIHQNrHlOvIKzoEU1ZPREIFQmxpeHRKFG9yamJqZUFsYWRkaW5fcXdlcnR5|PqScqOjPy0wr+nYc9Ya1/+G4izzceavSRf29Dq2I5RY=
+        
+        Content-Type	application/octet-stream
+        Content-Type	application/x-www-form-urlencoded*/
     }
     
     fileprivate var licenseUrl: URL? {
