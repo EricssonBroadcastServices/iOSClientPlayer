@@ -61,10 +61,6 @@ extension MediaAsset {
                 // Check for any issues preparing the loaded values
                 let errors = keys.flatMap{ key -> Error? in
                     var error: NSError?
-                    let t = self.urlAsset
-                    
-                    let k = keys
-                    
                     guard self.urlAsset.statusOfValue(forKey: key.rawValue, error: &error) != .failed else {
                         return error!
                     }

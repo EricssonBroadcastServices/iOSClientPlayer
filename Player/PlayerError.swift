@@ -24,6 +24,7 @@ public enum PlayerError: Error {
     public enum FairplayError {
         case missingApplicationCertificateUrl
         case applicationCertificateResponse(error: Error)
+        case invalidCertificateData
         case invalidContentIdentifier
         case serverPlaybackContext(error: Error)
         case missingContentKeyContextUrl
@@ -60,6 +61,7 @@ extension PlayerError.FairplayError {
         switch self {
         case .missingApplicationCertificateUrl: return "Application Certificate Url not found"
         case .applicationCertificateResponse(error: let error): return "Application Certificate Response: \(error.localizedDescription)"
+        case .invalidCertificateData: return "Certificate Data invalid"
         case .invalidContentIdentifier: return "Invalid Content Identifier"
         case .serverPlaybackContext(error: let error): return "Server Playback Context: \(error.localizedDescription)"
         case .missingContentKeyContextUrl: return "Content Key Context Url not found"

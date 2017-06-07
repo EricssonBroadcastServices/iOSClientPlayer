@@ -21,7 +21,7 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
     /// The DispatchQueue to use for AVAssetResourceLoaderDelegate callbacks.
     fileprivate let resourceLoadingRequestQueue = DispatchQueue(label: "com.emp.player.resourcerequests")
     /// The URL scheme for FPS content.
-    static let customScheme = "emp"
+    static let customScheme = "skd"
     
     /// When iOS asks the app to provide a CK, the app invokes
     /// the AVAssetResourceLoader delegate’s implementation of
@@ -63,10 +63,10 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
             return false
         }
         
-        // AssetLoaderDelegate only should handle FPS Content Key requests.
-        //        if url.scheme != AssetLoaderDelegate.customScheme {
-        //            return false
-        //        }
+         //FairplayRequester only should handle FPS Content Key requests.
+        if url.scheme != FairplayRequester.customScheme {
+            return false
+        }
         
         resourceLoadingRequestQueue.async { [unowned self] in
             self.handle(resourceLoadingRequest: resourceLoadingRequest)
@@ -77,19 +77,20 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
     
     
     fileprivate func handle(resourceLoadingRequest: AVAssetResourceLoadingRequest) {
-        
-        guard let url = resourceLoadingRequest.request.url, let assetIDString = url.host else {
+        guard let url = resourceLoadingRequest.request.url, let assetIDString = entitlement.fairplay?.secondaryMediaLocator else {//url.host else {//entitlement.mediaLocator else {//
             print("Failed to get url or assetIDString for the request object of the resource.")
             return
         }
         
+        print(url, " - ",assetIDString)
         
-        guard let contentIdentifier = assetIDString.data(using: String.Encoding.utf8) else {
+        guard let contentIdentifier = assetIDString.data(using: String.Encoding.utf8) else { //?.base64EncodedData(options: Data.Base64EncodingOptions.endLineWithCarriageReturn) else {
             resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .invalidContentIdentifier))
             return
         }
         
         fetchApplicationCertificate{ [unowned self] certificate, certificateError in
+            print("fetchApplicationCertificate")
             if let certificateError = certificateError {
                 print("fetchApplicationCertificate ",certificateError.localizedDescription)
                 resourceLoadingRequest.finishLoading(with: certificateError)
@@ -97,13 +98,14 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
             }
             
             
-            //let resourceLoadingRequestOptions = [AVAssetResourceLoadingRequestStreamingContentKeyRequestRequiresPersistentKey: true as AnyObject]
+            let resourceLoadingRequestOptions: [String: Any]? = nil// [AVAssetResourceLoadingRequestStreamingContentKeyRequestRequiresPersistentKey: true as AnyObject]
             
             if let certificate = certificate {
+                print("prepare SPC")
                 do {
-                    let spcData = try resourceLoadingRequest.streamingContentKeyRequestData(forApp: certificate, contentIdentifier: contentIdentifier, options: nil)
-                    
+                    let spcData = try resourceLoadingRequest.streamingContentKeyRequestData(forApp: certificate, contentIdentifier: contentIdentifier, options: resourceLoadingRequestOptions)
                     self.fetchContentKeyContext(spc: spcData) { ckcData, ckcError in
+                        print("fetchContentKeyContext")
                         if let ckcError = ckcError {
                             resourceLoadingRequest.finishLoading(with: ckcError)
                             return
@@ -113,6 +115,28 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                             resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
                             return
                         }
+                        
+                        let xml = SWXMLHash.parse(ckcData)
+                        print(xml)
+                        
+//                        a CKC Blob Request Error Messages Error Message
+//                        020 can’t get db connection, server is busy
+//                        400 no media uid specified
+//                        411 media uid does not exist
+//                        500 invalid owner
+//                        501 invalid user
+//                        505 cannot reach 3rd party rights server
+//                        507 invalid media rights
+//                        510 cannot decrypt media key
+//                        580 fairplay ask value not configured
+//                        581 fairplay ask value is bad
+//                        582 fairplay content key not found
+//                        583 fairplay application private key is not enabled
+//                        584 fairplay application private key not found
+//                        585 can't read fairplay application private key
+//                        586 bad fairplay spc payload
+//                        587 bad private key for owner
+//                        588 fairplay error
                         
                         guard let dataRequest = resourceLoadingRequest.dataRequest else {
                             resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingDataRequest))
@@ -125,6 +149,18 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                     }
                 }
                 catch {
+//                    -42656 Lease duration has expired.
+//                    -42668 The CKC passed in for processing is not valid.
+//                    -42672 A certificate is not supplied when creating SPC.
+//                    -42673 assetId is not supplied when creating an SPC.
+//                    -42674 Version list is not supplied when creating an SPC.
+//                    -42675 The assetID supplied to SPC creation is not valid.
+//                    -42676 An error occurred during SPC creation.
+//                    -42679 The certificate supplied for SPC creation is not valid.
+//                    -42681 The version list supplied to SPC creation is not valid.
+//                    -42783 The certificate supplied for SPC is not valid and is possibly revoked.
+                    print("SPC - ",error.localizedDescription)
+                    print("SPC - ",error)
                     resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .serverPlaybackContext(error: error)))
                     return
                 }
@@ -141,7 +177,6 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
         
         Alamofire
             .request(url, method: .get)
-            .validate()
             .responseData{ response in
                 if let error = response.error {
                     callback(nil, .fairplay(reason: .applicationCertificateResponse(error: error)))
@@ -149,7 +184,45 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                 }
                 
                 if let success = response.value {
-                    callback(success,nil)
+                    // BASIC
+//                    callback(success,nil)
+//                    return
+                    
+                    let xml = SWXMLHash.parse(success)
+                    /*
+                     <fps>
+                        <checksum>82033743d5c0...</checksum>
+                        <version>4.3.4.0.44387</version>
+                        <hostname>EMP-STAGE2-ACC01.ebsd.ericsson.net</hostname>
+                        <cert>
+                            MIIExzCCA6+gAwIBAgIIVRMcpsYSxcIwDQYJKoZIhvcNAQEFBQAwfzELMAkGA1UE..
+                        </cert>
+                     </fps>
+                     */
+                    
+                    if let certString = xml["fps"]["cert"].element?.text, let cert = certString.data(using: String.Encoding.utf8) {
+                        let base64 = cert //.base64EncodedData(options: Data.Base64EncodingOptions.endLineWithCarriageReturn)
+                        // http://iosdevelopertips.com/core-services/encode-decode-using-base64.html
+                        /* HTML5 player
+                         https://github.com/EricssonBroadcastServices/html5-player/blob/f4b58bb5bdb5b85d2925271bc695822711e60371/sdk/src/js/tech/emp-hls.js
+                         onCertificateLoadXml(event, { callback }) {
+                         log('onCertificateLoadXml()');
+                         var xml = event.target.responseXML;
+                         var cert = xml.firstChild.lastElementChild.innerHTML;
+                         certificate = base64DecodeUint8Array(cert);
+                         callback();
+                         }
+                         */
+                        print(certString)
+                        print(base64)
+                        callback(base64,nil)
+                    }
+                    else {
+                        callback(nil, .fairplay(reason: .invalidCertificateData))
+                    }
+                    
+                    
+                    
                 }
         }
     }
