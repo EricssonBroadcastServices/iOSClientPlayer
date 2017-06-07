@@ -84,7 +84,7 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
         
         print(url, " - ",assetIDString)
         
-        guard let contentIdentifier = assetIDString.data(using: String.Encoding.utf8) else { //?.base64EncodedData(options: Data.Base64EncodingOptions.endLineWithCarriageReturn) else {
+        guard let contentIdentifier = assetIDString.data(using: String.Encoding.utf8)?.base64EncodedData() else {
             resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .invalidContentIdentifier))
             return
         }
@@ -184,10 +184,6 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                 }
                 
                 if let success = response.value {
-                    // BASIC
-//                    callback(success,nil)
-//                    return
-                    
                     let xml = SWXMLHash.parse(success)
                     /*
                      <fps>
@@ -200,8 +196,9 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                      </fps>
                      */
                     
-                    if let certString = xml["fps"]["cert"].element?.text, let cert = certString.data(using: String.Encoding.utf8) {
-                        let base64 = cert //.base64EncodedData(options: Data.Base64EncodingOptions.endLineWithCarriageReturn)
+                    if let certString = xml["fps"]["cert"].element?.text {
+                        let base64 = Data(base64Encoded: certString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)
+                        
                         // http://iosdevelopertips.com/core-services/encode-decode-using-base64.html
                         /* HTML5 player
                          https://github.com/EricssonBroadcastServices/html5-player/blob/f4b58bb5bdb5b85d2925271bc695822711e60371/sdk/src/js/tech/emp-hls.js
