@@ -78,17 +78,14 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
     
     fileprivate func handle(resourceLoadingRequest: AVAssetResourceLoadingRequest) {
         
-        guard let url = resourceLoadingRequest.request.url, let assetIDString = url.host else {
-            print("Failed to get url or assetIDString for the request object of the resource.")
+        guard let url = resourceLoadingRequest.request.url,
+            let assetIDString = url.host,
+            let contentIdentifier = assetIDString.data(using: String.Encoding.utf8) else {
+            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .invalidContentIdentifier))
             return
         }
         
         print(url, " - ",assetIDString)
-        
-        guard let contentIdentifier = assetIDString.data(using: String.Encoding.utf8) else {//
-            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .invalidContentIdentifier))
-            return
-        }
         
         fetchApplicationCertificate{ [unowned self] certificate, certificateError in
             print("fetchApplicationCertificate")
@@ -107,53 +104,12 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                     let spcData = try resourceLoadingRequest.streamingContentKeyRequestData(forApp: certificate, contentIdentifier: contentIdentifier, options: resourceLoadingRequestOptions)
                     
                     // Content Key Context fetch from licenseUrl requires base64 encoded data
-                    let base64 = spcData.base64EncodedData(options: Data.Base64EncodingOptions.endLineWithLineFeed)
+                    let spcBase64 = spcData.base64EncodedData(options: Data.Base64EncodingOptions.endLineWithLineFeed)
                     
-                    self.fetchContentKeyContext(spc: base64) { ckcData, ckcError in
+                    self.fetchContentKeyContext(spc: spcBase64) { ckcBase64, ckcError in
                         print("fetchContentKeyContext")
                         if let ckcError = ckcError {
                             resourceLoadingRequest.finishLoading(with: ckcError)
-                            return
-                        }
-                        
-                        guard let ckcData = ckcData else {
-                            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
-                            return
-                        }
-                        
-//                        a CKC Blob Request Error Messages Error Message
-//                        020 can’t get db connection, server is busy
-//                        400 no media uid specified
-//                        411 media uid does not exist
-//                        500 invalid owner
-//                        501 invalid user
-//                        505 cannot reach 3rd party rights server
-//                        507 invalid media rights
-//                        510 cannot decrypt media key
-//                        580 fairplay ask value not configured
-//                        581 fairplay ask value is bad
-//                        582 fairplay content key not found
-//                        583 fairplay application private key is not enabled
-//                        584 fairplay application private key not found
-//                        585 can't read fairplay application private key
-//                        586 bad fairplay spc payload
-//                        587 bad private key for owner
-//                        588 fairplay error
-                        
-                        let xml = SWXMLHash.parse(ckcData)
-                        print(xml)
-                        guard xml["error"].element == nil else {
-                            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
-                            return
-                        }
-                        
-                        guard let ckcString = xml["fps"]["ckc"].element?.text else {
-                            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
-                            return
-                        }
-                        
-                        guard let ckcBase64 = Data(base64Encoded: ckcString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters) else {
-                            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
                             return
                         }
                         
@@ -162,9 +118,15 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
                             return
                         }
                         
+                        guard let ckcBase64 = ckcBase64 else {
+                            resourceLoadingRequest.finishLoading(with: PlayerError.fairplay(reason: .missingContentKeyContext))
+                            return
+                        }
+                        
                         // Provide data to the loading request.
                         dataRequest.respond(with: ckcBase64)
                         resourceLoadingRequest.finishLoading()  // Treat the processing of the request as complete.
+                        
                     }
                 }
                 catch {
@@ -196,50 +158,21 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
         
         Alamofire
             .request(url, method: .get)
-            .responseData{ response in
+            .responseData{ [unowned self] response in
                 if let error = response.error {
-                    callback(nil, .fairplay(reason: .applicationCertificateResponse(error: error)))
+                    callback(nil, .fairplay(reason: .networking(error: error)))
                     return
                 }
                 
                 if let success = response.value {
-                    let xml = SWXMLHash.parse(success)
-                    /*
-                     <fps>
-                        <checksum>82033743d5c0...</checksum>
-                        <version>4.3.4.0.44387</version>
-                        <hostname>EMP-STAGE2-ACC01.ebsd.ericsson.net</hostname>
-                        <cert>
-                            MIIExzCCA6+gAwIBAgIIVRMcpsYSxcIwDQYJKoZIhvcNAQEFBQAwfzELMAkGA1UE..
-                        </cert>
-                     </fps>
-                     */
-                    
-                    if let certString = xml["fps"]["cert"].element?.text {
-                        let base64 = Data(base64Encoded: certString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)
-                        
-                        
-                        // http://iosdevelopertips.com/core-services/encode-decode-using-base64.html
-                        /* HTML5 player
-                         https://github.com/EricssonBroadcastServices/html5-player/blob/f4b58bb5bdb5b85d2925271bc695822711e60371/sdk/src/js/tech/emp-hls.js
-                         onCertificateLoadXml(event, { callback }) {
-                         log('onCertificateLoadXml()');
-                         var xml = event.target.responseXML;
-                         var cert = xml.firstChild.lastElementChild.innerHTML;
-                         certificate = base64DecodeUint8Array(cert);
-                         callback();
-                         }
-                         */
-                        print(certString)
-                        print(base64)
-                        callback(base64,nil)
+                    do {
+                        let certificate = try self.parseApplicationCertificate(response: success)
+                        callback(certificate, nil)
                     }
-                    else {
-                        callback(nil, .fairplay(reason: .invalidCertificateData))
+                    catch {
+                        // parseApplicationCertificate will only throw PlayerError
+                        callback(nil, error as? PlayerError)
                     }
-                    
-                    
-                    
                 }
         }
     }
@@ -249,6 +182,47 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
         return URL(string: urlString)
     }
     
+    /// MRR Application Certificate response format is XML
+    /// 
+    /// Success format
+    /// <fps>
+    ///    <checksum>82033743d5c0</checksum>
+    ///    <version>1.2.3.400</version>
+    ///    <hostname>host.example.com</hostname>
+    ///    <cert>MIIExzCCA6+gAwIBAgIIVRMcpsYSxcIwDQYJKoZIhvcNAQEFBQAwfzELMAkGA1UE</cert>
+    /// </fps>
+    ///
+    /// fps.cert: Contains the Application Certificate as base64 encoded string
+    ///
+    ///
+    /// Error format
+    /// <error>
+    ///    <checksum>82033743d5c0</checksum>
+    ///    <version>1.2.3.400</version>
+    ///    <hostname>Some host</hostname>
+    ///    <code>500</code>
+    ///    <message>Error message</message>
+    /// </error>
+    fileprivate func parseApplicationCertificate(response data: Data) throws -> Data {
+        let xml = SWXMLHash.parse(data)
+        // MRR Certifica
+        if let certString = xml["fps"]["cert"].element?.text {
+            // http://iosdevelopertips.com/core-services/encode-decode-using-base64.html
+            guard let base64 = Data(base64Encoded: certString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters) else {
+                throw PlayerError.fairplay(reason: .applicationCertificateDataFormatInvalid)
+            }
+            return base64
+        }
+        else if let codeString = xml["error"]["code"].element?.text,
+            let code = Int(codeString),
+            let message = xml["error"]["message"].element?.text {
+            
+           throw PlayerError.fairplay(reason: .applicationCertificateServer(code: code, message: message))
+        }
+        throw PlayerError.fairplay(reason: .applicationCertificateParsing)
+    }
+    
+    
     // MARK: Content Key Context
     fileprivate func fetchContentKeyContext(spc: Data, callback: @escaping (Data?, PlayerError?) -> Void) {
         guard let url = licenseUrl else {
@@ -256,11 +230,13 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
             return
         }
         
-        let token = entitlement.playToken!
-        let headers = [
-            "AzukiApp": token,
-            "Content-type": "application/octet-stream"
-            ]
+        guard let playToken = entitlement.playToken else {
+            callback(nil, .fairplay(reason: .missingPlaytoken))
+            return
+        }
+        
+        let headers = ["AzukiApp": playToken, // May not be needed
+                       "Content-type": "application/octet-stream"]
         
         Alamofire
             .upload(spc,
@@ -270,27 +246,64 @@ internal class FairplayRequester: NSObject, AVAssetResourceLoaderDelegate {
             .validate()
             .responseData{ response in
                 if let error = response.error {
-                    callback(nil, .fairplay(reason:.contentKeyContext(error: error)))
+                    callback(nil, .fairplay(reason:.networking(error: error)))
                     return
                 }
                 
                 if let success = response.value {
-                    callback(success,nil)
+                    do {
+                        let ckc = try self.parseContentKeyContext(response: success)
+                        callback(ckc, nil)
+                    }
+                    catch {
+                        // parseContentKeyContext will only throw PlayerError
+                        callback(nil, error as? PlayerError)
+                    }
                 }
         }
-        /*
-        POST /blixt/client/fps?owner_uid=blixt&media_uid=orjbjeAladdin_qwerty&user_token=60122 HTTP/1.1
-        POST /blixt/client/fps?owner_uid=blixt&user_token=48000&media_uid=orjbjeAladdin_qwerty&segment=1 HTTP/1.1
-        
-        AzukiApp	CgVibGl4dBJoaHR0cDovL2Vic2NkbjEuZWJzdHYubmV0L2Rldi9hei9wcmVzdGFnZS8zLzM5MDkxL21hc3Rlci12Ml94ZjEtLWF6dWtpLXZvZF9ibGl4dF9wdGZfbXV4ZWRfZW5jXzNfMV8wLm0zdTgaDTE5Mi4zNi4yOS4xMjMiBTYwMTIyKJfJ4pjIKzIHQLfkkevIKzoEU1ZPREIFQmxpeHRKFG9yamJqZUFsYWRkaW5fcXdlcnR5|nb97E4PB75P7MWPf3asjQijknyVkhNGtyDHsGsdlKLc=
-        AzukiApp	CgVibGl4dBIUb3JqYmplQWxhZGRpbl9xd2VydHkaDTE5Mi4zNi4yOS4xMjMiBTQ4MDAwKLqs5ZjIKzIHQNrHlOvIKzoEU1ZPREIFQmxpeHRKFG9yamJqZUFsYWRkaW5fcXdlcnR5|PqScqOjPy0wr+nYc9Ya1/+G4izzceavSRf29Dq2I5RY=
-        
-        Content-Type	application/octet-stream
-        Content-Type	application/x-www-form-urlencoded*/
     }
     
     fileprivate var licenseUrl: URL? {
         guard let urlString = entitlement.fairplay?.licenseAcquisitionUrl else { return nil }
         return URL(string: urlString)
+    }
+    
+    /// MRR Content Key Context response format is XML
+    ///
+    /// Success format
+    /// <fps>
+    ///    <checksum>82033743d5c0</checksum>
+    ///    <version>1.2.3.400</version>
+    ///    <hostname>host.example.com</hostname>
+    ///    <ckc>MIIExzCCA6+gAwIBAgIIVRMcpsYSxcIwDQYJKoZIhvcNAQEFBQAwfzELMAkGA1UE</cert>
+    /// </fps>
+    ///
+    /// fps.ckc: Contains the Application Certificate as base64 encoded string
+    ///
+    ///
+    /// Error format
+    /// <error>
+    ///    <checksum>82033743d5c0</checksum>
+    ///    <version>1.2.3.400</version>
+    ///    <hostname>Some host</hostname>
+    ///    <code>500</code>
+    ///    <message>Error message</message>
+    /// </error>
+    fileprivate func parseContentKeyContext(response data: Data) throws -> Data {
+        let xml = SWXMLHash.parse(data)
+        if let ckc = xml["fps"]["ckc"].element?.text {
+            // http://iosdevelopertips.com/core-services/encode-decode-using-base64.html
+            guard let base64 = Data(base64Encoded: ckc, options: Data.Base64DecodingOptions.ignoreUnknownCharacters) else {
+                throw PlayerError.fairplay(reason: .contentKeyContextDataFormatInvalid)
+            }
+            return base64
+        }
+        else if let codeString = xml["error"]["code"].element?.text,
+            let code = Int(codeString),
+            let message = xml["error"]["message"].element?.text {
+            
+            throw PlayerError.fairplay(reason: .contentKeyContextServer(code: code, message: message))
+        }
+        throw PlayerError.fairplay(reason: .contentKeyContextParsing)
     }
 }

@@ -22,13 +22,23 @@ public enum PlayerError: Error {
     }
     
     public enum FairplayError {
+        // Application Certificate
+        case networking(error: Error)
         case missingApplicationCertificateUrl
-        case applicationCertificateResponse(error: Error)
-        case invalidCertificateData
+        case applicationCertificateDataFormatInvalid
+        case applicationCertificateServer(code: Int, message: String)
+        case applicationCertificateParsing
         case invalidContentIdentifier
+        
+        // Server Playback Context
         case serverPlaybackContext(error: Error)
+        
+        // Content Key Context
         case missingContentKeyContextUrl
-        case contentKeyContext(error: Error)
+        case missingPlaytoken
+        case contentKeyContextDataFormatInvalid
+        case contentKeyContextServer(code: Int, message: String)
+        case contentKeyContextParsing
         case missingContentKeyContext
         case missingDataRequest
     }
@@ -59,13 +69,23 @@ extension PlayerError.AssetError {
 extension PlayerError.FairplayError {
     public var localizedDescription: String {
         switch self {
+        // Application Certificate
         case .missingApplicationCertificateUrl: return "Application Certificate Url not found"
-        case .applicationCertificateResponse(error: let error): return "Application Certificate Response: \(error.localizedDescription)"
-        case .invalidCertificateData: return "Certificate Data invalid"
+        case .networking(error: let error): return "Network error while fetching Application Certificate: \(error.localizedDescription)"
+        case .applicationCertificateDataFormatInvalid: return "Certificate Data was not encodable using base64"
+        case .applicationCertificateServer(code: let code, message: let message): return "Application Certificate server returned error: \(code) with message: \(message)"
+        case .applicationCertificateParsing: return "Application Certificate server response lacks parsable data"
         case .invalidContentIdentifier: return "Invalid Content Identifier"
+        
+        // Server Playback Context
         case .serverPlaybackContext(error: let error): return "Server Playback Context: \(error.localizedDescription)"
+            
+        // Content Key Context
         case .missingContentKeyContextUrl: return "Content Key Context Url not found"
-        case .contentKeyContext(error: let error): return "Content Key Context: \(error.localizedDescription)"
+        case .missingPlaytoken: return "Content Key Context call requires a playtoken"
+        case .contentKeyContextDataFormatInvalid: return "Content Key Context was not encodable using base64"
+        case .contentKeyContextServer(code: let code, message: let message): return "Content Key Context server returned error: \(code) with message: \(message)"
+        case .contentKeyContextParsing: return "Content Key Context server response lacks parsable data"
         case .missingContentKeyContext: return "Content Key Context missing from response"
         case .missingDataRequest: return "Data Request missing"
         }
