@@ -14,7 +14,7 @@ import Utilities
 
 public final class Player {
     
-    internal(set) public var avPlayer: AVPlayer
+    fileprivate var avPlayer: AVPlayer
     fileprivate var currentAsset: MediaAsset?
     
     public init() {
