@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
+		7648635E1EE44B4000083DB5 /* MediaAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7648635D1EE44B4000083DB5 /* MediaAsset.swift */; };
+		764863601EE44B5900083DB5 /* FairplayRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7648635F1EE44B5900083DB5 /* FairplayRequester.swift */; };
+		764863641EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764863621EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift */; };
+		764863651EE6CDB600083DB5 /* SWXMLHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764863631EE6CDB600083DB5 /* SWXMLHash.swift */; };
 		7667AEC51EC5C0FE00C308FC /* Appfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC31EC5C0FE00C308FC /* Appfile */; };
 		7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC41EC5C0FE00C308FC /* Fastfile */; };
 		7667AEC81EC5C12100C308FC /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC71EC5C12100C308FC /* .env */; };
@@ -53,6 +57,10 @@
 
 /* Begin PBXFileReference section */
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
+		7648635D1EE44B4000083DB5 /* MediaAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaAsset.swift; sourceTree = "<group>"; };
+		7648635F1EE44B5900083DB5 /* FairplayRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FairplayRequester.swift; sourceTree = "<group>"; };
+		764863621EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SWXMLHash+TypeConversion.swift"; sourceTree = "<group>"; };
+		764863631EE6CDB600083DB5 /* SWXMLHash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWXMLHash.swift; sourceTree = "<group>"; };
 		7667AEC31EC5C0FE00C308FC /* Appfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
 		7667AEC41EC5C0FE00C308FC /* Fastfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7667AEC71EC5C12100C308FC /* .env */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
@@ -112,6 +120,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		764863611EE6CDB600083DB5 /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				764863621EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift */,
+				764863631EE6CDB600083DB5 /* SWXMLHash.swift */,
+			);
+			path = Dependencies;
+			sourceTree = "<group>";
+		};
 		7667AEC21EC5C0FE00C308FC /* fastlane */ = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +175,9 @@
 				76A8437B1EA7819D00BDAF2C /* Observation */,
 				76A843851EA7819D00BDAF2C /* Protocols */,
 				76A843891EA7819D00BDAF2C /* Views */,
+				7648635D1EE44B4000083DB5 /* MediaAsset.swift */,
+				7648635F1EE44B5900083DB5 /* FairplayRequester.swift */,
+				764863611EE6CDB600083DB5 /* Dependencies */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -353,12 +373,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				76A843911EA7819D00BDAF2C /* KeyValueObservable.swift in Sources */,
+				764863641EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift in Sources */,
 				76A843961EA7819D00BDAF2C /* Observer.swift in Sources */,
 				76A843901EA7819D00BDAF2C /* Sequence+Extensions.swift in Sources */,
 				76A8439A1EA7819D00BDAF2C /* ExposurePlayback.swift in Sources */,
 				76A8438C1EA7819D00BDAF2C /* PlayerEventPublisher.swift in Sources */,
 				76A8439C1EA7819D00BDAF2C /* MediaRendering.swift in Sources */,
 				76A8438F1EA7819D00BDAF2C /* AVPlayerItem+KeyValueObservable.swift in Sources */,
+				764863601EE44B5900083DB5 /* FairplayRequester.swift in Sources */,
+				7648635E1EE44B4000083DB5 /* MediaAsset.swift in Sources */,
 				76A843971EA7819D00BDAF2C /* Player.swift in Sources */,
 				76A843991EA7819D00BDAF2C /* PlayerObserver.swift in Sources */,
 				76A8439B1EA7819D00BDAF2C /* MediaPlayback.swift in Sources */,
@@ -368,6 +391,7 @@
 				76A8438E1EA7819D00BDAF2C /* AVPlayer+KeyValueObservable.swift in Sources */,
 				76A8438D1EA7819D00BDAF2C /* AVAsset+LoadableKeys.swift in Sources */,
 				76A843981EA7819D00BDAF2C /* PlayerError.swift in Sources */,
+				764863651EE6CDB600083DB5 /* SWXMLHash.swift in Sources */,
 				76A843921EA7819D00BDAF2C /* KeyValueObserver.swift in Sources */,
 				76A8439D1EA7819D00BDAF2C /* PlayerView.swift in Sources */,
 				76A843931EA7819D00BDAF2C /* KVOChange.swift in Sources */,

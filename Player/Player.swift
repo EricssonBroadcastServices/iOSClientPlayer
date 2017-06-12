@@ -9,11 +9,13 @@
 import Foundation
 import AVFoundation
 import Exposure
+import Alamofire
+import Utilities
 
 public final class Player {
     
-    fileprivate(set) public var avPlayer: AVPlayer
-    fileprivate var currentItem: AVPlayerItem?
+    internal(set) public var avPlayer: AVPlayer
+    fileprivate var currentAsset: MediaAsset?
     
     public init() {
         avPlayer = AVPlayer()
@@ -41,7 +43,6 @@ public final class Player {
     }
     
     deinit {
-        itemObserver.stopObservingAll()
         playerObserver.stopObservingAll()
     }
     
@@ -65,10 +66,10 @@ public final class Player {
     fileprivate var onPlaybackPaused: (Player) -> Void = { _ in }
     fileprivate var onPlaybackResumed: (Player) -> Void = { _ in }
     
-    // MARK: Change Observation
+    /*// MARK: Change Observation
     lazy fileprivate var itemObserver: PlayerItemObserver = { [unowned self] in
         return PlayerItemObserver()
-    }()
+    }()*/
     
     lazy fileprivate var playerObserver: PlayerObserver = { [unowned self] in
         return PlayerObserver()
@@ -224,61 +225,42 @@ extension Player: MediaPlayback {
 // MARK: - ExposurePlayback
 extension Player: ExposurePlayback {
     public func stream(playback entitlement: PlaybackEntitlement) {
-        
-        if let urlString = entitlement.mediaLocator, let url = URL(string: urlString) {
-            print("stream ",url)
+        do {
+            currentAsset = try MediaAsset(entitlement: entitlement)
             onCreated(self)
             
-            let keys:[AVAsset.LoadableKeys] = [.duration, .tracks, .playable]
-            
-            let urlAsset = AVURLAsset(url: url)
-            urlAsset.loadValuesAsynchronously(forKeys: keys.rawValues) {
-                DispatchQueue.main.async { [unowned self] in
-                    self.prepare(asset: urlAsset, loading: keys)
+            currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [unowned self] error in
+                guard error == nil else {
+                    self.onError(self, error!)
+                    return
                 }
+                
+                self.onInitCompleted(self)
+                
+                self.readyPlayback(with: self.currentAsset!)
+            }
+        }
+        catch {
+            if let playerError = error as? PlayerError {
+                onError(self, playerError)
+            }
+            else {
+                onError(self, PlayerError.generalError(error: error))
             }
         }
     }
     
-    fileprivate func prepare(asset: AVURLAsset, loading keys: [AVAsset.LoadableKeys]) {
-        // Check for any issues preparing the loaded values
-        let errors = keys.flatMap{ key -> Error? in
-            var error: NSError?
-            guard asset.statusOfValue(forKey: key.rawValue, error: &error) != .failed else {
-                return error!
-            }
-            return nil
-        }
-        
-        guard errors.isEmpty else {
-            onError(self, .asset(reason: .failedToPrepare(errors: errors)))
-            return
-        }
-        
-        guard asset.isPlayable else {
-            onError(self, .asset(reason: .loadedButNotPlayable))
-            return
-        }
-        
-        // Initialization completed
-        onInitCompleted(self)
-        
-        // Ready to setup playback
-        readyPlayback(with: asset)
-    }
-    
-    fileprivate func readyPlayback(with asset: AVURLAsset) {
+    fileprivate func readyPlayback(with mediaAsset: MediaAsset) {
         // Unsubscribe any current item
-        if let current = currentItem {
-            itemObserver.stopObserving(path: .status, on: current)
-            itemObserver.unsubscribe(forObject: current)
-        }
+        currentAsset?.itemObserver.stopObservingAll()
+        currentAsset?.itemObserver.unsubscribeAll()
         
+        currentAsset = mediaAsset
         
-        currentItem = AVPlayerItem(asset: asset)
+        let playerItem = mediaAsset.playerItem
         
         // Observe changes to .status for new playerItem
-        itemObserver.observe(path: .status, on: currentItem!) { [unowned self] item, change in
+        mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [unowned self] item, change in
             if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
                 switch status {
                 case .unknown:
@@ -302,12 +284,12 @@ extension Player: ExposurePlayback {
         
         
         // Observe when currentItem has played to the end
-        itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: currentItem) { [unowned self] notification in
+        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: playerItem) { [unowned self] notification in
             self.onPlaybackCompleted(self)
         }
         
         // Update AVPlayer by replacing old AVPlayerItem with newly created currentItem
-        if let currentlyPlaying = avPlayer.currentItem, currentlyPlaying == currentItem {
+        if let currentlyPlaying = avPlayer.currentItem, currentlyPlaying == playerItem {
             // NOTE: Make surewe dont replace an item with the same item
             // TODO: Should this perhaps be done before we actully try replacing and unsub/sub KVO/notifications
             return
@@ -316,8 +298,9 @@ extension Player: ExposurePlayback {
         // Replace the player item with a new player item. The item replacement occurs
         // asynchronously; observe the currentItem property to find out when the
         // replacement will/did occur
-        avPlayer.replaceCurrentItem(with: currentItem)
+        avPlayer.replaceCurrentItem(with: playerItem)
     }
+    
     
     public func offline(playback entitlement: PlaybackEntitlement) {
         

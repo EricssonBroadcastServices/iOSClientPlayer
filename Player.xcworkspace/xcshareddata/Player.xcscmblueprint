@@ -17,7 +17,7 @@
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "6C25B371DC66ADF4587F56D8CF85DD31480F6F3F" : "iOSClientPlayer\/Carthage\/Checkouts\/Mockingjay\/",
     "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64" : "iOSClientPlayer\/Carthage\/Checkouts\/iOSClientUtilities\/Carthage\/Checkouts\/Quick\/",
-    "95438028B10BBB846574013D29F154A00556A9D1" : "iOSClientPlayer\/Carthage\/Checkouts\/Quick\/Externals\/Nimble\/",
+    "95438028B10BBB846574013D29F154A00556A9D1" : "iOSClientPlayer\/Carthage\/Checkouts\/Nimble\/",
     "67620B5EFA902936DF04070AF595B76AB0333747" : "iOSClientPlayer\/Carthage\/Checkouts\/Alamofire\/",
     "C861FC00CEE0F6A6BE81FCFF6785FAA78C58EBB3" : "iOSClientPlayer\/Carthage\/Checkouts\/SwiftyJSON\/",
     "214A69DBE68449124238BBE07F858F4905887B1B" : "iOSClientPlayer\/Carthage\/Checkouts\/iOSClientExposure\/",
