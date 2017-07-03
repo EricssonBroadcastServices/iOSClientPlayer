@@ -8,7 +8,6 @@
 
 import Foundation
 import AVFoundation
-import Exposure
 
 public final class Player {
     
