@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "B30894CAEEC5ADF2BD3B0062DFB2EF32B12F989D",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "95438028B10BBB846574013D29F154A00556A9D1" : 9223372036854775807,
+    "6C25B371DC66ADF4587F56D8CF85DD31480F6F3F" : 9223372036854775807,
+    "B30894CAEEC5ADF2BD3B0062DFB2EF32B12F989D" : 9223372036854775807,
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "E4EC7B8C-B4C3-47C2-90AD-83E12C5A43D4",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "95438028B10BBB846574013D29F154A00556A9D1" : "iOSClientPlayer\/Carthage\/Checkouts\/Nimble\/",
+    "6C25B371DC66ADF4587F56D8CF85DD31480F6F3F" : "iOSClientPlayer\/Carthage\/Checkouts\/Mockingjay\/",
+    "B30894CAEEC5ADF2BD3B0062DFB2EF32B12F989D" : "iOSClientPlayer\/",
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64" : "iOSClientPlayer\/Carthage\/Checkouts\/Quick\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Player",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Player.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/github.com\/FredrikSjoberg\/Mockingjay.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6C25B371DC66ADF4587F56D8CF85DD31480F6F3F"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:EricssonBroadcastServices\/iOSClientPlayer.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B30894CAEEC5ADF2BD3B0062DFB2EF32B12F989D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/github.com\/Quick\/Quick.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64"
+    }
+  ]
+}
