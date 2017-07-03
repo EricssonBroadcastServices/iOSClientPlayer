@@ -5,18 +5,6 @@
       location = "group:Player.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Carthage/Checkouts/iOSClientUtilities/Utilities.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/iOSClientExposure/Exposure.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/Alamofire/Alamofire.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/SwiftyJSON/SwiftyJSON.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Carthage/Checkouts/Quick/Quick.xcodeproj">
    </FileRef>
    <FileRef
