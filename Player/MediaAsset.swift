@@ -8,10 +8,10 @@
 
 import Foundation
 import AVFoundation
-import Exposure
+
 
 internal class MediaAsset {
-    let entitlement: PlaybackEntitlement
+    let mediaLocator: String
     fileprivate var urlAsset: AVURLAsset
     
     lazy internal var playerItem: AVPlayerItem = { [unowned self] in
@@ -20,26 +20,19 @@ internal class MediaAsset {
     
     let fairplayRequester: FairplayRequester
     
-    init(entitlement: PlaybackEntitlement) throws {
-        self.entitlement = entitlement
+    init(mediaLocator: String, fairplayRequester: FairplayRequester) throws {
+        self.mediaLocator = mediaLocator
         
-        fairplayRequester = FairplayRequester(entitlement: entitlement)
+        self.fairplayRequester = fairplayRequester
         
-        guard let url = MediaAsset.assetUrl(from: entitlement) else {
+        guard let url = URL(string:mediaLocator) else {
             throw PlayerError.asset(reason: .missingMediaUrl)
         }
         
         urlAsset = AVURLAsset(url: url)
         print(urlAsset.url)
         urlAsset.resourceLoader.setDelegate(fairplayRequester,
-                                            queue: DispatchQueue(label: (entitlement.playSessionId ?? "Asset") + "-fairplayLoader"))
-    }
-    
-    
-    fileprivate static func assetUrl(from entitlement: PlaybackEntitlement) -> URL? {
-        // For HLS/FAIRPLAY, mediaLocator will contain the m3u8 path
-        guard let m3u8 = entitlement.mediaLocator else { return nil }
-        return URL(string: m3u8)
+                                            queue: DispatchQueue(label: mediaLocator + "-fairplayLoader"))
     }
     
     // MARK: Change Observation
