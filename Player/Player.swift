@@ -8,9 +8,6 @@
 
 import Foundation
 import AVFoundation
-import Exposure
-import Alamofire
-import Utilities
 
 public final class Player {
     
@@ -222,11 +219,12 @@ extension Player: MediaPlayback {
     }
 }
 
-// MARK: - ExposurePlayback
-extension Player: ExposurePlayback {
-    public func stream(playback entitlement: PlaybackEntitlement) {
+
+// MARK: - Playback
+extension Player {
+    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester) {
         do {
-            currentAsset = try MediaAsset(entitlement: entitlement)
+            currentAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
             onCreated(self)
             
             currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [unowned self] error in
@@ -299,10 +297,5 @@ extension Player: ExposurePlayback {
         // asynchronously; observe the currentItem property to find out when the
         // replacement will/did occur
         avPlayer.replaceCurrentItem(with: playerItem)
-    }
-    
-    
-    public func offline(playback entitlement: PlaybackEntitlement) {
-        
     }
 }
