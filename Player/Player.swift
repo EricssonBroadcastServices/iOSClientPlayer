@@ -17,8 +17,6 @@ public final class Player {
     public init() {
         avPlayer = AVPlayer()
         
-        
-        
         playerObserver.observe(path: .currentItem, on: avPlayer) { [unowned self] player, change in
             print("Player.currentItem changed",player, change.new)
         }
