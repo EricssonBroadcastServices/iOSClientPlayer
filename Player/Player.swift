@@ -217,6 +217,36 @@ extension Player: MediaPlayback {
     public var isPlaying: Bool {
         return avPlayer.rate != 0
     }
+    
+    /// Number of miliseconds
+    ///
+    /// - Parameter timeInterval: in milliseconds
+    ///
+    public func seek(to timeInterval: Int64) {
+        let cmTime = CMTime(value: timeInterval, timescale: 1000)
+        currentAsset?.playerItem.seek(to: cmTime) { success in
+            
+        }
+    }
+    
+    /// Returns the current playback position of the player in milliseconds
+    ///
+    /// - Returns: in milliseconds
+    ///
+    public var currentTime: Int64 {
+        guard let cmTime = currentAsset?.playerItem.currentTime() else { return 0 }
+        return Int64(cmTime.seconds*1000)
+    }
+    
+    /// Returns the current playback position of the player in milliseconds, or nil if duration is infinite
+    ///
+    /// - Returns: in milliseconds
+    ///
+    public var duration: Int64? {
+        guard let cmTime = currentAsset?.playerItem.currentTime() else { return nil }
+        guard !cmTime.isIndefinite else { return nil }
+        return Int64(cmTime.seconds*1000)
+    }
 }
 
 
