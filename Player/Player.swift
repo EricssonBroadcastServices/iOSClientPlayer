@@ -244,7 +244,7 @@ extension Player: MediaPlayback {
     /// - Returns: in milliseconds
     ///
     public var duration: Int64? {
-        guard let cmTime = currentAsset?.playerItem.currentTime() else { return nil }
+        guard let cmTime = currentAsset?.playerItem.duration else { return nil }
         guard !cmTime.isIndefinite else { return nil }
         return Int64(cmTime.seconds*1000)
     }
