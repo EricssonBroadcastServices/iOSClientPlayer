@@ -223,7 +223,8 @@ extension Player: MediaPlayback {
     /// - Parameter timeInterval: in milliseconds
     ///
     public func seek(to timeInterval: Int64) {
-        let cmTime = CMTime(value: timeInterval, timescale: 1000)
+        let seekTime = timeInterval > 0 ? timeInterval : 0
+        let cmTime = CMTime(value: seekTime, timescale: 1000)
         currentAsset?.playerItem.seek(to: cmTime) { success in
             
         }
