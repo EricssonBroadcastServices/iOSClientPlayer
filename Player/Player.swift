@@ -40,7 +40,9 @@ public final class Player {
     }
     
     deinit {
+        print("Player.deinit")
         playerObserver.stopObservingAll()
+        playerObserver.unsubscribeAll()
     }
     
     /*
