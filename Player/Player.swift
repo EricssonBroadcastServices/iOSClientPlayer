@@ -17,32 +17,18 @@ public final class Player {
     public init() {
         avPlayer = AVPlayer()
         
-        playerObserver.observe(path: .currentItem, on: avPlayer) { [unowned self] player, change in
-            print("Player.currentItem changed",player, change.new)
-        }
-        
-        // Observe BitRate changes
-        playerObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: avPlayer) { [unowned self] notification in
-            if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
-                if let currentEvent = accessLog.events.last {
-                    let previousIndex = accessLog
-                        .events
-                        .index(of: currentEvent)?
-                        .advanced(by: -1)
-                    let previousEvent = previousIndex != nil ? accessLog.events[previousIndex!] : nil
-                    let event = BitrateChangedEvent(player: self,
-                                                    previousRate: previousEvent?.indicatedBitrate,
-                                                    currentRate: currentEvent.indicatedBitrate)
-                    self.onBitrateChanged(event)
-                }
-            }
-        }
+        handleCurrentItemChanges()
+        handlePlaybackStateChanges()
+        handleAudioSessionInteruptionEvents()
+        handleBackgroundingEvents()
     }
     
     deinit {
         print("Player.deinit")
         playerObserver.stopObservingAll()
         playerObserver.unsubscribeAll()
+        
+        NotificationCenter.default.removeObserver(self)
     }
     
     /*
@@ -56,19 +42,20 @@ public final class Player {
     // MARK: PlayerEventPublisher
     fileprivate var onCreated: (Player) -> Void = { _ in }
     fileprivate var onInitCompleted: (Player) -> Void = { _ in }
-    fileprivate var onPlaybackReady: (Player) -> Void = { _ in }
     fileprivate var onError: (Player, PlayerError) -> Void = { _ in }
-    fileprivate var onPlaybackCompleted: (Player) -> Void = { _ in }
+    
     fileprivate var onBitrateChanged: (BitrateChangedEvent) -> Void = { _ in }
+    fileprivate var onBufferingStarted: (Player) -> Void = { _ in }
+    fileprivate var onBufferingStopped: (Player) -> Void = { _ in }
+    fileprivate var onDurationChanged: (Player) -> Void = { _ in }
+    
+    fileprivate var onPlaybackReady: (Player) -> Void = { _ in }
+    fileprivate var onPlaybackCompleted: (Player) -> Void = { _ in }
     fileprivate var onPlaybackStarted: (Player) -> Void = { _ in }
     fileprivate var onPlaybackAborted: (Player) -> Void = { _ in }
     fileprivate var onPlaybackPaused: (Player) -> Void = { _ in }
     fileprivate var onPlaybackResumed: (Player) -> Void = { _ in }
     
-    /*// MARK: Change Observation
-    lazy fileprivate var itemObserver: PlayerItemObserver = { [unowned self] in
-        return PlayerItemObserver()
-    }()*/
     
     lazy fileprivate var playerObserver: PlayerObserver = { [unowned self] in
         return PlayerObserver()
@@ -76,6 +63,7 @@ public final class Player {
     
     // MARK: MediaPlayback
     fileprivate var playbackState: PlaybackState = .notStarted
+    fileprivate var bufferState: BufferState = .notInitialized
 }
 
 // MARK: - PlayerEventPublisher
@@ -97,18 +85,6 @@ extension Player: PlayerEventPublisher {
     }
     
     @discardableResult
-    public func onPlaybackReady(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackReady = callback
-        return self
-    }
-    
-    @discardableResult
-    public func onPlaybackCompleted(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackCompleted = callback
-        return self
-    }
-    
-    @discardableResult
     public func onError(callback: @escaping (Player, PlayerError) -> Void) -> Self {
         onError = callback
         return self
@@ -122,7 +98,36 @@ extension Player: PlayerEventPublisher {
         return self
     }
     
-    // MARK: Actions
+    @discardableResult
+    public func onBufferingStarted(callback: @escaping (Player) -> Void) -> Self {
+        onBufferingStarted = callback
+        return self
+    }
+    
+    @discardableResult
+    public func onBufferingStopped(callback: @escaping (Player) -> Void) -> Self {
+        onBufferingStopped = callback
+        return self
+    }
+    
+    @discardableResult
+    public func onDurationChanged(callback: @escaping (Player) -> Void) -> Self {
+        onDurationChanged = callback
+        return self
+    }
+    
+    // MARK: Playback
+    @discardableResult
+    public func onPlaybackReady(callback: @escaping (Player) -> Void) -> Self {
+        onPlaybackReady = callback
+        return self
+    }
+    
+    @discardableResult
+    public func onPlaybackCompleted(callback: @escaping (Player) -> Void) -> Self {
+        onPlaybackCompleted = callback
+        return self
+    }
     @discardableResult
     public func onPlaybackStarted(callback: @escaping (Player) -> Void) -> Self {
         onPlaybackStarted = callback
@@ -191,12 +196,8 @@ extension Player: MediaPlayback {
         switch playbackState {
         case .notStarted:
             avPlayer.play()
-            playbackState = .playing
-            onPlaybackStarted(self)
         case .paused:
             avPlayer.play()
-            onPlaybackResumed(self)
-            playbackState = .playing
         default:
             return
         }
@@ -205,14 +206,11 @@ extension Player: MediaPlayback {
     public func pause() {
         guard isPlaying else { return }
         avPlayer.pause()
-        playbackState = .paused
-        onPlaybackPaused(self)
     }
     
     public func stop() {
         // TODO: End playback? Unload resources? Leave that to user?
         avPlayer.pause()
-        playbackState = .paused
         onPlaybackAborted(self)
     }
     
@@ -260,15 +258,21 @@ extension Player {
             currentAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
             onCreated(self)
             
-            currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [unowned self] error in
+            // Reset playbackState
+            playbackState = .notStarted
+            
+            currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
+                guard let weakSelf = self, let currentAsset = weakSelf.currentAsset else {
+                    return
+                }
                 guard error == nil else {
-                    self.onError(self, error!)
+                    weakSelf.onError(weakSelf, error!)
                     return
                 }
                 
-                self.onInitCompleted(self)
+                weakSelf.onInitCompleted(weakSelf)
                 
-                self.readyPlayback(with: self.currentAsset!)
+                weakSelf.readyPlayback(with: currentAsset)
             }
         }
         catch {
@@ -291,22 +295,16 @@ extension Player {
         let playerItem = mediaAsset.playerItem
         
         // Observe changes to .status for new playerItem
-        mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [unowned self] item, change in
-            if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
-                switch status {
-                case .unknown:
-                    // TODO: Do we send anything on .unknown?
-                    return
-                case .readyToPlay:
-                    if item != nil {
-                        // We only send playbackReady if we have a non-nil asset attached that is ready to play.
-                        self.onPlaybackReady(self)
-                    }
-                case .failed:
-                    self.onError(self, .asset(reason: .failedToReady(error: item.error)))
-                }
-            }
-        }
+        handleStatusChange(mediaAsset: mediaAsset)
+        
+        // Observe BitRate changes
+        handleBitrateChangedEvent(mediaAsset: mediaAsset)
+        
+        // Observe Buffering
+        handleBufferingEvents(mediaAsset: mediaAsset)
+        
+        // Observe Duration changes
+        handleDurationChangedEvent(mediaAsset: mediaAsset)
         
         // ADITIONAL KVO TO CONSIDER
         //[_currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"]; // availableDuration?
@@ -330,5 +328,200 @@ extension Player {
         // asynchronously; observe the currentItem property to find out when the
         // replacement will/did occur
         avPlayer.replaceCurrentItem(with: playerItem)
+    }
+}
+
+/// Player Item Status Change Events
+extension Player {
+    fileprivate func handleStatusChange(mediaAsset: MediaAsset) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [unowned self] item, change in
+            if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
+                switch status {
+                case .unknown:
+                    // TODO: Do we send anything on .unknown?
+                    return
+                case .readyToPlay:
+                    if self.playbackState == .notStarted {
+                        // This will trigger every time the player is ready to play, including:
+                        //  - first started
+                        //  - after seeking
+                        // Only send onPlaybackReady if the stream has not been started yet.
+                        self.onPlaybackReady(self)
+                    }
+                case .failed:
+                    self.onError(self, .asset(reason: .failedToReady(error: item.error)))
+                }
+            }
+        }
+    }
+}
+
+/// Bitrate Changed Events
+extension Player {
+    fileprivate func handleBitrateChangedEvent(mediaAsset: MediaAsset) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [unowned self] notification in
+            if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
+                if let currentEvent = accessLog.events.last {
+                    let previousIndex = accessLog
+                        .events
+                        .index(of: currentEvent)?
+                        .advanced(by: -1)
+                    let previousEvent = previousIndex != nil ? accessLog.events[previousIndex!] : nil
+                    let event = BitrateChangedEvent(player: self,
+                                                    previousRate: previousEvent?.indicatedBitrate,
+                                                    currentRate: currentEvent.indicatedBitrate)
+                    DispatchQueue.main.async {
+                        self.onBitrateChanged(event)
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Buffering Events
+extension Player {
+    fileprivate enum BufferState {
+        case notInitialized
+        case buffering
+        case onPace
+    }
+    
+    fileprivate func handleBufferingEvents(mediaAsset: MediaAsset) {
+        mediaAsset.itemObserver.observe(path: .isPlaybackLikelyToKeepUp, on: mediaAsset.playerItem) { [unowned self] item, change in
+            DispatchQueue.main.async {
+                switch self.bufferState {
+                case .buffering:
+                    self.bufferState = .onPace
+                    self.onBufferingStopped(self)
+                default: return
+                }
+            }
+        }
+        
+        
+        mediaAsset.itemObserver.observe(path: .isPlaybackBufferFull, on: mediaAsset.playerItem) { [unowned self] item, change in
+            DispatchQueue.main.async {
+            }
+        }
+        
+        mediaAsset.itemObserver.observe(path: .isPlaybackBufferEmpty, on: mediaAsset.playerItem) { [unowned self] item, change in
+            DispatchQueue.main.async {
+                switch self.bufferState {
+                case .onPace, .notInitialized:
+                    self.bufferState = .buffering
+                    self.onBufferingStarted(self)
+                default: return
+                }
+            }
+        }
+    }
+}
+
+/// Duration Changed Events
+extension Player {
+    fileprivate func handleDurationChangedEvent(mediaAsset: MediaAsset) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.observe(path: .duration, on: playerItem) { [unowned self] item, change in
+            DispatchQueue.main.async {
+                // NOTE: This currently sends onDurationChanged events for all triggers of the KVO. This means events might be sent once duration is "updated" with the same value as before, effectivley assigning self.duration = duration.
+                self.onDurationChanged(self)
+            }
+        }
+    }
+}
+
+
+extension Player {
+    fileprivate func handlePlaybackStateChanges() {
+        playerObserver.observe(path: .rate, on: avPlayer) { [unowned self] player, change in
+            DispatchQueue.main.async {
+                guard let newRate = change.new as? Float else {
+                    return
+                }
+                
+                if newRate < 0 || 0 < newRate {
+                    switch self.playbackState {
+                    case .notStarted:
+                        self.playbackState = .playing
+                        self.onPlaybackStarted(self)
+                    case .paused:
+                        self.playbackState = .playing
+                        self.onPlaybackResumed(self)
+                    case .playing:
+                        return
+                    }
+                }
+                else {
+                    switch self.playbackState {
+                    case .notStarted:
+                        return
+                    case .paused:
+                        return
+                    case .playing:
+                        self.playbackState = .paused
+                        self.onPlaybackPaused(self)
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension Player {
+    fileprivate func handleCurrentItemChanges() {
+        playerObserver.observe(path: .currentItem, on: avPlayer) { [unowned self] player, change in
+            print("Player.currentItem changed",player, change.new)
+        }
+    }
+}
+
+/// Audio Session Interruption Events
+extension Player {
+    fileprivate func handleAudioSessionInteruptionEvents() {
+        NotificationCenter.default.addObserver(self, selector: #selector(Player.audioSessionInterruption), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
+    }
+    
+    @objc fileprivate func audioSessionInterruption(notification: Notification) {
+        guard let userInfo = notification.userInfo,
+            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+            let type = AVAudioSessionInterruptionType(rawValue: typeValue) else {
+                return
+        }
+        switch type {
+        case .began:
+            print("AVAudioSessionInterruption BEGAN")
+        case .ended:
+            guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+            let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
+            print("AVAudioSessionInterruption ENDED",flags)
+            if flags.contains(.shouldResume) {
+                self.play()
+            }
+        }
+    }
+}
+
+/// Backgrounding Events
+extension Player {
+    fileprivate func handleBackgroundingEvents() {
+        NotificationCenter.default.addObserver(self, selector: #selector(Player.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(Player.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(Player.appWillTerminate), name: .UIApplicationWillTerminate, object: nil)
+    }
+    
+    @objc fileprivate func appDidEnterBackground() {
+        print("UIApplicationDidEnterBackground")
+    }
+    
+    @objc fileprivate func appWillEnterForeground() {
+        print("UIApplicationWillEnterForeground")
+    }
+    
+    @objc fileprivate func appWillTerminate() {
+        print("UIApplicationWillTerminate")
+        self.stop()
     }
 }

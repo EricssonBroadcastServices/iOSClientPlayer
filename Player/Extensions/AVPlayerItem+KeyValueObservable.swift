@@ -19,9 +19,12 @@ extension AVPlayerItem: KeyValueObservable {
         case duration = "duration"
         case presentationSize = "presentationSize"
         case timedMetadata = "timedMetadata"
+        case isPlaybackLikelyToKeepUp = "playbackLikelyToKeepUp"
+        case isPlaybackBufferFull = "playbackBufferFull"
+        case isPlaybackBufferEmpty = "playbackBufferEmpty"
         
         var all: [ObservableKey] {
-            return [.status, .tracks, .duration, .presentationSize, .timedMetadata]
+            return [.status, .tracks, .duration, .presentationSize, .timedMetadata, .isPlaybackLikelyToKeepUp, .isPlaybackBufferFull, .isPlaybackBufferEmpty]
         }
     }
 }

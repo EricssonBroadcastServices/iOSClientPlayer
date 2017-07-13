@@ -49,12 +49,12 @@ internal class MediaAsset {
 extension MediaAsset {
     internal func prepare(loading keys: [AVAsset.LoadableKeys], callback: @escaping (PlayerError?) -> Void) {
         urlAsset.loadValuesAsynchronously(forKeys: keys.rawValues) {
-            DispatchQueue.main.async { [unowned self] in
+            DispatchQueue.main.async { [weak self] in
                 
                 // Check for any issues preparing the loaded values
                 let errors = keys.flatMap{ key -> Error? in
                     var error: NSError?
-                    guard self.urlAsset.statusOfValue(forKey: key.rawValue, error: &error) != .failed else {
+                    guard self?.urlAsset.statusOfValue(forKey: key.rawValue, error: &error) != .failed else {
                         return error!
                     }
                     return nil
@@ -65,7 +65,7 @@ extension MediaAsset {
                     return
                 }
                 
-                guard self.urlAsset.isPlayable else {
+                guard let isPlayable = self?.urlAsset.isPlayable else {
                     callback(.asset(reason: .loadedButNotPlayable))
                     return
                 }
