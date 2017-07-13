@@ -20,23 +20,6 @@ public final class Player {
         playerObserver.observe(path: .currentItem, on: avPlayer) { [unowned self] player, change in
             print("Player.currentItem changed",player, change.new)
         }
-        
-        // Observe BitRate changes
-        playerObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: avPlayer) { [unowned self] notification in
-            if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
-                if let currentEvent = accessLog.events.last {
-                    let previousIndex = accessLog
-                        .events
-                        .index(of: currentEvent)?
-                        .advanced(by: -1)
-                    let previousEvent = previousIndex != nil ? accessLog.events[previousIndex!] : nil
-                    let event = BitrateChangedEvent(player: self,
-                                                    previousRate: previousEvent?.indicatedBitrate,
-                                                    currentRate: currentEvent.indicatedBitrate)
-                    self.onBitrateChanged(event)
-                }
-            }
-        }
     }
     
     deinit {
@@ -308,6 +291,23 @@ extension Player {
             }
         }
         
+        
+        // Observe BitRate changes
+        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [unowned self] notification in
+            if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
+                if let currentEvent = accessLog.events.last {
+                    let previousIndex = accessLog
+                        .events
+                        .index(of: currentEvent)?
+                        .advanced(by: -1)
+                    let previousEvent = previousIndex != nil ? accessLog.events[previousIndex!] : nil
+                    let event = BitrateChangedEvent(player: self,
+                                                    previousRate: previousEvent?.indicatedBitrate,
+                                                    currentRate: currentEvent.indicatedBitrate)
+                    self.onBitrateChanged(event)
+                }
+            }
+        }
         // ADITIONAL KVO TO CONSIDER
         //[_currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"]; // availableDuration?
         //[_currentItem removeObserver:self forKeyPath:@"playbackBufferEmpty"]; // BUFFERING
