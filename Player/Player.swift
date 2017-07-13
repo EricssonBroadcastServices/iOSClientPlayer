@@ -261,15 +261,18 @@ extension Player {
             // Reset playbackState
             playbackState = .notStarted
             
-            currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [unowned self] error in
+            currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
+                guard let weakSelf = self, let currentAsset = weakSelf.currentAsset else {
+                    return
+                }
                 guard error == nil else {
-                    self.onError(self, error!)
+                    weakSelf.onError(weakSelf, error!)
                     return
                 }
                 
-                self.onInitCompleted(self)
+                weakSelf.onInitCompleted(weakSelf)
                 
-                self.readyPlayback(with: self.currentAsset!)
+                weakSelf.readyPlayback(with: currentAsset)
             }
         }
         catch {
