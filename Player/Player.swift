@@ -309,6 +309,8 @@ extension Player {
         // Observe Buffering
         handleBufferingEvents(mediaAsset: mediaAsset)
         
+        // Observe Duration changes
+        handleDurationChangedEvent(mediaAsset: mediaAsset)
         
         // ADITIONAL KVO TO CONSIDER
         //[_currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"]; // availableDuration?
@@ -433,6 +435,7 @@ extension Player {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.observe(path: .duration, on: playerItem) { [unowned self] item, change in
             DispatchQueue.main.async {
+                // NOTE: This currently sends onDurationChanged events for all triggers of the KVO. This means events might be sent once duration is "updated" with the same value as before, effectivley assigning self.duration = duration.
                 self.onDurationChanged(self)
             }
         }
