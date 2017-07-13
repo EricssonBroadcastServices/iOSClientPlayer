@@ -50,6 +50,7 @@ public final class Player {
     fileprivate var onBitrateChanged: (BitrateChangedEvent) -> Void = { _ in }
     fileprivate var onBufferingStarted: (Player) -> Void = { _ in }
     fileprivate var onBufferingStopped: (Player) -> Void = { _ in }
+    fileprivate var onDurationChanged: (Player) -> Void = { _ in }
     fileprivate var onPlaybackStarted: (Player) -> Void = { _ in }
     fileprivate var onPlaybackAborted: (Player) -> Void = { _ in }
     fileprivate var onPlaybackPaused: (Player) -> Void = { _ in }
@@ -118,9 +119,16 @@ extension Player: PlayerEventPublisher {
         onBufferingStarted = callback
         return self
     }
+    
     @discardableResult
     public func onBufferingStopped(callback: @escaping (Player) -> Void) -> Self {
         onBufferingStopped = callback
+        return self
+    }
+    
+    @discardableResult
+    public func onDurationChanged(callback: @escaping (Player) -> Void) -> Self {
+        onDurationChanged = callback
         return self
     }
     
@@ -414,6 +422,18 @@ extension Player {
                     self.onBufferingStarted(self)
                 default: return
                 }
+            }
+        }
+    }
+}
+
+/// Duration Changed Events
+extension Player {
+    fileprivate func handleDurationChangedEvent(mediaAsset: MediaAsset) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.observe(path: .duration, on: playerItem) { [unowned self] item, change in
+            DispatchQueue.main.async {
+                self.onDurationChanged(self)
             }
         }
     }
