@@ -274,40 +274,13 @@ extension Player {
         let playerItem = mediaAsset.playerItem
         
         // Observe changes to .status for new playerItem
-        mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [unowned self] item, change in
-            if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
-                switch status {
-                case .unknown:
-                    // TODO: Do we send anything on .unknown?
-                    return
-                case .readyToPlay:
-                    if item != nil {
-                        // We only send playbackReady if we have a non-nil asset attached that is ready to play.
-                        self.onPlaybackReady(self)
-                    }
-                case .failed:
-                    self.onError(self, .asset(reason: .failedToReady(error: item.error)))
-                }
-            }
-        }
-        
+        handleStatusChange(mediaAsset: mediaAsset)
         
         // Observe BitRate changes
-        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [unowned self] notification in
-            if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
-                if let currentEvent = accessLog.events.last {
-                    let previousIndex = accessLog
-                        .events
-                        .index(of: currentEvent)?
-                        .advanced(by: -1)
-                    let previousEvent = previousIndex != nil ? accessLog.events[previousIndex!] : nil
-                    let event = BitrateChangedEvent(player: self,
-                                                    previousRate: previousEvent?.indicatedBitrate,
-                                                    currentRate: currentEvent.indicatedBitrate)
-                    self.onBitrateChanged(event)
-                }
-            }
-        }
+        handleBitrateChangedEvent(mediaAsset: mediaAsset)
+        
+        
+        
         // ADITIONAL KVO TO CONSIDER
         //[_currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"]; // availableDuration?
         //[_currentItem removeObserver:self forKeyPath:@"playbackBufferEmpty"]; // BUFFERING
@@ -330,5 +303,51 @@ extension Player {
         // asynchronously; observe the currentItem property to find out when the
         // replacement will/did occur
         avPlayer.replaceCurrentItem(with: playerItem)
+    }
+}
+
+extension Player {
+    fileprivate func handleStatusChange(mediaAsset: MediaAsset) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [unowned self] item, change in
+            if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
+                switch status {
+                case .unknown:
+                    // TODO: Do we send anything on .unknown?
+                    return
+                case .readyToPlay:
+                    if self.playbackState == .notStarted {
+                        // This will trigger every time the player is ready to play, including:
+                        //  - first started
+                        //  - after seeking
+                        // Only send onPlaybackReady if the stream has not been started yet.
+                        self.onPlaybackReady(self)
+                    }
+                case .failed:
+                    self.onError(self, .asset(reason: .failedToReady(error: item.error)))
+                }
+            }
+        }
+    }
+    
+    fileprivate func handleBitrateChangedEvent(mediaAsset: MediaAsset) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [unowned self] notification in
+            if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
+                if let currentEvent = accessLog.events.last {
+                    let previousIndex = accessLog
+                        .events
+                        .index(of: currentEvent)?
+                        .advanced(by: -1)
+                    let previousEvent = previousIndex != nil ? accessLog.events[previousIndex!] : nil
+                    let event = BitrateChangedEvent(player: self,
+                                                    previousRate: previousEvent?.indicatedBitrate,
+                                                    currentRate: currentEvent.indicatedBitrate)
+                    DispatchQueue.main.async {
+                        self.onBitrateChanged(event)
+                    }
+                }
+            }
+        }
     }
 }
