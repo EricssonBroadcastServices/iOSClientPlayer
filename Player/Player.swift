@@ -421,8 +421,8 @@ extension Player {
             switch type {
             case .began:
                 print("AVAudioSessionInterruption BEGAN")
-                // Pause
-                self.pause()
+                // Pause done by system
+//                self.pause()
             case .ended:
                 guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
                 let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
