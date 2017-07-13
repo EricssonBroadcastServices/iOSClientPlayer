@@ -412,16 +412,23 @@ extension Player {
     }
     
     fileprivate func handleAudioSessionInteruptionEvents() {
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.AVAudioSessionInterruption, object: AVAudioSession.sharedInstance(), queue: nil) { notification in
-            guard let userInfo = notification.userInfo else { return }
-            if let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-                let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt,
-                let type = AVAudioSessionInterruptionType(rawValue: typeValue) {
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.AVAudioSessionInterruption, object: AVAudioSession.sharedInstance(), queue: nil) { [unowned self] notification in
+            guard let userInfo = notification.userInfo,
+                let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+                let type = AVAudioSessionInterruptionType(rawValue: typeValue) else {
+                return
+            }
+            switch type {
+            case .began:
+                print("AVAudioSessionInterruption BEGAN")
+                // Pause
+                self.pause()
+            case .ended:
+                guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
                 let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
-                switch type {
-                case .began: print("AVAudioSessionInterruption BEGAN",flags)
-                case .ended: print("AVAudioSessionInterruption ENDED",flags)
-                    
+                print("AVAudioSessionInterruption ENDED",flags)
+                if flags.contains(.shouldResume) {
+                    self.play()
                 }
             }
         }
