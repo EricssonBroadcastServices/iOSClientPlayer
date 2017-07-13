@@ -22,6 +22,7 @@ public final class Player {
         }
         
         handleAudioSessionInteruptionEvents()
+        handleBackgroundingEvents()
     }
     
     deinit {
@@ -326,6 +327,7 @@ extension Player {
     }
 }
 
+/// Player Item Status Change Events
 extension Player {
     fileprivate func handleStatusChange(mediaAsset: MediaAsset) {
         let playerItem = mediaAsset.playerItem
@@ -349,7 +351,10 @@ extension Player {
             }
         }
     }
-    
+}
+
+/// Bitrate Changed Events
+extension Player {
     fileprivate func handleBitrateChangedEvent(mediaAsset: MediaAsset) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [unowned self] notification in
@@ -370,8 +375,10 @@ extension Player {
             }
         }
     }
-    
-    
+}
+
+/// Buffering Events
+extension Player {
     fileprivate enum BufferState {
         case notInitialized
         case buffering
@@ -410,27 +417,54 @@ extension Player {
             }
         }
     }
-    
+}
+
+/// Audio Session Interruption Events
+extension Player {
     fileprivate func handleAudioSessionInteruptionEvents() {
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.AVAudioSessionInterruption, object: AVAudioSession.sharedInstance(), queue: nil) { [unowned self] notification in
-            guard let userInfo = notification.userInfo,
-                let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-                let type = AVAudioSessionInterruptionType(rawValue: typeValue) else {
+        NotificationCenter.default.addObserver(self, selector: #selector(Player.audioSessionInterruption), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
+    }
+    
+    @objc fileprivate func audioSessionInterruption(notification: Notification) {
+        guard let userInfo = notification.userInfo,
+            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+            let type = AVAudioSessionInterruptionType(rawValue: typeValue) else {
                 return
-            }
-            switch type {
-            case .began:
-                print("AVAudioSessionInterruption BEGAN")
-                // Pause done by system
-//                self.pause()
-            case .ended:
-                guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
-                let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
-                print("AVAudioSessionInterruption ENDED",flags)
-                if flags.contains(.shouldResume) {
-                    self.play()
-                }
+        }
+        switch type {
+        case .began:
+            print("AVAudioSessionInterruption BEGAN")
+        case .ended:
+            guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+            let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
+            print("AVAudioSessionInterruption ENDED",flags)
+            if flags.contains(.shouldResume) {
+                self.play()
             }
         }
+    }
+}
+
+/// Backgrounding Events
+extension Player {
+    fileprivate func handleBackgroundingEvents() {
+        NotificationCenter.default.addObserver(self, selector: #selector(Player.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(Player.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(Player.appWillTerminate), name: .UIApplicationWillTerminate, object: nil)
+    }
+    
+    @objc fileprivate func appDidEnterBackground() {
+        print("UIApplicationDidEnterBackground")
+        playbackState = .paused
+        onPlaybackPaused(self)
+    }
+    
+    @objc fileprivate func appWillEnterForeground() {
+        print("UIApplicationWillEnterForeground")
+    }
+    
+    @objc fileprivate func appWillTerminate() {
+        print("UIApplicationWillTerminate")
+        self.stop()
     }
 }
