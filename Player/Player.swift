@@ -43,6 +43,8 @@ public final class Player {
     fileprivate var onError: (Player, PlayerError) -> Void = { _ in }
     fileprivate var onPlaybackCompleted: (Player) -> Void = { _ in }
     fileprivate var onBitrateChanged: (BitrateChangedEvent) -> Void = { _ in }
+    fileprivate var onBufferingStarted: (Player) -> Void = { _ in }
+    fileprivate var onBufferingStopped: (Player) -> Void = { _ in }
     fileprivate var onPlaybackStarted: (Player) -> Void = { _ in }
     fileprivate var onPlaybackAborted: (Player) -> Void = { _ in }
     fileprivate var onPlaybackPaused: (Player) -> Void = { _ in }
@@ -59,6 +61,7 @@ public final class Player {
     
     // MARK: MediaPlayback
     fileprivate var playbackState: PlaybackState = .notStarted
+    fileprivate var bufferState: BufferState = .notInitialized
 }
 
 // MARK: - PlayerEventPublisher
@@ -102,6 +105,17 @@ extension Player: PlayerEventPublisher {
     @discardableResult
     public func onBitrateChanged(callback: @escaping (BitrateChangedEvent) -> Void) -> Self {
         onBitrateChanged = callback
+        return self
+    }
+    
+    @discardableResult
+    public func onBufferingStarted(callback: @escaping (Player) -> Void) -> Self {
+        onBufferingStarted = callback
+        return self
+    }
+    @discardableResult
+    public func onBufferingStopped(callback: @escaping (Player) -> Void) -> Self {
+        onBufferingStopped = callback
         return self
     }
     
@@ -279,6 +293,8 @@ extension Player {
         // Observe BitRate changes
         handleBitrateChangedEvent(mediaAsset: mediaAsset)
         
+        // Observe Buffering
+        handleBufferingEvents(mediaAsset: mediaAsset)
         
         
         // ADITIONAL KVO TO CONSIDER
@@ -346,6 +362,45 @@ extension Player {
                     DispatchQueue.main.async {
                         self.onBitrateChanged(event)
                     }
+                }
+            }
+        }
+    }
+    
+    
+    fileprivate enum BufferState {
+        case notInitialized
+        case buffering
+        case onPace
+    }
+    fileprivate func handleBufferingEvents(mediaAsset: MediaAsset) {
+        mediaAsset.itemObserver.observe(path: .isPlaybackLikelyToKeepUp, on: mediaAsset.playerItem) { [unowned self] item, change in
+            DispatchQueue.main.async {
+                print("isPlaybackLikelyToKeepUp: ",item.isPlaybackLikelyToKeepUp,"| isPlaybackBufferFull:",item.isPlaybackBufferFull,"isPlaybackBufferEmpty: ",item.isPlaybackBufferEmpty)
+                switch self.bufferState {
+                case .buffering:
+                    self.bufferState = .onPace
+                    self.onBufferingStopped(self)
+                default: return
+                }
+            }
+        }
+        
+        
+        mediaAsset.itemObserver.observe(path: .isPlaybackBufferFull, on: mediaAsset.playerItem) { [unowned self] item, change in
+            DispatchQueue.main.async {
+                print("isPlaybackBufferFull:",item.isPlaybackBufferFull,"| isPlaybackLikelyToKeepUp: ",item.isPlaybackLikelyToKeepUp,"isPlaybackBufferEmpty: ",item.isPlaybackBufferEmpty)
+            }
+        }
+        
+        mediaAsset.itemObserver.observe(path: .isPlaybackBufferEmpty, on: mediaAsset.playerItem) { [unowned self] item, change in
+            DispatchQueue.main.async {
+                print("isPlaybackBufferEmpty: ",item.isPlaybackBufferEmpty,"| isPlaybackLikelyToKeepUp: ",item.isPlaybackLikelyToKeepUp,"isPlaybackBufferFull:",item.isPlaybackBufferFull)
+                switch self.bufferState {
+                case .onPace, .notInitialized:
+                    self.bufferState = .buffering
+                    self.onBufferingStarted(self)
+                default: return
                 }
             }
         }
