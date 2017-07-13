@@ -20,12 +20,16 @@ public final class Player {
         playerObserver.observe(path: .currentItem, on: avPlayer) { [unowned self] player, change in
             print("Player.currentItem changed",player, change.new)
         }
+        
+        handleAudioSessionInteruptionEvents()
     }
     
     deinit {
         print("Player.deinit")
         playerObserver.stopObservingAll()
         playerObserver.unsubscribeAll()
+        
+        NotificationCenter.default.removeObserver(self)
     }
     
     /*
@@ -373,6 +377,7 @@ extension Player {
         case buffering
         case onPace
     }
+    
     fileprivate func handleBufferingEvents(mediaAsset: MediaAsset) {
         mediaAsset.itemObserver.observe(path: .isPlaybackLikelyToKeepUp, on: mediaAsset.playerItem) { [unowned self] item, change in
             DispatchQueue.main.async {
@@ -401,6 +406,22 @@ extension Player {
                     self.bufferState = .buffering
                     self.onBufferingStarted(self)
                 default: return
+                }
+            }
+        }
+    }
+    
+    fileprivate func handleAudioSessionInteruptionEvents() {
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.AVAudioSessionInterruption, object: AVAudioSession.sharedInstance(), queue: nil) { notification in
+            guard let userInfo = notification.userInfo else { return }
+            if let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+                let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt,
+                let type = AVAudioSessionInterruptionType(rawValue: typeValue) {
+                let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
+                switch type {
+                case .began: print("AVAudioSessionInterruption BEGAN",flags)
+                case .ended: print("AVAudioSessionInterruption ENDED",flags)
+                    
                 }
             }
         }
