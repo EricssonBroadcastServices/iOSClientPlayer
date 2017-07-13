@@ -65,7 +65,7 @@ extension MediaAsset {
                     return
                 }
                 
-                guard let isPlayable = self?.urlAsset.isPlayable else {
+                guard let isPlayable = self?.urlAsset.isPlayable, isPlayable else {
                     callback(.asset(reason: .loadedButNotPlayable))
                     return
                 }
