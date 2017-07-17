@@ -27,6 +27,21 @@ public protocol AnalyticsProvider {
     /// Triggered when buffering finished
     func playbackBufferingStopped(player: Player)
     
+    /// Triggered when playback is ready to start
+    func playbackReadyEvent(player: Player)
+    
     /// Triggered once playback reaches end of stream
     func playbackCompletedEvent(player: Player)
+    
+    /// Triggered once the playback starts for the first time
+    func playbackStartedEvent(player: Player)
+    
+    /// Triggered by the user aborting playback
+    func playbackAbortedEvent(player: Player)
+    
+    /// Triggered by the user pausing playback
+    func playbackPausedEvent(player: Player)
+    
+    /// Triggered by the user resuming playback
+    func playbackResumedEvent(player: Player)
 }

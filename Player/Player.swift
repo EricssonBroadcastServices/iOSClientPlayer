@@ -364,6 +364,7 @@ extension Player {
                         //  - after seeking
                         // Only send onPlaybackReady if the stream has not been started yet.
                         self.onPlaybackReady(self)
+                        self.analyticsProvider?.playbackReadyEvent(player: self)
                     }
                 case .failed:
                     let error = PlayerError.asset(reason: .failedToReady(error: item.error))
@@ -478,9 +479,11 @@ extension Player {
                     case .notStarted:
                         self.playbackState = .playing
                         self.onPlaybackStarted(self)
+                        self.analyticsProvider?.playbackStartedEvent(player: self)
                     case .paused:
                         self.playbackState = .playing
                         self.onPlaybackResumed(self)
+                        self.analyticsProvider?.playbackResumedEvent(player: self)
                     case .playing:
                         return
                     }
@@ -494,6 +497,7 @@ extension Player {
                     case .playing:
                         self.playbackState = .paused
                         self.onPlaybackPaused(self)
+                        self.analyticsProvider?.playbackPausedEvent(player: self)
                     }
                 }
             }
