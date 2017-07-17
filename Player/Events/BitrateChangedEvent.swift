@@ -9,7 +9,11 @@
 import Foundation
 
 public struct BitrateChangedEvent {
-    unowned let player: Player
-    let previousRate: Double?
-    let currentRate: Double
+    unowned public let player: Player
+    
+    /// Measured in bits/sec
+    public let previousRate: Double?
+    
+    /// Measured in bits/sec
+    public let currentRate: Double
 }

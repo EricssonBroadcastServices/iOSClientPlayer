@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
+		76139F811F1CD30700822023 /* AnalyticsEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F801F1CD30700822023 /* AnalyticsEventPublisher.swift */; };
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
 		7648635E1EE44B4000083DB5 /* MediaAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7648635D1EE44B4000083DB5 /* MediaAsset.swift */; };
 		764863601EE44B5900083DB5 /* FairplayRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7648635F1EE44B5900083DB5 /* FairplayRequester.swift */; };
@@ -54,6 +56,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
+		76139F801F1CD30700822023 /* AnalyticsEventPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsEventPublisher.swift; sourceTree = "<group>"; };
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
 		7648635D1EE44B4000083DB5 /* MediaAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaAsset.swift; sourceTree = "<group>"; };
 		7648635F1EE44B5900083DB5 /* FairplayRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FairplayRequester.swift; sourceTree = "<group>"; };
@@ -116,6 +120,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		76139F7D1F1CCFD600822023 /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */,
+				76139F801F1CD30700822023 /* AnalyticsEventPublisher.swift */,
+			);
+			path = Analytics;
+			sourceTree = "<group>";
+		};
 		764863611EE6CDB600083DB5 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
@@ -166,6 +179,7 @@
 				76A843821EA7819D00BDAF2C /* Player.swift */,
 				76A843831EA7819D00BDAF2C /* PlayerError.swift */,
 				76A843841EA7819D00BDAF2C /* PlayerObserver.swift */,
+				76139F7D1F1CCFD600822023 /* Analytics */,
 				76A843731EA7819D00BDAF2C /* Events */,
 				76A843761EA7819D00BDAF2C /* Extensions */,
 				76A8437B1EA7819D00BDAF2C /* Observation */,
@@ -377,11 +391,13 @@
 				764863601EE44B5900083DB5 /* FairplayRequester.swift in Sources */,
 				7648635E1EE44B4000083DB5 /* MediaAsset.swift in Sources */,
 				76A843971EA7819D00BDAF2C /* Player.swift in Sources */,
+				76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */,
 				76A843991EA7819D00BDAF2C /* PlayerObserver.swift in Sources */,
 				76A8439B1EA7819D00BDAF2C /* MediaPlayback.swift in Sources */,
 				76A843951EA7819D00BDAF2C /* NotificationToken.swift in Sources */,
 				76A843941EA7819D00BDAF2C /* NotificationObserver.swift in Sources */,
 				76A8438B1EA7819D00BDAF2C /* BitrateChangedEvent.swift in Sources */,
+				76139F811F1CD30700822023 /* AnalyticsEventPublisher.swift in Sources */,
 				76A8438E1EA7819D00BDAF2C /* AVPlayer+KeyValueObservable.swift in Sources */,
 				76A8438D1EA7819D00BDAF2C /* AVAsset+LoadableKeys.swift in Sources */,
 				76A843981EA7819D00BDAF2C /* PlayerError.swift in Sources */,
