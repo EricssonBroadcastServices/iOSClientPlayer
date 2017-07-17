@@ -323,9 +323,7 @@ extension Player {
         
         
         // Observe when currentItem has played to the end
-        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: playerItem) { [unowned self] notification in
-            self.onPlaybackCompleted(self)
-        }
+        handlePlaybackCompletedEvent(mediaAsset: mediaAsset)
         
         // Update AVPlayer by replacing old AVPlayerItem with newly created currentItem
         if let currentlyPlaying = avPlayer.currentItem, currentlyPlaying == playerItem {
@@ -452,7 +450,17 @@ extension Player {
     }
 }
 
+/// Playback Completed Events
+extension Player {
+    fileprivate func handlePlaybackCompletedEvent(mediaAsset: MediaAsset) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: playerItem) { [unowned self] notification in
+            self.onPlaybackCompleted(self)
+        }
+    }
+}
 
+/// Playback State Changes
 extension Player {
     fileprivate func handlePlaybackStateChanges() {
         playerObserver.observe(path: .rate, on: avPlayer) { [unowned self] player, change in
@@ -489,6 +497,7 @@ extension Player {
     }
 }
 
+/// Current Item Changes
 extension Player {
     fileprivate func handleCurrentItemChanges() {
         playerObserver.observe(path: .currentItem, on: avPlayer) { [unowned self] player, change in
