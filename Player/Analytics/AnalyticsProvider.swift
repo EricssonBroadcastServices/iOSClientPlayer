@@ -17,4 +17,7 @@ public protocol AnalyticsProvider {
     
     /// Triggered if the player encounters an error during its lifetime
     func playbackErrorEvent(player: Player, error: PlayerError)
+    
+    /// Triggered when the bitrate changes
+    func playbackBitrateChanged(event: BitrateChangedEvent)
 }

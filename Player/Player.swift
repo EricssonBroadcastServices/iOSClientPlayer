@@ -391,6 +391,7 @@ extension Player {
                                                     currentRate: currentEvent.indicatedBitrate)
                     DispatchQueue.main.async {
                         self.onBitrateChanged(event)
+                        self.analyticsProvider?.playbackBitrateChanged(event: event)
                     }
                 }
             }
