@@ -20,4 +20,13 @@ public protocol AnalyticsProvider {
     
     /// Triggered when the bitrate changes
     func playbackBitrateChanged(event: BitrateChangedEvent)
+    
+    /// Triggered when buffering is required
+    func playbackBufferingStarted(player: Player)
+    
+    /// Triggered when buffering finished
+    func playbackBufferingStopped(player: Player)
+    
+    /// Triggered once playback reaches end of stream
+    func playbackCompletedEvent(player: Player)
 }

@@ -414,6 +414,7 @@ extension Player {
                 case .buffering:
                     self.bufferState = .onPace
                     self.onBufferingStopped(self)
+                    self.analyticsProvider?.playbackBufferingStopped(player: self)
                 default: return
                 }
             }
@@ -431,6 +432,7 @@ extension Player {
                 case .onPace, .notInitialized:
                     self.bufferState = .buffering
                     self.onBufferingStarted(self)
+                    self.analyticsProvider?.playbackBufferingStarted(player: self)
                 default: return
                 }
             }
@@ -457,6 +459,7 @@ extension Player {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: playerItem) { [unowned self] notification in
             self.onPlaybackCompleted(self)
+            self.analyticsProvider?.playbackCompletedEvent(player: self)
         }
     }
 }
