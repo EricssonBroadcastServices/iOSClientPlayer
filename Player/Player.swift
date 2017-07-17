@@ -40,8 +40,8 @@ public final class Player {
     */
     
     // MARK: PlayerEventPublisher
-    fileprivate var onCreated: (Player) -> Void = { _ in }
-    fileprivate var onInitCompleted: (Player) -> Void = { _ in }
+    fileprivate var onPlaybackCreated: (Player) -> Void = { _ in }
+    fileprivate var onPlaybackPrepared: (Player) -> Void = { _ in }
     fileprivate var onError: (Player, PlayerError) -> Void = { _ in }
     
     fileprivate var onBitrateChanged: (BitrateChangedEvent) -> Void = { _ in }
@@ -64,6 +64,9 @@ public final class Player {
     // MARK: MediaPlayback
     fileprivate var playbackState: PlaybackState = .notStarted
     fileprivate var bufferState: BufferState = .notInitialized
+    
+    // MARK: AnalyticsEventPublisher
+    public var analyticsProvider: AnalyticsProvider?
 }
 
 // MARK: - PlayerEventPublisher
@@ -73,14 +76,14 @@ extension Player: PlayerEventPublisher {
     
     // MARK: Lifecycle
     @discardableResult
-    public func onCreated(callback: @escaping (Player) -> Void) -> Self {
-        onCreated = callback
+    public func onPlaybackCreated(callback: @escaping (Player) -> Void) -> Self {
+        onPlaybackCreated = callback
         return self
     }
     
     @discardableResult
-    public func onInitCompleted(callback: @escaping (Player) -> Void) -> Self {
-        onInitCompleted = callback
+    public func onPlaybackPrepared(callback: @escaping (Player) -> Void) -> Self {
+        onPlaybackPrepared = callback
         return self
     }
     
@@ -250,13 +253,18 @@ extension Player: MediaPlayback {
     }
 }
 
+// MARK: - AnalyticsEventPublisher
+extension Player: AnalyticsEventPublisher {
+    
+}
 
 // MARK: - Playback
 extension Player {
     public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester) {
         do {
             currentAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
-            onCreated(self)
+            onPlaybackCreated(self)
+            analyticsProvider?.playbackCreatedEvent(player: self)
             
             // Reset playbackState
             playbackState = .notStarted
@@ -266,21 +274,23 @@ extension Player {
                     return
                 }
                 guard error == nil else {
-                    weakSelf.onError(weakSelf, error!)
+                    weakSelf.handle(error: error!)
                     return
                 }
                 
-                weakSelf.onInitCompleted(weakSelf)
+                weakSelf.onPlaybackPrepared(weakSelf)
+                weakSelf.analyticsProvider?.playbackPreparedEvent(player: weakSelf)
                 
                 weakSelf.readyPlayback(with: currentAsset)
             }
         }
         catch {
             if let playerError = error as? PlayerError {
-                onError(self, playerError)
+                handle(error: playerError)
             }
             else {
-                onError(self, PlayerError.generalError(error: error))
+                let playerError = PlayerError.generalError(error: error)
+                handle(error: playerError)
             }
         }
     }
@@ -331,6 +341,14 @@ extension Player {
     }
 }
 
+/// Handle Errors
+extension Player {
+    fileprivate func handle(error: PlayerError) {
+        onError(self, error)
+        analyticsProvider?.playbackErrorEvent(player: self, error: error)
+    }
+}
+
 /// Player Item Status Change Events
 extension Player {
     fileprivate func handleStatusChange(mediaAsset: MediaAsset) {
@@ -350,7 +368,8 @@ extension Player {
                         self.onPlaybackReady(self)
                     }
                 case .failed:
-                    self.onError(self, .asset(reason: .failedToReady(error: item.error)))
+                    let error = PlayerError.asset(reason: .failedToReady(error: item.error))
+                    self.handle(error: error)
                 }
             }
         }

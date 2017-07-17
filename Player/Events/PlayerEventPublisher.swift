@@ -12,8 +12,8 @@ public protocol PlayerEventPublisher {
     associatedtype PlayerEventError: Error
     
     // MARK: Lifecycle
-    func onCreated(callback: @escaping (Player) -> Void) -> Self
-    func onInitCompleted(callback: @escaping (Player) -> Void) -> Self
+    func onPlaybackCreated(callback: @escaping (Player) -> Void) -> Self
+    func onPlaybackPrepared(callback: @escaping (Player) -> Void) -> Self
     func onError(callback: @escaping (Player, PlayerError) -> Void) -> Self
     
     // MARK: Configuration

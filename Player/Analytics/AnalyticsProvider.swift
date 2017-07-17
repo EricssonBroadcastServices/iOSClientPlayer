@@ -1,0 +1,20 @@
+//
+//  AnalyticsProvider.swift
+//  Player
+//
+//  Created by Fredrik Sjöberg on 2017-07-17.
+//  Copyright © 2017 emp. All rights reserved.
+//
+
+import Foundation
+
+public protocol AnalyticsProvider {
+    /// Triggered when the requested media is created, but not yet loaded
+    func playbackCreatedEvent(player: Player)
+    
+    /// Triggered once the requested media is loaded
+    func playbackPreparedEvent(player: Player)
+    
+    /// Triggered if the player encounters an error during its lifetime
+    func playbackErrorEvent(player: Player, error: PlayerError)
+}
