@@ -91,3 +91,46 @@ extension PlayerError.FairplayError {
         }
     }
 }
+
+extension PlayerError {
+    public var code: Int {
+        switch self {
+        case .asset(reason: let reason): return reason.code
+        case .fairplay(reason: let reason): return reason.code
+        case .generalError(error: _): return 101
+        }
+    }
+}
+
+extension PlayerError.AssetError {
+    public var code: Int {
+        switch self {
+        case .failedToLoadValues(error: _): return 201
+        case .failedToPrepare(errors: _): return 202
+        case .failedToReady(error: _): return 203
+        case .loadedButNotPlayable: return 204
+        case .missingMediaUrl: return 205
+        }
+    }
+}
+
+extension PlayerError.FairplayError {
+    public var code: Int {
+        switch self {
+        case .applicationCertificateDataFormatInvalid: return 301
+        case .applicationCertificateParsing: return 302
+        case .applicationCertificateServer(code: _, message: _): return 303
+        case .contentKeyContextDataFormatInvalid: return 304
+        case .contentKeyContextParsing: return 305
+        case .contentKeyContextServer(code: _, message: _): return 306
+        case .invalidContentIdentifier: return 307
+        case .missingApplicationCertificateUrl: return 308
+        case .missingContentKeyContext: return 309
+        case .missingContentKeyContextUrl: return 310
+        case .missingDataRequest: return 311
+        case .missingPlaytoken: return 312
+        case .networking(error: _): return 313
+        case .serverPlaybackContext(error: _): return 314
+        }
+    }
+}
