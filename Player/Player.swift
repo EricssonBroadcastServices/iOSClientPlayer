@@ -14,8 +14,13 @@ public final class Player {
     fileprivate var avPlayer: AVPlayer
     fileprivate var currentAsset: MediaAsset?
     
+    /// Returns a token string uniquely identifying this playSession.
+    /// Example: “E621E1F8-C36C-495A-93FC-0C247A3E6E5F”
+    fileprivate(set) public var playSessionId: String
+    
     public init() {
         avPlayer = AVPlayer()
+        playSessionId = Player.generatePlaySessionId()
         
         handleCurrentItemChanges()
         handlePlaybackStateChanges()
@@ -29,6 +34,10 @@ public final class Player {
         playerObserver.unsubscribeAll()
         
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    fileprivate static func generatePlaySessionId() -> String {
+        return UUID().uuidString
     }
     
     /*
@@ -260,9 +269,12 @@ extension Player: AnalyticsEventPublisher {
 
 // MARK: - Playback
 extension Player {
-    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester) {
+    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester, playSessionId: String? = nil) {
         do {
             currentAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
+            // Use the supplied play token or generate a new one
+            self.playSessionId = playSessionId ?? Player.generatePlaySessionId()
+            
             onPlaybackCreated(self)
             analyticsProvider?.playbackCreatedEvent(player: self)
             
