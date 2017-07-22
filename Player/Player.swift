@@ -18,6 +18,9 @@ public final class Player {
     /// Example: “E621E1F8-C36C-495A-93FC-0C247A3E6E5F”
     fileprivate(set) public var playSessionId: String
     
+    /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
+    public var autoplay: Bool = false
+    
     public init() {
         avPlayer = AVPlayer()
         playSessionId = Player.generatePlaySessionId()
@@ -377,6 +380,9 @@ extension Player {
                         // Only send onPlaybackReady if the stream has not been started yet.
                         self.onPlaybackReady(self)
                         self.analyticsProvider?.playbackReadyEvent(player: self)
+                        
+                        // Start playback if autoplay is enabled
+                        if self.autoplay { self.play() }
                     }
                 case .failed:
                     let error = PlayerError.asset(reason: .failedToReady(error: item.error))
