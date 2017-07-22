@@ -354,6 +354,19 @@ extension Player {
     }
 }
 
+/// Configuration and Status
+extension Player {
+    public var currentBitrate: Double? {
+        return currentAsset?
+            .playerItem
+            .accessLog()?
+            .events
+            .last?
+            .indicatedBitrate
+        
+    }
+}
+
 /// Handle Errors
 extension Player {
     fileprivate func handle(error: PlayerError) {
