@@ -14,8 +14,16 @@ public final class Player {
     fileprivate var avPlayer: AVPlayer
     fileprivate var currentAsset: MediaAsset?
     
+    /// Returns a token string uniquely identifying this playSession.
+    /// Example: “E621E1F8-C36C-495A-93FC-0C247A3E6E5F”
+    fileprivate(set) public var playSessionId: String
+    
+    /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
+    public var autoplay: Bool = false
+    
     public init() {
         avPlayer = AVPlayer()
+        playSessionId = Player.generatePlaySessionId()
         
         handleCurrentItemChanges()
         handlePlaybackStateChanges()
@@ -29,6 +37,10 @@ public final class Player {
         playerObserver.unsubscribeAll()
         
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    fileprivate static func generatePlaySessionId() -> String {
+        return UUID().uuidString
     }
     
     /*
@@ -260,9 +272,12 @@ extension Player: AnalyticsEventPublisher {
 
 // MARK: - Playback
 extension Player {
-    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester) {
+    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester, playSessionId: String? = nil) {
         do {
             currentAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
+            // Use the supplied play token or generate a new one
+            self.playSessionId = playSessionId ?? Player.generatePlaySessionId()
+            
             onPlaybackCreated(self)
             analyticsProvider?.playbackCreatedEvent(player: self)
             
@@ -339,6 +354,19 @@ extension Player {
     }
 }
 
+/// Configuration and Status
+extension Player {
+    public var currentBitrate: Double? {
+        return currentAsset?
+            .playerItem
+            .accessLog()?
+            .events
+            .last?
+            .indicatedBitrate
+        
+    }
+}
+
 /// Handle Errors
 extension Player {
     fileprivate func handle(error: PlayerError) {
@@ -365,6 +393,9 @@ extension Player {
                         // Only send onPlaybackReady if the stream has not been started yet.
                         self.onPlaybackReady(self)
                         self.analyticsProvider?.playbackReadyEvent(player: self)
+                        
+                        // Start playback if autoplay is enabled
+                        if self.autoplay { self.play() }
                     }
                 case .failed:
                     let error = PlayerError.asset(reason: .failedToReady(error: item.error))
