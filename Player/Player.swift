@@ -231,6 +231,7 @@ extension Player: MediaPlayback {
     }
     
     public var isPlaying: Bool {
+        // TODO: How does this to PlaybackState? Is is NOT good practice with the currently uncoupled behavior.
         return avPlayer.rate != 0
     }
     
@@ -541,7 +542,8 @@ extension Player {
 extension Player {
     fileprivate func handleCurrentItemChanges() {
         playerObserver.observe(path: .currentItem, on: avPlayer) { [unowned self] player, change in
-            print("Player.currentItem changed",player, change.new)
+            print("Player.currentItem changed",player, change.new, change.old)
+            // TODO: Do we handle programChange here?
         }
     }
 }
