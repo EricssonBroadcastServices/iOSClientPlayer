@@ -227,6 +227,7 @@ extension Player: MediaPlayback {
         // TODO: End playback? Unload resources? Leave that to user?
         avPlayer.pause()
         onPlaybackAborted(self)
+        analyticsProvider?.playbackAbortedEvent(player: self)
     }
     
     public var isPlaying: Bool {
