@@ -14,6 +14,7 @@ public protocol MediaPlayback {
     func stop()
     
     var isPlaying: Bool { get }
+    var isActive: Bool { get }
     
     func seek(to timeInterval: Int64)
     

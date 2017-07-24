@@ -230,9 +230,21 @@ extension Player: MediaPlayback {
         analyticsProvider?.playbackAbortedEvent(player: self)
     }
     
+    /// Returns true if playback has been started and the current rate is not equal to 0
     public var isPlaying: Bool {
+        guard isActive else { return false }
         // TODO: How does this to PlaybackState? Is is NOT good practice with the currently uncoupled behavior.
         return avPlayer.rate != 0
+    }
+    
+    /// Returns true if `playbackState` is
+    /// - .playing
+    /// - .paused
+    public var isActive: Bool {
+        switch playbackState {
+        case .notStarted: return false
+        default: return true
+        }
     }
     
     /// Number of miliseconds
