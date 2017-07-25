@@ -370,6 +370,7 @@ extension Player {
 
 /// Configuration and Status
 extension Player {
+    /// The throughput required to play the stream, as advertised by the server, in bits per second. Will return nil if no bitrate can be reported.
     public var currentBitrate: Double? {
         return currentAsset?
             .playerItem
