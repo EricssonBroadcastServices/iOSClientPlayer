@@ -69,7 +69,7 @@ public final class Player {
     fileprivate var onPlaybackResumed: (Player) -> Void = { _ in }
     
     
-    lazy fileprivate var playerObserver: PlayerObserver = { [unowned self] in
+    lazy fileprivate var playerObserver: PlayerObserver = {
         return PlayerObserver()
     }()
     
