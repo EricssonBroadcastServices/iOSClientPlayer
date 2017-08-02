@@ -8,6 +8,10 @@
 
 import Foundation
 
+/// `PlayerError` is the error type returned by the *Player Framework*. It can manifest as both *native errors* to the framework and *nested errors* specific to underlying frameworks or concepts such as `AssetError`.
+/// Effective error handling thus requires a deeper undestanding of the overall architecture.
+///
+/// - important: Nested errors have *error codes* specific to the related *domain*. A domain is defined as the `representing type` *(for example* `AssetError`*)* and may contain subtypes. This means different errors may share error codes. When this occurs, it is important to keep track of the underlying domain.
 public enum PlayerError: Error {
     case generalError(error: Error)
     case asset(reason: AssetError)
@@ -93,6 +97,7 @@ extension PlayerError.FairplayError {
 }
 
 extension PlayerError {
+    /// Defines the `domain` specific code for the underlying error.
     public var code: Int {
         switch self {
         case .asset(reason: let reason): return reason.code
@@ -103,6 +108,7 @@ extension PlayerError {
 }
 
 extension PlayerError.AssetError {
+    /// Defines the `domain` specific code for the underlying error.
     public var code: Int {
         switch self {
         case .failedToLoadValues(error: _): return 201
@@ -115,6 +121,7 @@ extension PlayerError.AssetError {
 }
 
 extension PlayerError.FairplayError {
+    /// Defines the `domain` specific code for the underlying error.
     public var code: Int {
         switch self {
         case .applicationCertificateDataFormatInvalid: return 301
