@@ -406,12 +406,21 @@ extension Player: SessionShift {
         }
     }
     
+    public var sessionShiftOffset: Int64? {
+        switch bookmark {
+        case .notEnabled: return nil
+        case .enabled(offset: let offset): return offset
+        }
+    }
+    
+    @discardableResult
     public func sessionShift(enabled: Bool) -> Player {
-        bookmark = .enabled(offset: nil)
+        bookmark = enabled ? .enabled(offset: nil) : .notEnabled
         return self
     }
     
-    public func sessionShift(enabled: Bool, offset: Int64) -> Player {
+    @discardableResult
+    public func sessionShift(enabledAt offset: Int64) -> Player {
         bookmark = .enabled(offset: offset)
         return self
     }
