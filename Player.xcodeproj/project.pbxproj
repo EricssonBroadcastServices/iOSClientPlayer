@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7602E8891F38341A00601CD4 /* SessionShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7602E8881F38341A00601CD4 /* SessionShift.swift */; };
 		76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
 		76139F811F1CD30700822023 /* AnalyticsEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F801F1CD30700822023 /* AnalyticsEventPublisher.swift */; };
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
@@ -56,6 +57,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7602E8881F38341A00601CD4 /* SessionShift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionShift.swift; sourceTree = "<group>"; };
 		76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
 		76139F801F1CD30700822023 /* AnalyticsEventPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsEventPublisher.swift; sourceTree = "<group>"; };
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 			children = (
 				76A843871EA7819D00BDAF2C /* MediaPlayback.swift */,
 				76A843881EA7819D00BDAF2C /* MediaRendering.swift */,
+				7602E8881F38341A00601CD4 /* SessionShift.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 				76A8438B1EA7819D00BDAF2C /* BitrateChangedEvent.swift in Sources */,
 				76139F811F1CD30700822023 /* AnalyticsEventPublisher.swift in Sources */,
 				76A8438E1EA7819D00BDAF2C /* AVPlayer+KeyValueObservable.swift in Sources */,
+				7602E8891F38341A00601CD4 /* SessionShift.swift in Sources */,
 				76A8438D1EA7819D00BDAF2C /* AVAsset+LoadableKeys.swift in Sources */,
 				76A843981EA7819D00BDAF2C /* PlayerError.swift in Sources */,
 				764863651EE6CDB600083DB5 /* SWXMLHash.swift in Sources */,
