@@ -10,7 +10,6 @@ import Foundation
 import AVFoundation
 
 public final class Player {
-    
     fileprivate var avPlayer: AVPlayer
     fileprivate var currentAsset: MediaAsset?
     
@@ -79,6 +78,9 @@ public final class Player {
     
     // MARK: AnalyticsEventPublisher
     public var analyticsProvider: AnalyticsProvider?
+    
+    // MARK: SessionShift
+    fileprivate var bookmark: Bookmark = .notEnabled
 }
 
 // MARK: - PlayerEventPublisher
@@ -390,6 +392,41 @@ extension Player {
     }
 }
 
+/// MARK: <SessionShift>
+extension Player: SessionShift {
+    internal enum Bookmark {
+        case notEnabled
+        case enabled(offset: Int64?)
+    }
+    
+    public var sessionShiftEnabled: Bool {
+        switch bookmark {
+        case .notEnabled: return false
+        case .enabled(offset: _): return true
+        }
+    }
+    
+    public var sessionShiftOffset: Int64? {
+        switch bookmark {
+        case .notEnabled: return nil
+        case .enabled(offset: let offset): return offset
+        }
+    }
+    
+    @discardableResult
+    public func sessionShift(enabled: Bool) -> Player {
+        bookmark = enabled ? .enabled(offset: nil) : .notEnabled
+        return self
+    }
+    
+    @discardableResult
+    public func sessionShift(enabledAt offset: Int64) -> Player {
+        bookmark = .enabled(offset: offset)
+        return self
+    }
+}
+
+/// MARK: - Events
 /// Player Item Status Change Events
 extension Player {
     fileprivate func handleStatusChange(mediaAsset: MediaAsset) {
@@ -401,16 +438,21 @@ extension Player {
                     // TODO: Do we send anything on .unknown?
                     return
                 case .readyToPlay:
+                    // This will trigger every time the player is ready to play, including:
+                    //  - first started
+                    //  - after seeking
+                    // Only send onPlaybackReady if the stream has not been started yet.
                     if self.playbackState == .notStarted {
-                        // This will trigger every time the player is ready to play, including:
-                        //  - first started
-                        //  - after seeking
-                        // Only send onPlaybackReady if the stream has not been started yet.
-                        self.onPlaybackReady(self)
-                        self.analyticsProvider?.playbackReadyEvent(player: self)
-                        
-                        // Start playback if autoplay is enabled
-                        if self.autoplay { self.play() }
+                        if case let .enabled(value) = self.bookmark, let offset = value {
+                            let cmTime = CMTime(value: offset, timescale: 1000)
+                            self.avPlayer.seek(to: cmTime, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero) { [unowned self] success in
+                                
+                                self.startPlayback()
+                            }
+                        }
+                        else {
+                            self.startPlayback()
+                        }
                     }
                 case .failed:
                     let error = PlayerError.asset(reason: .failedToReady(error: item.error))
@@ -418,6 +460,14 @@ extension Player {
                 }
             }
         }
+    }
+    
+    private func startPlayback() {
+        self.onPlaybackReady(self)
+        self.analyticsProvider?.playbackReadyEvent(player: self)
+        
+        // Start playback if autoplay is enabled
+        if self.autoplay { self.play() }
     }
 }
 
