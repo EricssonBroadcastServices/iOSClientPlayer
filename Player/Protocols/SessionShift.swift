@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// SessionShift allows playback to start at a specified offset.
 public protocol SessionShift {
     /// Returns an `offset` if it has been specified, else nil.
     ///

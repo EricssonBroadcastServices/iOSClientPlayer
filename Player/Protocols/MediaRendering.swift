@@ -8,6 +8,10 @@
 
 import UIKit
 
+/// MediaRendering defines how the player configures a *user supplied* view for playback rendering.
 public protocol MediaRendering {
+    /// Configures `playerView` according to specifications supplied by the adopter.
+    ///
+    /// - parameter playerView: *User supplied* view to configure for playback rendering.
     func configure(playerView: UIView)
 }

@@ -173,6 +173,9 @@ extension Player: PlayerEventPublisher {
 
 // MARK: - MediaRendering
 extension Player: MediaRendering {
+    /// Creates and configures the associated `CALayer` used to render the media output. This view will be added to the *user supplied* `playerView` as a sub view at `index: 0`. A strong reference to `playerView` is also established.
+    ///
+    /// - parameter playerView:  *User supplied* view to configure for playback rendering.
     public func configure(playerView: UIView) {
         let renderingView = PlayerView(frame: playerView.frame)
         
@@ -180,7 +183,7 @@ extension Player: MediaRendering {
         renderingView.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspect
         renderingView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        playerView.addSubview(renderingView)
+        playerView.insertSubview(renderingView, at: 0)
         
         renderingView
             .leadingAnchor
@@ -203,6 +206,7 @@ extension Player: MediaRendering {
 
 // MARK: - MediaPlayback
 extension Player: MediaPlayback {
+    /// Internal state for tracking playback.
     fileprivate enum PlaybackState {
         case notStarted
         case playing
@@ -235,24 +239,23 @@ extension Player: MediaPlayback {
     /// Returns true if playback has been started and the current rate is not equal to 0
     public var isPlaying: Bool {
         guard isActive else { return false }
-        // TODO: How does this to PlaybackState? Is is NOT good practice with the currently uncoupled behavior.
+        // TODO: How does this relate to PlaybackState? NOT good practice with the currently uncoupled behavior.
         return avPlayer.rate != 0
     }
     
     /// Returns true if `playbackState` is
     /// - .playing
     /// - .paused
-    public var isActive: Bool {
+    internal var isActive: Bool {
         switch playbackState {
         case .notStarted: return false
         default: return true
         }
     }
     
-    /// Number of miliseconds
+    /// Use this method to seek to a specified time in the media timeline. The seek request will fail if interrupted by another seek request or by any other operation.
     ///
     /// - Parameter timeInterval: in milliseconds
-    ///
     public func seek(to timeInterval: Int64) {
         let seekTime = timeInterval > 0 ? timeInterval : 0
         let cmTime = CMTime(value: seekTime, timescale: 1000)
@@ -261,19 +264,13 @@ extension Player: MediaPlayback {
         }
     }
     
-    /// Returns the current playback position of the player in milliseconds
-    ///
-    /// - Returns: in milliseconds
-    ///
+    /// Returns the current playback position of the player in *milliseconds*
     public var currentTime: Int64 {
         guard let cmTime = currentAsset?.playerItem.currentTime() else { return 0 }
         return Int64(cmTime.seconds*1000)
     }
     
-    /// Returns the current playback position of the player in milliseconds, or nil if duration is infinite
-    ///
-    /// - Returns: in milliseconds
-    ///
+    /// Returns the current playback position of the player in *milliseconds*, or nil if duration is infinite
     public var duration: Int64? {
         guard let cmTime = currentAsset?.playerItem.duration else { return nil }
         guard !cmTime.isIndefinite else { return nil }
