@@ -10,17 +10,17 @@ import Foundation
 
 /// SessionShift allows playback to start at a specified offset.
 public protocol SessionShift {
-    /// Returns an `offset` if it has been specified, else nil.
+    /// Returns an `offset` if it has been specified, else `nil`.
     ///
-    /// - note: No offset can be specified if *Session Shift* is not enabled.
+    /// No specified `offset` does not necessary mean *Session Shift* is disabled.
     var sessionShiftOffset: Int64? { get }
     
     /// Is *Session Shift* enabled or not.
     var sessionShiftEnabled: Bool { get }
     
-    /// By specifying `true` you are instructing the `player` to expect an offset to be supplied at a later time.
-    ///
-    /// - note: This method is inteded to use during setup to signal the player an `offset` to the starting position will be supplied before playback should begin. This is useful for example when that `offset` is supplied by an external party, like a web service. If the `offset` to the starting position is known beforehand `sessionShift(enabledAt: someOffset)` should be used instead.
+    /// By specifying `true` you are signaling `sessionShift` is enabled and a starting `offset` will be supplied at *some time*, when is undefined.
+    /// 
+    /// This is useful when, for example, the `offset` is supplied by an external party (like a web service). If the `offset` to the starting position is known beforehand `sessionShift(enabledAt: someOffset)` should be used instead.
     ///
     /// - parameter enabled: `true` if enabled, `false` otherwise
     /// - returns: `Self`

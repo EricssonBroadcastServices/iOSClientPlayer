@@ -270,7 +270,7 @@ extension Player: MediaPlayback {
         return Int64(cmTime.seconds*1000)
     }
     
-    /// Returns the current playback position of the player in *milliseconds*, or nil if duration is infinite
+    /// Returns the current playback position of the player in *milliseconds*, or `nil` if duration is infinite (live streams for example).
     public var duration: Int64? {
         guard let cmTime = currentAsset?.playerItem.duration else { return nil }
         guard !cmTime.isIndefinite else { return nil }
@@ -389,13 +389,20 @@ extension Player {
     }
 }
 
-/// MARK: <SessionShift>
+// MARK: - SessionShift
 extension Player: SessionShift {
+    /// Internal state for tracking Bookmarks.
     internal enum Bookmark {
+        /// Bookmarking is not enabled
         case notEnabled
+        
+        /// Bookmarking is enabled. Optionaly, with a specified `offset`. No offset suggests that offset will be supplied at a later time.
         case enabled(offset: Int64?)
     }
     
+    /// Is *Session Shift* enabled or not.
+    ///
+    /// SessionShift may be enabled without a specific `offset` defined.
     public var sessionShiftEnabled: Bool {
         switch bookmark {
         case .notEnabled: return false
@@ -403,6 +410,9 @@ extension Player: SessionShift {
         }
     }
     
+    /// Returns a *Session Shift* `offset` if one has been specified, else `nil`.
+    ///
+    /// No specified `offset` does not necessary mean *Session Shift* is disabled.
     public var sessionShiftOffset: Int64? {
         switch bookmark {
         case .notEnabled: return nil
@@ -410,12 +420,21 @@ extension Player: SessionShift {
         }
     }
     
+    /// By specifying `true` you are signaling `sessionShift` is enabled and a starting `offset` will be supplied at *some time*, when is undefined.
+    ///
+    /// This is useful when you rely on some external party to supply the `player` with an `offset` at some point in its lifecycle.
+    ///
+    /// - parameter enabled: `true` if enabled, `false` otherwise
+    /// - returns: `Self`
     @discardableResult
     public func sessionShift(enabled: Bool) -> Player {
         bookmark = enabled ? .enabled(offset: nil) : .notEnabled
         return self
     }
     
+    /// Configure the `player` to start playback at the specified `offset`.
+    ///
+    /// - parameter offset: Offset into the media, in *milliseconds*.
     @discardableResult
     public func sessionShift(enabledAt offset: Int64) -> Player {
         bookmark = .enabled(offset: offset)
@@ -423,7 +442,7 @@ extension Player: SessionShift {
     }
 }
 
-/// MARK: - Events
+// MARK: - Events
 /// Player Item Status Change Events
 extension Player {
     fileprivate func handleStatusChange(mediaAsset: MediaAsset) {
