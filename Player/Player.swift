@@ -38,6 +38,9 @@ public final class Player {
         NotificationCenter.default.removeObserver(self)
     }
     
+    /// Returns a string created from the UUID, such as "E621E1F8-C36C-495A-93FC-0C247A3E6E5F"
+    ///
+    /// A unique playSessionId should be generated for each new playSession.
     fileprivate static func generatePlaySessionId() -> String {
         return UUID().uuidString
     }
@@ -51,6 +54,7 @@ public final class Player {
     */
     
     // MARK: PlayerEventPublisher
+    // Stores the private callbacks specified by calling the associated `PlayerEventPublisher` functions.
     fileprivate var onPlaybackCreated: (Player) -> Void = { _ in }
     fileprivate var onPlaybackPrepared: (Player) -> Void = { _ in }
     fileprivate var onError: (Player, PlayerError) -> Void = { _ in }
@@ -383,6 +387,9 @@ extension Player {
 
 /// Handle Errors
 extension Player {
+    /// Generic method to propagate `error` to any `onError` *listener* and the `AnalyticsProvider`.
+    ///
+    /// - parameter error: `PlayerError` to forward
     fileprivate func handle(error: PlayerError) {
         onError(self, error)
         analyticsProvider?.playbackErrorEvent(player: self, error: error)
