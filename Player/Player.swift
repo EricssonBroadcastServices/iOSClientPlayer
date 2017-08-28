@@ -93,18 +93,34 @@ extension Player: PlayerEventPublisher {
     
     
     // MARK: Lifecycle
+    /// Sets the callback to fire when the associated media is created but not yet loaded. Playback is not yet ready to start.
+    ///
+    /// At this point the `AVURLAsset` has yet to perform async loading of values (such as `duration`, `tracks` or `playable`) through `loadValuesAsynchronously`.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onPlaybackCreated(callback: @escaping (Player) -> Void) -> Self {
         onPlaybackCreated = callback
         return self
     }
     
+    /// Sets the callback to fire when the associated media has loaded but is not playback ready.
+    ///
+    /// At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self
     @discardableResult
     public func onPlaybackPrepared(callback: @escaping (Player) -> Void) -> Self {
         onPlaybackPrepared = callback
         return self
     }
     
+    /// Sets the callback to fire whenever an `error` occurs. Errors are thrown from throughout the `player` lifecycle. Make sure to handle them. If appropriate, present valid information to *end users*.
+    ///
+    /// - parameter callback: callback to fire once the event is fired. `PlayerError` specifies that error.
+    /// - returns: `Self`
     @discardableResult
     public func onError(callback: @escaping (Player, PlayerError) -> Void) -> Self {
         onError = callback
@@ -113,24 +129,40 @@ extension Player: PlayerEventPublisher {
     
     
     // MARK: Configuration
+    /// Sets the callback to fire whenever the current *Bitrate* changes.
+    ///
+    /// - parameter callback: callback to fire once the event is fired. `BitrateChangedEvent` specifies the event.
+    /// - returns: `Self`
     @discardableResult
     public func onBitrateChanged(callback: @escaping (BitrateChangedEvent) -> Void) -> Self {
         onBitrateChanged = callback
         return self
     }
     
+    /// Sets the callback to fire once buffering started.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onBufferingStarted(callback: @escaping (Player) -> Void) -> Self {
         onBufferingStarted = callback
         return self
     }
     
+    /// Sets the callback to fire once buffering stopped.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onBufferingStopped(callback: @escaping (Player) -> Void) -> Self {
         onBufferingStopped = callback
         return self
     }
     
+    /// Sets the callback to fire once the current playback `duration` changes.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onDurationChanged(callback: @escaping (Player) -> Void) -> Self {
         onDurationChanged = callback
@@ -138,35 +170,64 @@ extension Player: PlayerEventPublisher {
     }
     
     // MARK: Playback
+    /// Sets the callback to fire once the associated media has loaded and is ready for playback. At this point, starting playback should be possible.
+    ///
+    /// Status for the `AVPlayerItem` associated with the media in preparation has reached `.readyToPlay` state.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onPlaybackReady(callback: @escaping (Player) -> Void) -> Self {
         onPlaybackReady = callback
         return self
     }
     
+    /// Sets the callback to fire once playback reached the end of the current media, ie when playback reaches `duration`.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onPlaybackCompleted(callback: @escaping (Player) -> Void) -> Self {
         onPlaybackCompleted = callback
         return self
     }
+    
+    /// Sets the callback to fire once the playback first starts. This is fired once.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onPlaybackStarted(callback: @escaping (Player) -> Void) -> Self {
         onPlaybackStarted = callback
         return self
     }
     
+    /// Sets the callback to fire once playback is stopped by user action.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onPlaybackAborted(callback: @escaping (Player) -> Void) -> Self {
         onPlaybackAborted = callback
         return self
     }
     
+    /// Sets the callback to fire if playback rate for `AVPlayer` transitions from *non-zero* to *zero.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onPlaybackPaused(callback: @escaping (Player) -> Void) -> Self {
         onPlaybackPaused = callback
         return self
     }
     
+    /// Sets the callback to fire if playback is resumed from a paused state.
+    ///
+    /// This will not fire if the playback has not yet been started, ie `onPlaybackStarted:` has not fired yet.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
     @discardableResult
     public func onPlaybackResumed(callback: @escaping (Player) -> Void) -> Self {
         onPlaybackResumed = callback

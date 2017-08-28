@@ -14,7 +14,7 @@ public protocol PlayerEventPublisher {
     associatedtype PlayerEventError: Error
     
     // MARK: Lifecycle
-    /// Published when associated media is created but not yet loaded. Playback is not ready to start.
+    /// Published when associated media is created but not yet loaded. Playback is not yet ready to start.
     ///
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
@@ -51,7 +51,7 @@ public protocol PlayerEventPublisher {
     /// - returns: `Self`
     func onBufferingStopped(callback: @escaping (Player) -> Void) -> Self
     
-    /// Published if the the current playback `duration` changed.
+    /// Published if the current playback `duration` changed.
     ///
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
