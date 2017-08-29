@@ -20,8 +20,9 @@ extension NotificationObserver {
     /// Registers to receive `Notification`s published by the specified `object`.
     ///
     /// - parameter name: `Notification` identifier
-    /// - parameter object: target whose notifications the observer wants to receive
+    /// - parameter object: Target whose notifications the observer wants to receive
     /// - parameter queue: Optionally specified queue to receive the `Notification`s.
+    /// - parameter callback: Executes when the `Notification` fires.
     internal mutating func subscribe(notification name: NSNotification.Name, for object: Object? = nil, queue: OperationQueue? = OperationQueue.main, callback: @escaping (Notification) -> Void) {
         let token = NotificationCenter
             .default
@@ -35,6 +36,12 @@ extension NotificationObserver {
         tokens.append(notification)
     }
     
+    /// Stops *observer* from listening for notifications with `name` on `object`
+    ///
+    /// This will filter all remaining *observer* `token`s still active and cancel the related subsciptions matching `name` and `object`.
+    ///
+    /// - parameter name: `Notification` identifier to unsubscribe from
+    /// - parameter object: Target to unsubscribe `name` from.
     internal func unsubscribe(notification name: NSNotification.Name, for object: Object) {
         let center = NotificationCenter.default
         tokens
