@@ -8,41 +8,46 @@
 
 import Foundation
 
-struct KVOChange {
+internal struct KVOChange {
     /// The kind of the change.
-    /// - seealso: `NSKeyValueChangeKindKey`
-    var kind: NSKeyValueChange? {
+    ///
+    /// See also `NSKeyValueChangeKindKey`
+    internal var kind: NSKeyValueChange? {
         return (self.rawDict?[.kindKey] as? UInt).flatMap(NSKeyValueChange.init)
     }
     
     /// The old value from the change.
-    /// - seealso: `NSKeyValueChangeOldKey`
-    var old: Any? {
+    ///
+    /// See also `NSKeyValueChangeOldKey`
+    internal var old: Any? {
         return self.rawDict?[.oldKey]
     }
     
     /// The new value from the change.
-    /// - seealso: `NSKeyValueChangeNewKey`
-    var new: Any? {
+    /// 
+    /// See also `NSKeyValueChangeNewKey`
+    internal var new: Any? {
         return self.rawDict?[.newKey]
     }
     
     /// Whether this callback is being sent prior to the change.
-    /// - seealso: `NSKeyValueChangeNotificationIsPriorKey`
-    var isPrior: Bool {
+    ///
+    /// See also `NSKeyValueChangeNotificationIsPriorKey`
+    internal var isPrior: Bool {
         return self.rawDict?[.notificationIsPriorKey] as? Bool ?? false
     }
     
     /// The indexes of the inserted, removed, or replaced objects when relevant.
-    /// - seealso: `NSKeyValueChangeIndexesKey`
-    var indexes: IndexSet? {
+    ///
+    /// See also `NSKeyValueChangeIndexesKey`
+    internal var indexes: IndexSet? {
         return self.rawDict?[.indexesKey] as? IndexSet
     }
     
     /// The raw change dictionary passed to `observeValueForKeyPath(_:ofObject:change:context:)`.
-    let rawDict: [NSKeyValueChangeKey: Any]?
+    internal let rawDict: [NSKeyValueChangeKey: Any]?
     
-    init(rawDict: [NSKeyValueChangeKey: Any]?) {
+    internal init(rawDict: [NSKeyValueChangeKey: Any]?) {
         self.rawDict = rawDict
     }
 }

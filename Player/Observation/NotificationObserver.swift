@@ -8,13 +8,23 @@
 
 import Foundation
 
-protocol NotificationObserver {
+/// `Notification` wrapper for convenience access to notification system.
+internal protocol NotificationObserver {
+    /// Observed object type.
     associatedtype Object: NSObject
+    
+    /// Storage for the *observables* used to track registered notifications.
     var tokens: [NotificationToken] { get set }
 }
 
 extension NotificationObserver {
-    mutating func subscribe(notification name: NSNotification.Name, for object: Object? = nil, queue: OperationQueue? = OperationQueue.main, callback: @escaping (Notification) -> Void) {
+    /// Registers to receive `Notification`s published by the specified `object`.
+    ///
+    /// - parameter name: `Notification` identifier
+    /// - parameter object: Target whose notifications the observer wants to receive
+    /// - parameter queue: Optionally specified queue to receive the `Notification`s.
+    /// - parameter callback: Executes when the `Notification` fires.
+    internal mutating func subscribe(notification name: NSNotification.Name, for object: Object? = nil, queue: OperationQueue? = OperationQueue.main, callback: @escaping (Notification) -> Void) {
         let token = NotificationCenter
             .default
             .addObserver(forName: name,
@@ -27,7 +37,13 @@ extension NotificationObserver {
         tokens.append(notification)
     }
     
-    func unsubscribe(notification name: NSNotification.Name, for object: Object) {
+    /// Stops *observer* from listening for notifications with `name` on `object`
+    ///
+    /// This will filter all remaining *observer* `token`s still active and cancel the related subsciptions matching `name` and `object`.
+    ///
+    /// - parameter name: `Notification` identifier to unsubscribe from
+    /// - parameter object: Target to unsubscribe `name` from.
+    internal func unsubscribe(notification name: NSNotification.Name, for object: Object) {
         let center = NotificationCenter.default
         tokens
             .filter{
@@ -39,14 +55,20 @@ extension NotificationObserver {
             .forEach{ center.removeObserver($0.token, name: $0.notification, object: $0.object) }
     }
     
-    func unsubscribe(notification name: NSNotification.Name) {
+    /// Stops all subscriptions registered for notifications identified with `name`.
+    ///
+    /// - parameter name: `Notification` identifier to unsubscribe from
+    internal func unsubscribe(notification name: NSNotification.Name) {
         let center = NotificationCenter.default
         tokens
             .filter{ $0.notification == name }
             .forEach{ center.removeObserver($0.token) }
     }
     
-    func unsubscribe(forObject object: Object) {
+    /// Stops all subscriptions registered for `object`.
+    ///
+    /// - parameter object: target to unsubscribe form.
+    internal func unsubscribe(forObject object: Object) {
         let center = NotificationCenter.default
         tokens
             .filter{
@@ -58,7 +80,8 @@ extension NotificationObserver {
             .forEach{ center.removeObserver($0.token) }
     }
     
-    mutating func unsubscribeAll() {
+    /// Removes all subscriptons, no matter *target* or *type*.
+    internal mutating func unsubscribeAll() {
         let center = NotificationCenter.default
         tokens.forEach{ center.removeObserver($0.token) }
         tokens = []

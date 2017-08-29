@@ -9,12 +9,17 @@
 import UIKit
 import AVFoundation
 
+/// Manages rendering of media playback.
+///
+/// Exposes an ´AVPlayerLayer` as the view's `CALayer`. The related `Player` object performs the actual rendering through this layer.
 public class PlayerView: UIView {
+    /// Override the `layerClass` to expose it as an `AVPlayerLayer`
     override public class var layerClass: AnyClass {
         return AVPlayerLayer.self
     }
     
-    var avPlayerLayer: AVPlayerLayer {
+    /// Conveniece property that provides a *typed* version of the underlying `CALayer`
+    internal var avPlayerLayer: AVPlayerLayer {
         return layer as! AVPlayerLayer
     }
     
