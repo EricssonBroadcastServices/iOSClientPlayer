@@ -54,6 +54,9 @@ extension NotificationObserver {
             .forEach{ center.removeObserver($0.token, name: $0.notification, object: $0.object) }
     }
     
+    /// Stops all subscriptions registered for notifications identified with `name`.
+    ///
+    /// - parameter name: `Notification` identifier to unsubscribe from
     internal func unsubscribe(notification name: NSNotification.Name) {
         let center = NotificationCenter.default
         tokens
@@ -61,6 +64,9 @@ extension NotificationObserver {
             .forEach{ center.removeObserver($0.token) }
     }
     
+    /// Stops all subscriptions registered for `object`.
+    ///
+    /// - parameter object: target to unsubscribe form.
     internal func unsubscribe(forObject object: Object) {
         let center = NotificationCenter.default
         tokens
@@ -73,6 +79,7 @@ extension NotificationObserver {
             .forEach{ center.removeObserver($0.token) }
     }
     
+    /// Removes all subscriptons, no matter *target* or *type*.
     internal mutating func unsubscribeAll() {
         let center = NotificationCenter.default
         tokens.forEach{ center.removeObserver($0.token) }
