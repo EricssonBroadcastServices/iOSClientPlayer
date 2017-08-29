@@ -10,8 +10,9 @@ import Foundation
 import AVFoundation
 
 extension AVAsset {
+    /// Convenience `enum` supplying *typed key paths* for loadable resources on `AVAsset`
     enum LoadableKeys: String {
-        // Duration
+        /// Duration
         case duration = "duration"
         
         
@@ -28,12 +29,12 @@ extension AVAsset {
          case referenceRestrictions = "referenceRestrictions"*/
         
         
-        // Tracks
+        /// Tracks
         case tracks = "tracks"
         //case trackGroups = "trackGroups"
         
         
-        // Playable
+        /// Playable
         case playable = "playable"
         
         

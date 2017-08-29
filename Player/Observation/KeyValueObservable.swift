@@ -8,6 +8,8 @@
 
 import Foundation
 
+/// Defines an object which has `ObservableKeys` to use with `KVO`
 protocol KeyValueObservable {
+    /// Specifies observable keys
     associatedtype ObservableKeys
 }
