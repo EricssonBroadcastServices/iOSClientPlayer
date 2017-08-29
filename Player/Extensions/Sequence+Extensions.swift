@@ -9,6 +9,7 @@
 import Foundation
 
 extension Sequence where Iterator.Element: RawRepresentable {
+    ///Convenience property to map an `Array` of `RawRepresentable`s to their *raw form*
     public var rawValues: [Iterator.Element.RawValue] {
         return self.map{ $0.rawValue }
     }

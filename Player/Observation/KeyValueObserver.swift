@@ -12,7 +12,7 @@ import Foundation
 /// `KVO` wrapper for convenience access to *key value observation.
 ///
 /// For more information regarding *Key Value Observation*, please see Apple's documentation
-protocol KeyValueObserver {
+internal protocol KeyValueObserver {
     /// Observed object type.
     associatedtype Object: NSObject
     
@@ -28,7 +28,7 @@ extension KeyValueObserver where Object: KeyValueObservable, Object.ObservableKe
     /// - parameter object: Object to observe `path` for
     /// - parameter options: `NSKeyValueObservingOptions` specifying which value changes to include
     /// - parameter callback: Executes when the `KVO` change fires.
-    mutating func observe(path: Object.ObservableKeys,
+    internal mutating func observe(path: Object.ObservableKeys,
                           on object: Object,
                           with options: NSKeyValueObservingOptions = [.new, .old, .initial, .prior],
                           callback: @escaping (Object, KVOChange) -> Void) {
@@ -40,14 +40,14 @@ extension KeyValueObserver where Object: KeyValueObservable, Object.ObservableKe
     }
     
     /// Stops `KVO` observation of `path` on `object`.
-    func stopObserving(path: Object.ObservableKeys, on object: Object) {
+    internal func stopObserving(path: Object.ObservableKeys, on object: Object) {
         observers
             .filter{ $0.object == object && $0.path == path.rawValue }
             .forEach{ $0.cancel() }
     }
     
     /// Removes all `KVO` observations, no matter the *path* or *target*.
-    mutating func stopObservingAll() {
+    internal mutating func stopObservingAll() {
         observers.forEach{ $0.cancel() }
         observers = []
     }
