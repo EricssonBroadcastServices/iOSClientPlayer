@@ -550,6 +550,11 @@ extension Player: SessionShift {
 // MARK: - Events
 /// Player Item Status Change Events
 extension Player {
+    /// Manages subscriptions and handles changes in `AVPlayerItem.status`
+    ///
+    /// This is the final step in the initialization process. Either the playback is ready to start at the specified *start time* or an error has occured. The specified start time may be at the start of the stream if `SessionShift` is not used.
+    ///
+    /// If `autoplay` has been specified as `true`, playback will commence right after `.readyToPlay`.
     fileprivate func handleStatusChange(mediaAsset: MediaAsset) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [unowned self] item, change in
@@ -583,6 +588,7 @@ extension Player {
         }
     }
     
+    /// Private function to trigger the necessary final events right before playback starts.
     private func startPlayback() {
         self.onPlaybackReady(self)
         self.analyticsProvider?.playbackReadyEvent(player: self)
