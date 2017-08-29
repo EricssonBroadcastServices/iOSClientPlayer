@@ -321,10 +321,8 @@ extension Player: MediaPlayback {
         return avPlayer.rate != 0
     }
     
-    /// Returns true if `playbackState` is
-    /// - .playing
-    /// - .paused
-    internal var isActive: Bool {
+    /// Returns true if playback has been started, but makes no assumtions regarding the playback rate.
+    public var isActive: Bool {
         switch playbackState {
         case .notStarted: return false
         default: return true
