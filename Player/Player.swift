@@ -10,7 +10,12 @@ import Foundation
 import AVFoundation
 
 public final class Player {
+    /// `Player` uses the *native* `AVPlayer` for playback purposes.
     fileprivate var avPlayer: AVPlayer
+    
+    /// The currently active `MediaAsset` is stored here.
+    ///
+    /// This may be `nil` due to several reasons, for example before any media is loaded.
     fileprivate var currentAsset: MediaAsset?
     
     /// Returns a token string uniquely identifying this playSession.
@@ -72,18 +77,23 @@ public final class Player {
     fileprivate var onPlaybackResumed: (Player) -> Void = { _ in }
     
     
+    /// Wrapper observing changes to the underlying `AVPlayer`
     lazy fileprivate var playerObserver: PlayerObserver = {
         return PlayerObserver()
     }()
     
     // MARK: MediaPlayback
+    /// `PlaybackState` is a private state tracker and should not be exposed externally.
     fileprivate var playbackState: PlaybackState = .notStarted
+    
+    /// `BufferState` is a private state tracking buffering events. It should not be exposed externally.
     fileprivate var bufferState: BufferState = .notInitialized
     
     // MARK: AnalyticsEventPublisher
     public var analyticsProvider: AnalyticsProvider?
     
     // MARK: SessionShift
+    /// `Bookmark` is a private state tracking `SessionShift` status. It should not be exposed externally.
     fileprivate var bookmark: Bookmark = .notEnabled
 }
 
@@ -278,6 +288,7 @@ extension Player: MediaPlayback {
         case paused
     }
     
+    /// Starts or resumes playback.
     public func play() {
         switch playbackState {
         case .notStarted:
@@ -289,11 +300,13 @@ extension Player: MediaPlayback {
         }
     }
     
+    /// Pause playback if currently active
     public func pause() {
         guard isPlaying else { return }
         avPlayer.pause()
     }
     
+    /// Stops playback. This will trigger `PlaybackAborted` callbacks and analytics publication.
     public func stop() {
         // TODO: End playback? Unload resources? Leave that to user?
         avPlayer.pause()
@@ -350,6 +363,27 @@ extension Player: AnalyticsEventPublisher {
 
 // MARK: - Playback
 extension Player {
+    /// Configure and prepare a `MediaAsset` for playback. Please note this is an asynchronous process.
+    ///
+    /// Make sure the relevant `PlayerEventPublisher` callbacks has been registered.
+    ///
+    /// ```swift
+    /// player
+    ///     .onError{ player, error in
+    ///         // Handle and possibly present error to the user
+    ///     }
+    ///     .onPlaybackPaused{ player in
+    ///         // Toggle play/pause button
+    ///     }
+    ///     .onBitrateChanged{ bitrateEvent in
+    ///         // Update UI with stream quality indicator
+    ///     }
+    ///
+    /// ```
+    ///
+    /// - parameter mediaLocator: Specfies the *path* to where the media asset can be found.
+    /// - parameter fairplayRequester: Will handle *Fairplay* `DRM` requests.
+    /// - parameter playSessionId: Optionally specify a unique session id for the playback session. If not provided, the system will generate a random `UUID`.
     public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester, playSessionId: String? = nil) {
         do {
             currentAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
@@ -388,6 +422,9 @@ extension Player {
         }
     }
     
+    /// Once the `MediaAsset` has been *prepared* through `mediaAsset.prepare(loading: callback:)` the relevant `KVO` and `Notificaion`s are subscribed.
+    ///
+    /// Finally, once the `Player` is configured, the `currentMedia` is replaced with the newly created one. The system now awaits playback status to return `.readyToPlay`.
     fileprivate func readyPlayback(with mediaAsset: MediaAsset) {
         // Unsubscribe any current item
         currentAsset?.itemObserver.stopObservingAll()
@@ -434,7 +471,7 @@ extension Player {
 
 /// Configuration and Status
 extension Player {
-    /// The throughput required to play the stream, as advertised by the server, in bits per second. Will return nil if no bitrate can be reported.
+    /// The throughput required to play the stream, as advertised by the server, in *bits per second*. Will return nil if no bitrate can be reported.
     public var currentBitrate: Double? {
         return currentAsset?
             .playerItem
