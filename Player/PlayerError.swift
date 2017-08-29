@@ -108,7 +108,7 @@ public enum PlayerError: Error {
         /// *Content Key Context* server did not respond with an error not a valid `CKC`. This is considered a general error
         case missingContentKeyContext
         
-        /// `FairplayRequester` could not complete the resource loading request because its associated `AVAssetResourceLoadingDataRequest` was `nil`. This indicates no data was being requested. 
+        /// `FairplayRequester` could not complete the resource loading request because its associated `AVAssetResourceLoadingDataRequest` was `nil`. This indicates no data was being requested.
         case missingDataRequest
     }
 }

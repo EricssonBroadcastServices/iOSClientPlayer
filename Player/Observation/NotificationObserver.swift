@@ -8,13 +8,21 @@
 
 import Foundation
 
-protocol NotificationObserver {
+/// `Notification` wrapper for convenience access to notification system.
+internal protocol NotificationObserver {
     associatedtype Object: NSObject
+    
+    /// Storage for the *observables* used to track registered notifications.
     var tokens: [NotificationToken] { get set }
 }
 
 extension NotificationObserver {
-    mutating func subscribe(notification name: NSNotification.Name, for object: Object? = nil, queue: OperationQueue? = OperationQueue.main, callback: @escaping (Notification) -> Void) {
+    /// Registers to receive `Notification`s published by the specified `object`.
+    ///
+    /// - parameter name: `Notification` identifier
+    /// - parameter object: target whose notifications the observer wants to receive
+    /// - parameter queue: Optionally specified queue to receive the `Notification`s.
+    internal mutating func subscribe(notification name: NSNotification.Name, for object: Object? = nil, queue: OperationQueue? = OperationQueue.main, callback: @escaping (Notification) -> Void) {
         let token = NotificationCenter
             .default
             .addObserver(forName: name,
@@ -27,7 +35,7 @@ extension NotificationObserver {
         tokens.append(notification)
     }
     
-    func unsubscribe(notification name: NSNotification.Name, for object: Object) {
+    internal func unsubscribe(notification name: NSNotification.Name, for object: Object) {
         let center = NotificationCenter.default
         tokens
             .filter{
@@ -39,14 +47,14 @@ extension NotificationObserver {
             .forEach{ center.removeObserver($0.token, name: $0.notification, object: $0.object) }
     }
     
-    func unsubscribe(notification name: NSNotification.Name) {
+    internal func unsubscribe(notification name: NSNotification.Name) {
         let center = NotificationCenter.default
         tokens
             .filter{ $0.notification == name }
             .forEach{ center.removeObserver($0.token) }
     }
     
-    func unsubscribe(forObject object: Object) {
+    internal func unsubscribe(forObject object: Object) {
         let center = NotificationCenter.default
         tokens
             .filter{
@@ -58,7 +66,7 @@ extension NotificationObserver {
             .forEach{ center.removeObserver($0.token) }
     }
     
-    mutating func unsubscribeAll() {
+    internal mutating func unsubscribeAll() {
         let center = NotificationCenter.default
         tokens.forEach{ center.removeObserver($0.token) }
         tokens = []

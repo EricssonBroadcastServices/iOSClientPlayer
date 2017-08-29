@@ -9,16 +9,18 @@
 import Foundation
 import AVFoundation
 
-class PlayerObserver: NotificationObserver, KeyValueObserver {
-    typealias Object = AVPlayer
+/// Internal class wrapping `KVO` and `Notifications` related to `AVPlayer`
+internal class PlayerObserver: NotificationObserver, KeyValueObserver {
+    internal typealias Object = AVPlayer
     
-    var observers: [Observer<AVPlayer>] = []
-    var tokens: [NotificationToken] = []
+    internal var observers: [Observer<AVPlayer>] = []
+    internal var tokens: [NotificationToken] = []
 }
 
-class PlayerItemObserver: NotificationObserver, KeyValueObserver {
-    typealias Object = AVPlayerItem
+/// Internal class wrapping `KVO` and `Notifications` related to `AVPlayerItem`
+internal class PlayerItemObserver: NotificationObserver, KeyValueObserver {
+    internal typealias Object = AVPlayerItem
     
-    var observers: [Observer<AVPlayerItem>] = []
-    var tokens: [NotificationToken] = []
+    internal var observers: [Observer<AVPlayerItem>] = []
+    internal var tokens: [NotificationToken] = []
 }
