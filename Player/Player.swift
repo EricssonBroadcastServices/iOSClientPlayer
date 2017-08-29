@@ -550,11 +550,13 @@ extension Player: SessionShift {
 // MARK: - Events
 /// Player Item Status Change Events
 extension Player {
-    /// Manages subscriptions and handles changes in `AVPlayerItem.status`
+    /// Subscribes to and handles changes in `AVPlayerItem.status`
     ///
     /// This is the final step in the initialization process. Either the playback is ready to start at the specified *start time* or an error has occured. The specified start time may be at the start of the stream if `SessionShift` is not used.
     ///
     /// If `autoplay` has been specified as `true`, playback will commence right after `.readyToPlay`.
+    ///
+    /// - parameter mediaAsset: asset to observe and manage event for
     fileprivate func handleStatusChange(mediaAsset: MediaAsset) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [unowned self] item, change in
@@ -600,6 +602,9 @@ extension Player {
 
 /// Bitrate Changed Events
 extension Player {
+    /// Subscribes to and handles bitrate changes accessed through `AVPlayerItem`s `AVPlayerItemNewAccessLogEntry`.
+    ///
+    /// - parameter mediaAsset: asset to observe and manage event for
     fileprivate func handleBitrateChangedEvent(mediaAsset: MediaAsset) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [unowned self] notification in
@@ -625,12 +630,21 @@ extension Player {
 
 /// Buffering Events
 extension Player {
+    /// Private buffer state
     fileprivate enum BufferState {
+        /// Buffering, and thus playback, has not been started yet.
         case notInitialized
+        
+        /// Currently buffering
         case buffering
+        
+        /// Buffer has enough data to keep up with playback.
         case onPace
     }
     
+    /// Subscribes to and handles buffering events by tracking the status of `AVPlayerItem` `properties` related to buffering.
+    ///
+    /// - parameter mediaAsset: asset to observe and manage event for
     fileprivate func handleBufferingEvents(mediaAsset: MediaAsset) {
         mediaAsset.itemObserver.observe(path: .isPlaybackLikelyToKeepUp, on: mediaAsset.playerItem) { [unowned self] item, change in
             DispatchQueue.main.async {
@@ -666,6 +680,9 @@ extension Player {
 
 /// Duration Changed Events
 extension Player {
+    /// Subscribes to and handles duration changed events by tracking the status of `AVPlayerItem.duration`. Once changes occur, `onDurationChanged:` will fire.
+    ///
+    /// - parameter mediaAsset: asset to observe and manage event for
     fileprivate func handleDurationChangedEvent(mediaAsset: MediaAsset) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.observe(path: .duration, on: playerItem) { [unowned self] item, change in
@@ -679,6 +696,9 @@ extension Player {
 
 /// Playback Completed Events
 extension Player {
+    /// Triggers `PlaybackCompleted` callbacks and analytics events.
+    ///
+    /// - parameter mediaAsset: asset to observe and manage event for
     fileprivate func handlePlaybackCompletedEvent(mediaAsset: MediaAsset) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: playerItem) { [unowned self] notification in
@@ -690,6 +710,7 @@ extension Player {
 
 /// Playback State Changes
 extension Player {
+    /// Subscribes to and handles `AVPlayer.rate` changes.
     fileprivate func handlePlaybackStateChanges() {
         playerObserver.observe(path: .rate, on: avPlayer) { [unowned self] player, change in
             DispatchQueue.main.async {
@@ -730,6 +751,7 @@ extension Player {
 
 /// Current Item Changes
 extension Player {
+    /// Subscribes to and handles `AVPlayer.currentItem` changes.
     fileprivate func handleCurrentItemChanges() {
         playerObserver.observe(path: .currentItem, on: avPlayer) { [unowned self] player, change in
             print("Player.currentItem changed",player, change.new, change.old)
@@ -740,10 +762,12 @@ extension Player {
 
 /// Audio Session Interruption Events
 extension Player {
+    /// Subscribes to *Audio Session Interruption* `Notification`s.
     fileprivate func handleAudioSessionInteruptionEvents() {
         NotificationCenter.default.addObserver(self, selector: #selector(Player.audioSessionInterruption), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
     }
     
+    /// Handles *Audio Session Interruption* events by resuming playback if instructed to do so.
     @objc fileprivate func audioSessionInterruption(notification: Notification) {
         guard let userInfo = notification.userInfo,
             let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
@@ -766,6 +790,7 @@ extension Player {
 
 /// Backgrounding Events
 extension Player {
+    /// Backgrounding the player events.
     fileprivate func handleBackgroundingEvents() {
         NotificationCenter.default.addObserver(self, selector: #selector(Player.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(Player.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
@@ -780,6 +805,9 @@ extension Player {
         print("UIApplicationWillEnterForeground")
     }
     
+    /// If the app is about to terminate make sure to stop playback. This will initiate teardown.
+    ///
+    /// Any attached `AnalyticsProvider` should hopefully be given enough time to finalize.
     @objc fileprivate func appWillTerminate() {
         print("UIApplicationWillTerminate")
         self.stop()
