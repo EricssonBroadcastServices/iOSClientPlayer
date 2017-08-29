@@ -10,6 +10,7 @@ import Foundation
 
 /// `Notification` wrapper for convenience access to notification system.
 internal protocol NotificationObserver {
+    /// Observed object type.
     associatedtype Object: NSObject
     
     /// Storage for the *observables* used to track registered notifications.

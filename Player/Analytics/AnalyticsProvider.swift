@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Specifies a set of events for which analytics can be associated.
 public protocol AnalyticsProvider {
     /// Triggered when the requested media is created, but not yet loaded
     func playbackCreatedEvent(player: Player)
