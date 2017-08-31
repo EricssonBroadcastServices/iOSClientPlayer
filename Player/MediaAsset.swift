@@ -27,14 +27,14 @@ internal class MediaAsset {
         }()
     
     /// Loads, configures and validates *Fairplay* `DRM` protected assets.
-    internal let fairplayRequester: FairplayRequester
+    internal let fairplayRequester: FairplayRequester?
     
     /// Creates the media asset
     ///
     /// - parameter mediaLocator: *Path* to where the media is located
     /// - parameter fairplayRequester: Will handle *Fairplay* `DRM`
     /// - throws: `PlayerError` if configuration is faulty or incomplete.
-    internal init(mediaLocator: String, fairplayRequester: FairplayRequester) throws {
+    internal init(mediaLocator: String, fairplayRequester: FairplayRequester? = nil) throws {
         self.mediaLocator = mediaLocator
         
         self.fairplayRequester = fairplayRequester
@@ -45,8 +45,10 @@ internal class MediaAsset {
         
         urlAsset = AVURLAsset(url: url)
         print(urlAsset.url)
-        urlAsset.resourceLoader.setDelegate(fairplayRequester,
-                                            queue: DispatchQueue(label: mediaLocator + "-fairplayLoader"))
+        if fairplayRequester != nil {
+            urlAsset.resourceLoader.setDelegate(fairplayRequester,
+                                                queue: DispatchQueue(label: mediaLocator + "-fairplayLoader"))
+        }
     }
     
     // MARK: Change Observation
