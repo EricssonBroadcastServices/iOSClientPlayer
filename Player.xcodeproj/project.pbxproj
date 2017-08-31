@@ -18,6 +18,9 @@
 		7667AEC51EC5C0FE00C308FC /* Appfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC31EC5C0FE00C308FC /* Appfile */; };
 		7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC41EC5C0FE00C308FC /* Fastfile */; };
 		7667AEC81EC5C12100C308FC /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC71EC5C12100C308FC /* .env */; };
+		768162B81F584E98003C654E /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 768162B71F584E98003C654E /* README.md */; };
+		768162BA1F584EDF003C654E /* CHANGELOG.md in Sources */ = {isa = PBXBuildFile; fileRef = 768162B91F584EDF003C654E /* CHANGELOG.md */; };
+		768162BC1F585577003C654E /* UPGRADE_GUIDE.md in Sources */ = {isa = PBXBuildFile; fileRef = 768162BB1F585577003C654E /* UPGRADE_GUIDE.md */; };
 		76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8434E1EA77DF700BDAF2C /* Player.framework */; };
 		76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */; };
 		76A8435F1EA77DF700BDAF2C /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -68,6 +71,9 @@
 		7667AEC31EC5C0FE00C308FC /* Appfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
 		7667AEC41EC5C0FE00C308FC /* Fastfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7667AEC71EC5C12100C308FC /* .env */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
+		768162B71F584E98003C654E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		768162B91F584EDF003C654E /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = SOURCE_ROOT; };
+		768162BB1F585577003C654E /* UPGRADE_GUIDE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = UPGRADE_GUIDE.md; sourceTree = SOURCE_ROOT; };
 		76A8434E1EA77DF700BDAF2C /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A843511EA77DF700BDAF2C /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		76A843521EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -150,6 +156,13 @@
 			path = fastlane;
 			sourceTree = SOURCE_ROOT;
 		};
+		768162B61F584DF1003C654E /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Documentation;
+			sourceTree = SOURCE_ROOT;
+		};
 		76A843441EA77DF700BDAF2C = {
 			isa = PBXGroup;
 			children = (
@@ -172,6 +185,10 @@
 		76A843501EA77DF700BDAF2C /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				768162B71F584E98003C654E /* README.md */,
+				768162B91F584EDF003C654E /* CHANGELOG.md */,
+				768162BB1F585577003C654E /* UPGRADE_GUIDE.md */,
+				768162B61F584DF1003C654E /* Documentation */,
 				7667AEC21EC5C0FE00C308FC /* fastlane */,
 				76A843681EA77EC300BDAF2C /* Cartfile */,
 				76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */,
@@ -388,8 +405,11 @@
 				764863641EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift in Sources */,
 				76A843961EA7819D00BDAF2C /* Observer.swift in Sources */,
 				76A843901EA7819D00BDAF2C /* Sequence+Extensions.swift in Sources */,
+				768162BC1F585577003C654E /* UPGRADE_GUIDE.md in Sources */,
+				768162B81F584E98003C654E /* README.md in Sources */,
 				76A8438C1EA7819D00BDAF2C /* PlayerEventPublisher.swift in Sources */,
 				76A8439C1EA7819D00BDAF2C /* MediaRendering.swift in Sources */,
+				768162BA1F584EDF003C654E /* CHANGELOG.md in Sources */,
 				76A8438F1EA7819D00BDAF2C /* AVPlayerItem+KeyValueObservable.swift in Sources */,
 				764863601EE44B5900083DB5 /* FairplayRequester.swift in Sources */,
 				7648635E1EE44B4000083DB5 /* MediaAsset.swift in Sources */,
