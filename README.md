@@ -3,6 +3,7 @@
 # Player
 
 * [Features](#features)
+* [License]()
 * [Requirements](#requirements)
 * [Installation](#installation)
 * Usage
@@ -14,6 +15,7 @@
     - [Error Handling]()
 * [Release Notes](#release-notes)
 * [Upgrade Guides](#upgrade-guides)
+* [Contributing]()
 * [FAQ](#faq)
 
 
@@ -79,12 +81,16 @@ Loading and preparation of a stream is as simple as calling
 ```Swift
 player.stream(url: pathToMedia)
 ```
-Please note that streaming *FairPlay* protected media assets will require the client application implements a `FairplayRequester` to manage the `DRM` vaidation. This protocol extends the *Apple* supplied `AVAssetResourceLoaderDelegate` protocol. **EMP** provides an out of the box implementation for *FairPlay* protection through the [Exposure module](https://github.com/EricssonBroadcastServices/iOSClientExposure) which integrated seamlessly with the platform.
+Please note that streaming *FairPlay* protected media assets will require the client application implements a `FairplayRequester` to manage the `DRM` vaidation. This protocol extends the *Apple* supplied `AVAssetResourceLoaderDelegate` protocol. **EMP** provides an out of the box implementation for *FairPlay* protection through the [Exposure module](https://github.com/EricssonBroadcastServices/iOSClientExposure) which integrates seamlessly with the rest of the platform.
 
 #### Responding to Playback Events
+
+
 
 ## Release Notes
 
 ## Upgrade Guides
+
+## Contributing
 
 ## FAQ
