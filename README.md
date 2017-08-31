@@ -39,7 +39,7 @@
 #### Carthage
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependency graph without interfering with your `Xcode` project setup. `CI` integration through [fastlane](https://github.com/fastlane/fastlane) is also available.
 
-Install Carthage through [Homebrew](https://brew.sh) and perform the following commands:
+Install *Carthage* through [Homebrew](https://brew.sh) by performing the following commands:
 
 ```sh
 $ brew update
