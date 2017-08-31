@@ -380,9 +380,9 @@ extension Player {
     /// ```
     ///
     /// - parameter mediaLocator: Specfies the *path* to where the media asset can be found.
-    /// - parameter fairplayRequester: Will handle *Fairplay* `DRM` requests.
+    /// - parameter fairplayRequester: Required for *Fairplay* `DRM` requests.
     /// - parameter playSessionId: Optionally specify a unique session id for the playback session. If not provided, the system will generate a random `UUID`.
-    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester, playSessionId: String? = nil) {
+    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester? = nil, playSessionId: String? = nil) {
         do {
             currentAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
             // Use the supplied play token or generate a new one
