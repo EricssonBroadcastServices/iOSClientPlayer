@@ -1,16 +1,17 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-# iOSClientPlayer
+# Player
 
 * [Features](#features)
 * [Requirements](#requirements)
 * [Installation](#installation)
 * Usage
     - [Getting Started](#getting-started)
-    - [Responding to Playback Events]()
+    - [Responding to Playback Events](#responding-to-playback-events)
     - [Enabling Airplay]()
     - [Analytics How-To]()
     - [Custom Playback Controls]()
+    - [Error Handling]()
 * [Release Notes](#release-notes)
 * [Upgrade Guides](#upgrade-guides)
 * [FAQ](#faq)
@@ -54,8 +55,33 @@ Running `carthage update` will fetch your dependencies and place them in `/Carth
 Finaly, make sure you add the `.framework`s to your targets *General -> Embedded Binaries* section. 
 
 ## Usage
+`Player` has been designed with a minimalistic but extendable approach in mind. It is a *stand-alone* player based on `AVFoundation` with an easy to use yet powerful `API`.
 
 #### Getting Started
+The `Player` class is self-contained and will handle setup and teardown of associated resources as you load media into it. This allows you to instantiate it inside your `viewController`.
+
+```Swift
+class PlayerViewController: UIViewController {
+    fileprivate let player: Player = Player()
+    
+    ...
+}
+```
+
+Media rendering is done by an `AVPlayerLayer` attached to a subview of a *user supplied* view. This means *customized overlay controls* are easy to implement.
+
+```Swift
+player.configure(playerView: myPlayerView)
+```
+
+Loading and preparation of a stream is as simple as calling
+
+```Swift
+player.stream(url: pathToMedia)
+```
+Please note that streaming *FairPlay* protected media assets will require the client application implements a `FairplayRequester` to manage the `DRM` vaidation. This protocol extends the *Apple* supplied `AVAssetResourceLoaderDelegate` protocol. **EMP** provides an out of the box implementation for *FairPlay* protection through the [Exposure module](https://github.com/EricssonBroadcastServices/iOSClientExposure) which integrated seamlessly with the platform.
+
+#### Responding to Playback Events
 
 ## Release Notes
 
