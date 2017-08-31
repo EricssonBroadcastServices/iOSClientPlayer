@@ -12,10 +12,11 @@
 ## Features
 - [x] VoD, live and catchup streaming
 - [x] FairPlay DRM protection
-- [x] Realtime Analytics
+- [x] Playback event publishing
+- [x] Pluggable analytics provider
 - [x] Airplay
+- [x] Custom playback controls
 - [x] Multi-device session shift
-- [x] Exposure integration
 
 ## Requirements
 
