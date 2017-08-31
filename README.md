@@ -73,7 +73,7 @@ class PlayerViewController: UIViewController {
 Media rendering is done by an `AVPlayerLayer` attached to a subview of a *user supplied* view. This means *customized overlay controls* are easy to implement.
 
 ```Swift
-player.configure(playerView: myPlayerView)
+player.configure(playerView: customPlayerView)
 ```
 
 Loading and preparation of a stream is as simple as calling
