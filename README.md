@@ -15,8 +15,8 @@
     - [Error Handling]()
 * [Release Notes](#release-notes)
 * [Upgrade Guides](#upgrade-guides)
-* [Contributing]()
-* [FAQ](#faq)
+* [Roadmap](#roadmap)
+* [Contributing](#contributing)
 
 
 ## Features
@@ -114,15 +114,27 @@ myPlayer
 ```
 
 #### Playback events
+Once playback is in progress the `Player` continuously publishes *events* related media status and user interaction.
 
+```Swift
+
+```
 
 #### Error forwarding
 Errors encountered throughout the lifecycle of  `Player` are published through `onError(callback:)`. For more information, please see [Error Handling](#error-handling).
 
 ## Release Notes
+Release specific changes can be found in the [CHANGELOG](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/CHANGELOG.md).
 
 ## Upgrade Guides
+The procedure to apply when upgrading from one version to another depends on what solution your client application has chosen to integrate `Player`.
+
+Major changes between releases will be documented with special [Upgrade Guides](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/UPGRADE_GUIDE.md).
+
+### Carthage
+Updating your dependencies is done by running  `carthage update` with the relevant *options*, such as `--use-submodules`, depending on your project setup. For more information regarding dependency management with `Carthage` please consult their [documentation](https://github.com/Carthage/Carthage/blob/master/README.md) or run `carthage help`.
+
+## Roadmap
 
 ## Contributing
 
-## FAQ
