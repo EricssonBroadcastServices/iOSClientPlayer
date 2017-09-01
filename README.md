@@ -117,7 +117,45 @@ myPlayer
 Once playback is in progress the `Player` continuously publishes *events* related media status and user interaction.
 
 ```Swift
+myPlayer
+    .onPlaybackStarted{ player in
+        // Published once the playback starts for the first time.
+        // This is a one-time event.
+    }
+    .onPlaybackPaused{ [weak self] player in
+        // Fires when the playback pauses for some reason
+        self?.pausePlayButton.toggle(paused: true)
+    }
+    .onPlaybackResumed{ [weak self] player in
+        // Fires when the playback resumes from a paused state
+        self?.pausePlayButton.toggle(paused: false)
+    }
+    .onPlaybackAborted{ player in
+        // Published once the player.stop() method is called.
+        // This is considered a user action
+    }
+    .onPlaybackCompleted{ player in
+        // Published when playback reached the end of the current media.
+    }
+```
+Besides playback control events `Player` also publishes several status related events.
 
+```Swift
+myPlayer
+    .onBitrateChanged{ [weak self] event in
+        // Published whenever the current bitrate changes
+        // Details about the changes can be found in the supplied event
+        self?.updateQualityIndicator(with: event.currentRate)
+    }
+    .onBufferingStarted{ player in
+        // Fires whenever the buffer is unable to keep up with playback
+    }
+    .onBufferingStopped{ player in
+        // Fires when buffering is no longer needed
+    }
+    .onDurationChanged{ player in
+        // Published when the active media received an update to its duration property
+    }
 ```
 
 #### Error forwarding
