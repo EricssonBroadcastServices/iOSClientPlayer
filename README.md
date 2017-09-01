@@ -81,11 +81,15 @@ Loading and preparation of a stream is as simple as calling
 ```Swift
 player.stream(url: pathToMedia)
 ```
+
 Please note that streaming *FairPlay* protected media assets will require the client application implements a `FairplayRequester` to manage the `DRM` vaidation. This protocol extends the *Apple* supplied `AVAssetResourceLoaderDelegate` protocol. **EMP** provides an out of the box implementation for *FairPlay* protection through the [Exposure module](https://github.com/EricssonBroadcastServices/iOSClientExposure) which integrates seamlessly with the rest of the platform.
 
 #### Responding to Playback Events
+Streaming media over *HLS* is an inherently asychronous process. Preparation and initialisation of a *playback session* is subject to a host of outside factors, such as network avaliability, content hosting and possibly `DRM` validation. An active session must respond to environmental changes, report on playback progress and optionally deliver event specific [analytics](#analytics-how-to) data. Additionally, user interaction must be handled in a reliable and responsive way.
 
+Finally, [error handling](error-handling) needs to be robust.
 
+`Player` exposes a number of *interfaces* to manage these complexities.
 
 ## Release Notes
 
