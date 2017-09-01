@@ -173,7 +173,7 @@ view.addSubview(airplayButton)
 #### Background Modes
 Client applications who wish to continue *Airplay* once a user locks their screen or navigates from the app need to set the relevant `Capabilities` in their *Xcode* project.
 
-1. Select relevant `Target` for your app in *Xcode* project
+1. Select the relevant `Target` for your app in your *Xcode* project
 2. Under `Capabilities`, locate `Background Modes`
 3. Make sure `Audio, AirPlay, and Picture in Picture` is selected
 
