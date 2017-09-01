@@ -91,7 +91,11 @@ Finally, [error handling](#error-handling) needs to be robust.
 
 `Player` exposes a number of *interfaces* to manage these complexities. Playback and lifecycle events are described by `PlayerEventPublisher` protocol which `Player` implements. The functionality allow an interested party to register callbacks to fire when the events occur.
 
-#### initialisation and Preparation of playback
+#### Initialisation and Preparation of playback
+During the initialisation process `Player` creates and configures a `MediaAsset` to manage the media. If the asset is protected by *FairPlay* `DRM` the associated `FairplayRequester` is also attached.
+
+Subsequent steps load and prepare the *stream*.
+
 ```Swift
 myPlayer
     .onPlaybackCreated{ player in
@@ -109,7 +113,11 @@ myPlayer
     }
 ```
 
+#### Playback events
 
+
+#### Error forwarding
+Errors encountered throughout the lifecycle of  `Player` are published through `onError(callback:)`. For more information, please see [Error Handling](#error-handling).
 
 ## Release Notes
 
