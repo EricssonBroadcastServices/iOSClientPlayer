@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// `PlayerError` is the error type returned by the *Player Framework*. It can manifest as both *native errors* to the framework and *nested errors* specific to underlying frameworks or concepts such as `AssetError`.
+/// `PlayerError` is the error type returned by the *Player Framework*. It can manifest as both *native errors* to the framework and *nested errors* specific to underlying frameworks.
 /// Effective error handling thus requires a deeper undestanding of the overall architecture.
 ///
 /// - important: Nested errors have *error codes* specific to the related *domain*. A domain is defined as the `representing type` *(for example* `AssetError`*)* and may contain subtypes. This means different errors may share error codes. When this occurs, it is important to keep track of the underlying domain.
@@ -29,7 +29,7 @@ public enum PlayerError: Error {
         /// * `tracks`
         /// * `playable`
         /// 
-        /// Internaly, `Player` calls `loadValuesAsynchronously(forKeys:)` and then checks the status of each *key* through `statusOfValue(forKey: error:)`. Any key-value pair which returns a `.failed` status will cause the preparation to fail, forwarding the assocaited error.
+        /// Internally, `Player` calls `loadValuesAsynchronously(forKeys:)` and then checks the status of each *key* through `statusOfValue(forKey: error:)`. Any key-value pair which returns a `.failed` status will cause the preparation to fail, forwarding the assocaited error.
         ///
         /// For more information regarding the *async loading process* of `properties` on `AVAsset`s, please consult Apple's documentation regarding `AVAsynchronousKeyValueLoading`
         case failedToPrepare(errors: [Error])

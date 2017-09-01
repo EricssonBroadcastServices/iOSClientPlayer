@@ -182,6 +182,42 @@ Client applications who wish to continue *Airplay* once a user locks their scree
 ### Custom Playback Controls
 
 ### Error Handling
+`PlayerError` is the error type returned by the *Player Framework*. It can manifest both as errors *native* to the framework and *nested errors* specific to underlying frameworks.  Effective error handling thus requires a deeper undestanding of the overall architecture, for example how to deal with `AVFoundation` errors when loading and preparing `AVPlayerItem`s.
+
+Client applications should register to receive errors through the `Player` method `onError(callback:)`, as defined by the `PlayerEventPublisher` protocol.
+
+```Swift
+myPlayer.onError{ player, error in
+    // Handle the error
+}
+```
+
+#### Asset Errors
+`AssetError`s related to media asset preparation may be caused by loading or configuration issues. Several culprits exist. The most common cause is failure to complete the *asynchronous loading* of media related `properties`  on the underlying `AVURLAsset`.
+
+```Swift
+avUrlAsset.loadValuesAsynchronously(forKeys: keys) {
+    ...
+    keys.forEach{
+        let status = avUrlAsset.statusOfValue(forKey: $0, error: &error)
+        // Handle status failed and/or errors
+    }
+}
+```
+
+For more information regarding the *async loading process* of `properties` on `AVURLAsset`s, please consult Apple's documentation on `AVAsynchronousKeyValueLoading`
+
+Once the loading process has run its course, the asset is either ready for playback or a `AssetError.failedToReady(error: underlyingError)` is thrown.
+
+#### Fairplay DRM Errors
+Another major cause of errors is *Fairplay* `DRM` issues, broadly categorized into two types:
+
+* Server related `DRM` errors
+* Application related
+
+Server related issues most likely stem from an invalid or broken backend configuration. Application issues range from parsing errors, unexpected server response or networking issues.
+
+*Fairplay* `DRM` troubleshooting is highly coupled with the specific application and backend implementations and as such hard to generalize. For more information about *Fairplay* debugging, please see Apple's [documentation](https://developer.apple.com/library/content/technotes/tn2454).
 
 ## Release Notes
 Release specific changes can be found in the [CHANGELOG](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/CHANGELOG.md).
