@@ -89,7 +89,23 @@ Streaming media over *HLS* is an inherently asychronous process. Preparation and
 
 Finally, [error handling](error-handling) needs to be robust.
 
-`Player` exposes a number of *interfaces* to manage these complexities.
+`Player` exposes a number of *interfaces* to manage these complexities. Playback and lifecycle events are described by `PlayerEventPublisher` protocol which `Player` implements. The functionality allow an interested party to register callbacks to fire when the events occur.
+
+* `onPlaybackCreated(callback:)` will fire once the associated `MediaAsset` has been created.
+```Swift
+player.onPlaybackCreated{ player in
+    //
+}
+```
+Playback is not ready to start at this point.
+
+* `onPlaybackPrepared(callback:)` fires once `MediaAsset` has completed asynchronous loading of relevant `properties`.
+```Swift
+player.onPlaybackPrepared{ player in
+// Published when the associated MediaAsset
+}
+```
+
 
 ## Release Notes
 
