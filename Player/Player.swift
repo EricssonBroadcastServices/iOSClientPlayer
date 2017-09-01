@@ -252,30 +252,43 @@ extension Player: MediaRendering {
     ///
     /// - parameter playerView:  *User supplied* view to configure for playback rendering.
     public func configure(playerView: UIView) {
-        let renderingView = PlayerView(frame: playerView.frame)
-        
-        renderingView.avPlayerLayer.player = avPlayer
-        renderingView.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspect
-        renderingView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        playerView.insertSubview(renderingView, at: 0)
-        
-        renderingView
-            .leadingAnchor
-            .constraint(equalTo: playerView.leadingAnchor)
-            .isActive = true
-        renderingView
-            .topAnchor
-            .constraint(equalTo: playerView.topAnchor)
-            .isActive = true
-        renderingView
-            .rightAnchor
-            .constraint(equalTo: playerView.rightAnchor)
-            .isActive = true
-        renderingView
-            .bottomAnchor
-            .constraint(equalTo: playerView.bottomAnchor)
-            .isActive = true
+        configureRendering{
+            let renderingView = PlayerView(frame: playerView.frame)
+            
+            renderingView.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspect
+            renderingView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            
+            playerView.insertSubview(renderingView, at: 0)
+            
+            renderingView
+                .leadingAnchor
+                .constraint(equalTo: playerView.leadingAnchor)
+                .isActive = true
+            renderingView
+                .topAnchor
+                .constraint(equalTo: playerView.topAnchor)
+                .isActive = true
+            renderingView
+                .rightAnchor
+                .constraint(equalTo: playerView.rightAnchor)
+                .isActive = true
+            renderingView
+                .bottomAnchor
+                .constraint(equalTo: playerView.bottomAnchor)
+                .isActive = true
+            
+            return renderingView.avPlayerLayer
+        }
+    }
+    
+    /// This method allows for advanced configuration of the playback rendering.
+    ///
+    /// The caller is responsible for creating, configuring and retaining the related constituents. End by returning an `AVPlayerLayer` in which the rendering should take place.
+    ///
+    /// - parameter callback: closure detailing the custom rendering. Must return an `AVPlayerLayer` in which the rendering will take place
+    public func configureRendering(closure: () -> AVPlayerLayer) {
+        let layer = callback()
+        layer.player = avPlayer
     }
 }
 
