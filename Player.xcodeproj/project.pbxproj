@@ -74,6 +74,7 @@
 		768162B71F584E98003C654E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		768162B91F584EDF003C654E /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = SOURCE_ROOT; };
 		768162BB1F585577003C654E /* UPGRADE_GUIDE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = UPGRADE_GUIDE.md; sourceTree = SOURCE_ROOT; };
+		7688D9641F596C0800206402 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		76A8434E1EA77DF700BDAF2C /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A843511EA77DF700BDAF2C /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		76A843521EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -185,6 +186,7 @@
 		76A843501EA77DF700BDAF2C /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				7688D9641F596C0800206402 /* LICENSE */,
 				768162B71F584E98003C654E /* README.md */,
 				768162B91F584EDF003C654E /* CHANGELOG.md */,
 				768162BB1F585577003C654E /* UPGRADE_GUIDE.md */,

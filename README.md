@@ -3,7 +3,7 @@
 # Player
 
 * [Features](#features)
-* [License]()
+* [License](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/LICENSE)
 * [Requirements](#requirements)
 * [Installation](#installation)
 * Usage
