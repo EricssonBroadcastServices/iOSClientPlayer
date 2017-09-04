@@ -287,7 +287,7 @@ extension Player: MediaRendering {
     ///
     /// - parameter callback: closure detailing the custom rendering. Must return an `AVPlayerLayer` in which the rendering will take place
     public func configureRendering(closure: () -> AVPlayerLayer) {
-        let layer = callback()
+        let layer = closure()
         layer.player = avPlayer
     }
 }
