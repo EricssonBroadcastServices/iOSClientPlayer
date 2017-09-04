@@ -178,6 +178,9 @@ Client applications who wish to continue *Airplay* once a user locks their scree
 3. Make sure `Audio, AirPlay, and Picture in Picture` is selected
 
 ### Analytics How-To
+`Player` continuously broadcasts a set of analytics related events throughout a playback session. In order to respond to these, client applications should implement the  `AnalyticsProvider` protocol.
+
+*EMP* provides a complete, out-of-the-box [Analytics](https://github.com/EricssonBroadcastServices/iOSClientAnalytics) implementation with seamless integration to the *EMP* platform.
 
 ### Custom Playback Controls
 Rendering is performed in an `AVPlayerLayer` attached to a specialized `PlayerView`. Client applications may attach this view in a *view hierarchy* of their choice, allowing for extensive customization.
