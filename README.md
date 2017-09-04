@@ -180,6 +180,31 @@ Client applications who wish to continue *Airplay* once a user locks their scree
 ### Analytics How-To
 
 ### Custom Playback Controls
+Rendering is performed in an `AVPlayerLayer` attached to a specialized `PlayerView`. Client applications may attach this view in a *view hierarchy* of their choice, allowing for extensive customization.
+
+* PlayerViewController
+    * View
+        * PlayerView  (with `AVPlayerLayer`)
+        * OverlayView
+
+Configuring a rendering view can be handled automatically by calling `configure(playerView:)`. This will insert a rendering layer as a subview to the supplied view while also setting up *Autolayout Constraints*.
+
+```Swift
+class PlayerViewController: UIViewController {
+    fileprivate let player: Player = Player()
+    
+    @IBOutlet weak var playerView: UIView!
+    @IBOutlet weak var overlayView: UIView!
+    ...
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        player.configure(playerView: playerView)
+    }
+}
+```
+
+An increased control over configuration and management of the rendering view can be achived by using  `configureRendering(closure: () -> AVPlayerLayer)`. This method allows client applications full control and responsbility over the associated `AVPlayerLayer`.
 
 ### Error Handling
 `PlayerError` is the error type returned by the *Player Framework*. It can manifest both as errors *native* to the framework and *nested errors* specific to underlying frameworks.  Effective error handling thus requires a deeper undestanding of the overall architecture, for example how to deal with `AVFoundation` errors when loading and preparing `AVPlayerItem`s.
@@ -231,7 +256,7 @@ Major changes between releases will be documented with special [Upgrade Guides](
 Updating your dependencies is done by running  `carthage update` with the relevant *options*, such as `--use-submodules`, depending on your project setup. For more information regarding dependency management with `Carthage` please consult their [documentation](https://github.com/Carthage/Carthage/blob/master/README.md) or run `carthage help`.
 
 ## Roadmap
-No formalised roadmap has yet been established but an extensive backlog of possible items exist. The following represent a *wish list* and is subject to change.
+No formalised roadmap has yet been established but an extensive backlog of possible items exist. The following represent an unordered *wish list* and is subject to change.
 
 - [ ] Contract Restrictions
 - [ ] Expanded Event Publishing
