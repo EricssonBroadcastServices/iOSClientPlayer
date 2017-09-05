@@ -4,7 +4,7 @@
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
 ## 0.2.0
-Released 6 Sep 2017
+Released 5 Sep 2017
 
 #### Features
 * `EMP-9386` Playback event publishing.
