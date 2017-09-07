@@ -157,9 +157,26 @@ Configuration, rights, `DRM` and everything related to creating and managing a p
 ### Player Lifecycle
 Streaming media is an interently asynchronous process. Listening and responding to playback related events is central to a smooth user experience. This is an area where, while the implementation might differ, the two clients have a similair approach.
 
-`EmpManager` requires an `AzukiIMCDelegate` for successful event handling, supplied at initialization.
+`EmpManager` requires an `AzukiIMCDelegate` for successful event handling, supplied at initialization.  `Player` allows client applications to register event listeners in the form of `closures` for published events (defined by `PlayerEventPublisher`), making dynamic adaptation during program execution possible.
 
-Instead of using protocol based `delegates`,  `Player` allows client applications to register event listeners in the form of `closures` for relevant events, allowing dynamic adaptation during program execution.
+| Type | `EmpManager` | `Player` |
+|-------|-----------------------|-------------------------|
+| Registration | `IMCDidRegister` | n/a |
+| Playback Created | n/a | `onPlaybackCreated` |
+| Media Loaded | `IMCDidInit` | `onPlaybackPrepared` |
+| Playback Ready | `IMCDidReady` | `onPlaybackReady` |
+| Playback Started | n/a | `onPlaybackStarted` |
+| Playback Paused | `IMCPlaybackState_Paused` | `onPlaybackPaused` |
+| Playback Resumed | n/a | `onPlaybackResumed` |
+| Playback Completed | `IMCPlaybackState_Done` | `onPlaybackCompleted` |
+| Playback Aborted | n/a | `onPlaybackAborted` |
+| Buffering Started | `IMCPlaybackState_BufferingStarted` | `onBufferingStarted` |
+| Buffering Stopped | `IMCPlaybackState_BufferingStopped` | `onBufferingStopped` |
+| Ads started | `IMCPlaybackState_AdsStarted` | n/a |
+| Ads stopped  | `IMCPlaybackState_AdsCompleted` | n/a |
+| Bitrate Change | `IMCBitrateDidChange` | `onBitrateChanged` |
+| Duration Change | n/a | `onDurationChanged` |
+| Error | `IMCDidFail:withMessage` | `onError` |
 
 ### Error Handling
 
