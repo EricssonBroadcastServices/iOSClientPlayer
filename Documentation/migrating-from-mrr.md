@@ -183,4 +183,7 @@ The *MRR-MC* based library throws `MRR` errors catchable through `IMCDidFail:wit
 
 Each module in the new architecture defines their own typed `Error` struct. Error codes are local to the `.framework` and may be nested. For example, an `AnalyticsError` may contain either a nested `ExposureError` or a `PlayerError`.
 
-## Roadmap
+## Contract Restrictions and `DRM`
+Removing the dependency on *MRR* also means the only supported `DRM` solution right now is *FairPlay*.
+
+Contract restrictions is not yet implemented but exists as a roadmap item.
