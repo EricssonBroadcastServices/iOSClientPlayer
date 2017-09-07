@@ -104,7 +104,7 @@ let request = Entitlement(environment: environment
 }
 ```
 
-### Playback
+### Playback Configuration
 Since playback in the *MRR-MC* based library is tightly coupled with the request proceedure through a similar *semi opaque* scheme linking authentication and entitlements, client developers risk a a host of configuration issues when atempting to prepare and manage *playback*.
 
 `EmpClient` references the *current* entitlement. Configuring the `EmpManager` for playback seemingly does not reqire this entitlement but this is actuly wrong. `EmpManager` expects a `ConfigData` object which in turn should be configured, normally through the *Exposure* returned entitlement. In addition, while this config object has been supplied setting up playback, several situations during the manager's lifecycle will retrieve data from the `ImcPlayBackArguments` related to `EmpClient`.
@@ -179,7 +179,8 @@ Streaming media is an interently asynchronous process. Listening and responding 
 | Error | `IMCDidFail:withMessage` | `onError` |
 
 ### Error Handling
+The *MRR-MC* based library throws `MRR` errors catchable through `IMCDidFail:withMessage`, in addition to *EMP* errors.
 
-### Transparency
+Each module in the new architecture defines their own typed `Error` struct. Error codes are local to the `.framework` and may be nested. For example, an `AnalyticsError` may contain either a nested `ExposureError` or a `PlayerError`.
 
 ## Roadmap
