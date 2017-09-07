@@ -18,6 +18,7 @@
 		7667AEC51EC5C0FE00C308FC /* Appfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC31EC5C0FE00C308FC /* Appfile */; };
 		7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC41EC5C0FE00C308FC /* Fastfile */; };
 		7667AEC81EC5C12100C308FC /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC71EC5C12100C308FC /* .env */; };
+		7680ECED1F61268F00153B50 /* migrating-from-mrr.md in Sources */ = {isa = PBXBuildFile; fileRef = 7680ECEC1F61268F00153B50 /* migrating-from-mrr.md */; };
 		768162B81F584E98003C654E /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 768162B71F584E98003C654E /* README.md */; };
 		768162BA1F584EDF003C654E /* CHANGELOG.md in Sources */ = {isa = PBXBuildFile; fileRef = 768162B91F584EDF003C654E /* CHANGELOG.md */; };
 		768162BC1F585577003C654E /* UPGRADE_GUIDE.md in Sources */ = {isa = PBXBuildFile; fileRef = 768162BB1F585577003C654E /* UPGRADE_GUIDE.md */; };
@@ -71,6 +72,7 @@
 		7667AEC31EC5C0FE00C308FC /* Appfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
 		7667AEC41EC5C0FE00C308FC /* Fastfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7667AEC71EC5C12100C308FC /* .env */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
+		7680ECEC1F61268F00153B50 /* migrating-from-mrr.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "migrating-from-mrr.md"; sourceTree = "<group>"; };
 		768162B71F584E98003C654E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		768162B91F584EDF003C654E /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = SOURCE_ROOT; };
 		768162BB1F585577003C654E /* UPGRADE_GUIDE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = UPGRADE_GUIDE.md; sourceTree = SOURCE_ROOT; };
@@ -160,6 +162,7 @@
 		768162B61F584DF1003C654E /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
+				7680ECEC1F61268F00153B50 /* migrating-from-mrr.md */,
 			);
 			path = Documentation;
 			sourceTree = SOURCE_ROOT;
@@ -412,6 +415,7 @@
 				76A8438C1EA7819D00BDAF2C /* PlayerEventPublisher.swift in Sources */,
 				76A8439C1EA7819D00BDAF2C /* MediaRendering.swift in Sources */,
 				768162BA1F584EDF003C654E /* CHANGELOG.md in Sources */,
+				7680ECED1F61268F00153B50 /* migrating-from-mrr.md in Sources */,
 				76A8438F1EA7819D00BDAF2C /* AVPlayerItem+KeyValueObservable.swift in Sources */,
 				764863601EE44B5900083DB5 /* FairplayRequester.swift in Sources */,
 				7648635E1EE44B4000083DB5 /* MediaAsset.swift in Sources */,
