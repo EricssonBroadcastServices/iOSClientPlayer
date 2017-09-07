@@ -129,12 +129,12 @@ Once the initialization process has completed and either of the `IMCDidInit` or 
 
 ```Objective-c
 [empManager createIMCPlayer: IMC_MODE_ADAPTIVE
-withMediaUId: entitlement.mediaLocator
-withFilePath: nil
-withAppToken: entitlement.userToken
-withParentViewController: parentController
-withAdUid: adParams
-withFullScreenLayout: YES];
+               withMediaUId: entitlement.mediaLocator
+               withFilePath: nil
+               withAppToken: entitlement.userToken
+   withParentViewController: parentController
+                  withAdUid: adParams
+       withFullScreenLayout: YES];
 ```
 
 Finally, await the `IMCDidReady` callback.
@@ -155,12 +155,11 @@ catch {
 Configuration, rights, `DRM` and everything related to creating and managing a playback session is included in the `PlaybackEntitlement` retrieved through `Exposure.
 
 ### Player Lifecycle
-Streaming media is an interently asynchronous process. Listening and responding to playback related events is central to a smooth user experience.
+Streaming media is an interently asynchronous process. Listening and responding to playback related events is central to a smooth user experience. This is an area where, while the implementation might differ, the two clients have a similair approach.
 
-This is an area where, while the implementation might differ, the two clients have a similair approach.
+`EmpManager` requires an `AzukiIMCDelegate` for successful event handling, supplied at initialization.
 
-`EmpManager` requires an `AzukiIMCDelegate` for successful event handling. This delegat protocol defines a set of callbacks that will trigger under certain circumstances.
-
+Instead of using protocol based `delegates`,  `Player` allows client applications to register event listeners in the form of `closures` for relevant events, allowing dynamic adaptation during program execution.
 
 ### Error Handling
 
