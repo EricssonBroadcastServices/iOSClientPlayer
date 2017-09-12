@@ -358,10 +358,13 @@ extension Player: MediaPlayback {
     /// - Parameter timeInterval: in milliseconds
     public func seek(to timeInterval: Int64) {
         let seekTime = timeInterval > 0 ? timeInterval : 0
-        self.onPlaybackScrubbed(self, seekTime)
-        analyticsProvider?.playbackScrubbedTo(player: self, offset: seekTime)
         let cmTime = CMTime(value: seekTime, timescale: 1000)
-        currentAsset?.playerItem.seek(to: cmTime) { success in }
+        currentAsset?.playerItem.seek(to: cmTime) { success in
+            if success {
+                self.onPlaybackScrubbed(self, seekTime)
+                self.analyticsProvider?.playbackScrubbedTo(player: self, offset: seekTime)
+            }
+        }
     }
     
     /// Returns the current playback position of the player in *milliseconds*
