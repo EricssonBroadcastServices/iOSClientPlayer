@@ -75,6 +75,7 @@ public final class Player {
     fileprivate var onPlaybackAborted: (Player) -> Void = { _ in }
     fileprivate var onPlaybackPaused: (Player) -> Void = { _ in }
     fileprivate var onPlaybackResumed: (Player) -> Void = { _ in }
+    fileprivate var onPlaybackScrubbed: (Player, Int64) -> Void = { _ in }
     
     
     /// Wrapper observing changes to the underlying `AVPlayer`
@@ -243,6 +244,16 @@ extension Player: PlayerEventPublisher {
         onPlaybackResumed = callback
         return self
     }
+
+    /// Sets the callback to fire if user scrubs in player
+    /// 
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackScrubbed(callback: @escaping (Player, _ toTime: Int64) -> Void) -> Self {
+        onPlaybackScrubbed = callback
+        return self
+    }
     
 }
 
@@ -347,10 +358,10 @@ extension Player: MediaPlayback {
     /// - Parameter timeInterval: in milliseconds
     public func seek(to timeInterval: Int64) {
         let seekTime = timeInterval > 0 ? timeInterval : 0
+        self.onPlaybackScrubbed(self, seekTime)
+        analyticsProvider?.playbackScrubbedTo(player: self, offset: seekTime)
         let cmTime = CMTime(value: seekTime, timescale: 1000)
-        currentAsset?.playerItem.seek(to: cmTime) { success in
-            
-        }
+        currentAsset?.playerItem.seek(to: cmTime) { success in }
     }
     
     /// Returns the current playback position of the player in *milliseconds*

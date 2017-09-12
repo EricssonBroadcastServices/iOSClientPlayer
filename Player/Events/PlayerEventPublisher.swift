@@ -93,6 +93,12 @@ public protocol PlayerEventPublisher {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     func onPlaybackResumed(callback: @escaping (Player) -> Void) -> Self
+
+    /// Published when user scrubs in the player.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    func onPlaybackScrubbed(callback: @escaping (Player, Int64) -> Void) -> Self
     
     
      /*func onScrubbedTo(callback: @escaping (Self) -> Void) -> Self

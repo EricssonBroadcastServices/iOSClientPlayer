@@ -70,4 +70,11 @@ public protocol AnalyticsProvider {
     ///
     /// - parameter player: `Player` broadcasting the event
     func playbackResumedEvent(player: Player)
+
+
+    /// Triggered by the user seeking to time
+    ///
+    /// - parameter player: `Player` broadcasting the evet
+    /// - parameter offset: `Int64` time beeing seekd
+    func playbackScrubbedTo(player: Player, offset: Int64)
 }
