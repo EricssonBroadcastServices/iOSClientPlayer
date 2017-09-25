@@ -89,9 +89,6 @@ public enum PlayerError: Error {
         /// `FairplayRequester` could not fetch a *Content Key Context*, `CKC`, since the *license acquisition url* was missing.
         case missingContentKeyContextUrl
         
-        /// `CKC`, *content key context*, request data could not be generated because the identifying `playToken` was missing.
-        case missingPlaytoken
-        
         /// The *Content Key Context* response data contained an unexpected or invalid data format.
         ///
         /// `FairplayRequester` failed to decode the raw data, most likely due to a missmatch between expected and supplied data format.
@@ -150,7 +147,6 @@ extension PlayerError.FairplayError {
             
         // Content Key Context
         case .missingContentKeyContextUrl: return "Content Key Context Url not found"
-        case .missingPlaytoken: return "Content Key Context call requires a playtoken"
         case .contentKeyContextDataFormatInvalid: return "Content Key Context was not encodable using base64"
         case .contentKeyContextServer(code: let code, message: let message): return "Content Key Context server returned error: \(code) with message: \(message)"
         case .contentKeyContextParsing: return "Content Key Context server response lacks parsable data"
@@ -198,9 +194,8 @@ extension PlayerError.FairplayError {
         case .missingContentKeyContext: return 309
         case .missingContentKeyContextUrl: return 310
         case .missingDataRequest: return 311
-        case .missingPlaytoken: return 312
-        case .networking(error: _): return 313
-        case .serverPlaybackContext(error: _): return 314
+        case .networking(error: _): return 312
+        case .serverPlaybackContext(error: _): return 313
         }
     }
 }
