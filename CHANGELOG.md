@@ -7,7 +7,6 @@
 NO RELEASE DATE SET
 
 #### Changes
-* Removed unused `PlayerError.missingPlaytoken`
 * `EMP-10334` onPlaybackScrubbed event publishing.
 
 ## 0.2.0
