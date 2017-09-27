@@ -8,6 +8,7 @@ NO RELEASE DATE SET
 
 #### Changes
 * `EMP-10334` onPlaybackScrubbed event publishing.
+* Moved `FairplayError` from `Player` to `Exposure`.
 
 ## 0.2.0
 Released 5 Sep 2017
