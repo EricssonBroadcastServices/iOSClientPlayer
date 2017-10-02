@@ -31,8 +31,8 @@
 ## Requirements
 
 * `iOS` 9.0+
-* `Swift` 3.0+
-* `Xcode` 8.2.1+
+* `Swift` 4.0+
+* `Xcode` 9.0+
 
 ## Installation
 
