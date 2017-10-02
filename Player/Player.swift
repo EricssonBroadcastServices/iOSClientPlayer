@@ -62,7 +62,7 @@ public final class Player {
     // Stores the private callbacks specified by calling the associated `PlayerEventPublisher` functions.
     fileprivate var onPlaybackCreated: (Player) -> Void = { _ in }
     fileprivate var onPlaybackPrepared: (Player) -> Void = { _ in }
-    fileprivate var onError: (Player, PlayerError) -> Void = { _ in }
+    fileprivate var onError: (Player, PlayerError) -> Void = { _,_  in }
     
     fileprivate var onBitrateChanged: (BitrateChangedEvent) -> Void = { _ in }
     fileprivate var onBufferingStarted: (Player) -> Void = { _ in }
@@ -75,7 +75,7 @@ public final class Player {
     fileprivate var onPlaybackAborted: (Player) -> Void = { _ in }
     fileprivate var onPlaybackPaused: (Player) -> Void = { _ in }
     fileprivate var onPlaybackResumed: (Player) -> Void = { _ in }
-    fileprivate var onPlaybackScrubbed: (Player, Int64) -> Void = { _ in }
+    fileprivate var onPlaybackScrubbed: (Player, Int64) -> Void = { _,_  in }
     
     
     /// Wrapper observing changes to the underlying `AVPlayer`
@@ -266,7 +266,7 @@ extension Player: MediaRendering {
         configureRendering{
             let renderingView = PlayerView(frame: playerView.frame)
             
-            renderingView.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspect
+            renderingView.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
             renderingView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             
             playerView.insertSubview(renderingView, at: 0)
