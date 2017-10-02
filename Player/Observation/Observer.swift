@@ -17,7 +17,7 @@ internal class Observer<T: NSObject>: NSObject {
     internal let path: String
     
     /// Fires when the `KVO` fires.
-    internal var callback: (T, KVOChange) -> Void = { _ in }
+    internal var callback: (T, KVOChange) -> Void = { _,_  in }
     
     internal init(of object: T, at path: String, with options: NSKeyValueObservingOptions, callback: @escaping (T, KVOChange) -> Void) {
         self.object = object

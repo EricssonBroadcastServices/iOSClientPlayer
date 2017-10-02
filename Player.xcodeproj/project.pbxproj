@@ -18,10 +18,6 @@
 		7667AEC51EC5C0FE00C308FC /* Appfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC31EC5C0FE00C308FC /* Appfile */; };
 		7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC41EC5C0FE00C308FC /* Fastfile */; };
 		7667AEC81EC5C12100C308FC /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC71EC5C12100C308FC /* .env */; };
-		7680ECED1F61268F00153B50 /* migrating-from-mrr.md in Sources */ = {isa = PBXBuildFile; fileRef = 7680ECEC1F61268F00153B50 /* migrating-from-mrr.md */; };
-		768162B81F584E98003C654E /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 768162B71F584E98003C654E /* README.md */; };
-		768162BA1F584EDF003C654E /* CHANGELOG.md in Sources */ = {isa = PBXBuildFile; fileRef = 768162B91F584EDF003C654E /* CHANGELOG.md */; };
-		768162BC1F585577003C654E /* UPGRADE_GUIDE.md in Sources */ = {isa = PBXBuildFile; fileRef = 768162BB1F585577003C654E /* UPGRADE_GUIDE.md */; };
 		76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8434E1EA77DF700BDAF2C /* Player.framework */; };
 		76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */; };
 		76A8435F1EA77DF700BDAF2C /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -344,18 +340,19 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = emp;
 				TargetAttributes = {
 					76A8434D1EA77DF700BDAF2C = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = JCUPRVKEC5;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					76A843561EA77DF700BDAF2C = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = JCUPRVKEC5;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -410,12 +407,8 @@
 				764863641EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift in Sources */,
 				76A843961EA7819D00BDAF2C /* Observer.swift in Sources */,
 				76A843901EA7819D00BDAF2C /* Sequence+Extensions.swift in Sources */,
-				768162BC1F585577003C654E /* UPGRADE_GUIDE.md in Sources */,
-				768162B81F584E98003C654E /* README.md in Sources */,
 				76A8438C1EA7819D00BDAF2C /* PlayerEventPublisher.swift in Sources */,
 				76A8439C1EA7819D00BDAF2C /* MediaRendering.swift in Sources */,
-				768162BA1F584EDF003C654E /* CHANGELOG.md in Sources */,
-				7680ECED1F61268F00153B50 /* migrating-from-mrr.md in Sources */,
 				76A8438F1EA7819D00BDAF2C /* AVPlayerItem+KeyValueObservable.swift in Sources */,
 				764863601EE44B5900083DB5 /* FairplayRequester.swift in Sources */,
 				7648635E1EE44B4000083DB5 /* MediaAsset.swift in Sources */,
@@ -466,7 +459,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -474,7 +469,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -519,7 +518,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -527,7 +528,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -578,7 +583,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -603,7 +609,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -622,7 +629,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -641,7 +649,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

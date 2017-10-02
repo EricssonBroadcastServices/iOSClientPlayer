@@ -31,8 +31,8 @@
 ## Requirements
 
 * `iOS` 9.0+
-* `Swift` 3.0+
-* `Xcode` 8.2.1+
+* `Swift` 4.0+
+* `Xcode` 9.0+
 
 ## Installation
 
@@ -236,16 +236,6 @@ avUrlAsset.loadValuesAsynchronously(forKeys: keys) {
 For more information regarding the *async loading process* of `properties` on `AVURLAsset`s, please consult Apple's documentation on `AVAsynchronousKeyValueLoading`
 
 Once the loading process has run its course, the asset is either ready for playback or a `AssetError.failedToReady(error: underlyingError)` is thrown.
-
-#### Fairplay DRM Errors
-Another major cause of errors is *Fairplay* `DRM` issues, broadly categorized into two types:
-
-* Server related `DRM` errors
-* Application related
-
-Server related issues most likely stem from an invalid or broken backend configuration. Application issues range from parsing errors, unexpected server response or networking issues.
-
-*Fairplay* `DRM` troubleshooting is highly coupled with the specific application and backend implementations and as such hard to generalize. For more information about *Fairplay* debugging, please see Apple's [documentation](https://developer.apple.com/library/content/technotes/tn2454).
 
 ## Release Notes
 Release specific changes can be found in the [CHANGELOG](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/CHANGELOG.md).
