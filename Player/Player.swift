@@ -684,7 +684,7 @@ extension Player {
         }
         
         
-        mediaAsset.itemObserver.observe(path: .isPlaybackBufferFull, on: mediaAsset.playerItem) { [unowned self] item, change in
+        mediaAsset.itemObserver.observe(path: .isPlaybackBufferFull, on: mediaAsset.playerItem) { item, change in
             DispatchQueue.main.async {
             }
         }
@@ -778,7 +778,7 @@ extension Player {
 extension Player {
     /// Subscribes to and handles `AVPlayer.currentItem` changes.
     fileprivate func handleCurrentItemChanges() {
-        playerObserver.observe(path: .currentItem, on: avPlayer) { [unowned self] player, change in
+        playerObserver.observe(path: .currentItem, on: avPlayer) { player, change in
             print("Player.currentItem changed",player, change.new, change.old)
             // TODO: Do we handle programChange here?
         }
