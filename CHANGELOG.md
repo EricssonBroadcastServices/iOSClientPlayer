@@ -10,6 +10,8 @@ NO RELEASE DATE SET
 * `EMP-10334` onPlaybackScrubbed event publishing.
 * Moved `FairplayError` from `Player` to `Exposure`.
 * Requirements for `Xcode` set to `9.0+` and `Swift` to `4.0+`
+* `EMP-10445` Streaming may now be stared with an `AVURLAsset`
+* Removed internal reference to `mediaLocator`
 
 ## 0.2.0
 Released 5 Sep 2017
