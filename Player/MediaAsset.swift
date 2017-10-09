@@ -37,7 +37,6 @@ internal class MediaAsset {
         }
         
         urlAsset = AVURLAsset(url: url)
-        print(urlAsset.url)
         if fairplayRequester != nil {
             urlAsset.resourceLoader.setDelegate(fairplayRequester,
                                                 queue: DispatchQueue(label: mediaLocator + "-fairplayLoader"))
@@ -48,7 +47,6 @@ internal class MediaAsset {
         self.fairplayRequester = fairplayRequester
         
         urlAsset = avUrlAsset
-        print(urlAsset.url)
         if fairplayRequester != nil {
             urlAsset.resourceLoader.setDelegate(fairplayRequester,
                                                 queue: DispatchQueue(label: avUrlAsset.url.relativePath + "-fairplayLoader"))
