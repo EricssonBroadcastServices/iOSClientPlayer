@@ -13,11 +13,6 @@ import AVFoundation
 ///
 /// *Fairplay* protected media is processed by the supplied FairplayRequester.
 internal class MediaAsset {
-    /// Media locator represents a path to where the media is located.
-    ///
-    /// - note: This will probably be removed
-    internal let mediaLocator: String
-    
     /// Specifies the asset which is about to be loaded.
     fileprivate var urlAsset: AVURLAsset
     
@@ -35,8 +30,6 @@ internal class MediaAsset {
     /// - parameter fairplayRequester: Will handle *Fairplay* `DRM`
     /// - throws: `PlayerError` if configuration is faulty or incomplete.
     internal init(mediaLocator: String, fairplayRequester: FairplayRequester? = nil) throws {
-        self.mediaLocator = mediaLocator
-        
         self.fairplayRequester = fairplayRequester
         
         guard let url = URL(string:mediaLocator) else {
@@ -48,6 +41,17 @@ internal class MediaAsset {
         if fairplayRequester != nil {
             urlAsset.resourceLoader.setDelegate(fairplayRequester,
                                                 queue: DispatchQueue(label: mediaLocator + "-fairplayLoader"))
+        }
+    }
+    
+    internal init(avUrlAsset: AVURLAsset, fairplayRequester: FairplayRequester? = nil) {
+        self.fairplayRequester = fairplayRequester
+        
+        urlAsset = avUrlAsset
+        print(urlAsset.url)
+        if fairplayRequester != nil {
+            urlAsset.resourceLoader.setDelegate(fairplayRequester,
+                                                queue: DispatchQueue(label: avUrlAsset.url.relativePath + "-fairplayLoader"))
         }
     }
     
