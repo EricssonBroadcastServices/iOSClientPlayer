@@ -411,30 +411,8 @@ extension Player {
     /// - parameter playSessionId: Optionally specify a unique session id for the playback session. If not provided, the system will generate a random `UUID`.
     public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester? = nil, playSessionId: String? = nil) {
         do {
-            currentAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
-            // Use the supplied play token or generate a new one
-            self.playSessionId = playSessionId ?? Player.generatePlaySessionId()
-            
-            onPlaybackCreated(self)
-            analyticsProvider?.playbackCreatedEvent(player: self)
-            
-            // Reset playbackState
-            playbackState = .notStarted
-            
-            currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
-                guard let weakSelf = self, let currentAsset = weakSelf.currentAsset else {
-                    return
-                }
-                guard error == nil else {
-                    weakSelf.handle(error: error!)
-                    return
-                }
-                
-                weakSelf.onPlaybackPrepared(weakSelf)
-                weakSelf.analyticsProvider?.playbackPreparedEvent(player: weakSelf)
-                
-                weakSelf.readyPlayback(with: currentAsset)
-            }
+            let mediaAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
+            stream(mediaAsset: mediaAsset, using: fairplayRequester, playSessionId: playSessionId)
         }
         catch {
             if let playerError = error as? PlayerError {
@@ -444,6 +422,38 @@ extension Player {
                 let playerError = PlayerError.generalError(error: error)
                 handle(error: playerError)
             }
+        }
+    }
+    
+    public func stream(urlAsset: AVURLAsset, using fairplayRequester: FairplayRequester? = nil, playSessionId: String? = nil) {
+        let mediaAsset = MediaAsset(avUrlAsset: urlAsset, fairplayRequester: fairplayRequester)
+        stream(mediaAsset: mediaAsset, using: fairplayRequester, playSessionId: playSessionId)
+    }
+    
+    internal func stream(mediaAsset: MediaAsset, using fairplayRequester: FairplayRequester? = nil, playSessionId: String? = nil) {
+        currentAsset = mediaAsset
+        // Use the supplied play token or generate a new one
+        self.playSessionId = playSessionId ?? Player.generatePlaySessionId()
+        
+        onPlaybackCreated(self)
+        analyticsProvider?.playbackCreatedEvent(player: self)
+        
+        // Reset playbackState
+        playbackState = .notStarted
+        
+        currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
+            guard let weakSelf = self, let currentAsset = weakSelf.currentAsset else {
+                return
+            }
+            guard error == nil else {
+                weakSelf.handle(error: error!)
+                return
+            }
+            
+            weakSelf.onPlaybackPrepared(weakSelf)
+            weakSelf.analyticsProvider?.playbackPreparedEvent(player: weakSelf)
+            
+            weakSelf.readyPlayback(with: currentAsset)
         }
     }
     
