@@ -24,13 +24,18 @@ internal class MediaAsset {
     /// Loads, configures and validates *Fairplay* `DRM` protected assets.
     internal let fairplayRequester: FairplayRequester?
     
+    /// Analytics delivery per media asset
+    internal let analyticsProvider: AnalyticsProvider?
+    
     /// Creates the media asset
     ///
     /// - parameter mediaLocator: *Path* to where the media is located
     /// - parameter fairplayRequester: Will handle *Fairplay* `DRM`
+    /// - parameter analyticsProvider: Delivers analytics per media asset
     /// - throws: `PlayerError` if configuration is faulty or incomplete.
-    internal init(mediaLocator: String, fairplayRequester: FairplayRequester? = nil) throws {
+    internal init(mediaLocator: String, fairplayRequester: FairplayRequester? = nil, analyticsProvider: AnalyticsProvider? = nil) throws {
         self.fairplayRequester = fairplayRequester
+        self.analyticsProvider = analyticsProvider
         
         guard let url = URL(string:mediaLocator) else {
             throw PlayerError.asset(reason: .missingMediaUrl)
@@ -43,8 +48,9 @@ internal class MediaAsset {
         }
     }
     
-    internal init(avUrlAsset: AVURLAsset, fairplayRequester: FairplayRequester? = nil) {
+    internal init(avUrlAsset: AVURLAsset, fairplayRequester: FairplayRequester? = nil, analyticsProvider: AnalyticsProvider? = nil) {
         self.fairplayRequester = fairplayRequester
+        self.analyticsProvider = analyticsProvider
         
         urlAsset = avUrlAsset
         if fairplayRequester != nil {
