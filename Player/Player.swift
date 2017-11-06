@@ -329,6 +329,7 @@ extension Player: MediaPlayback {
     public func stop() {
         // TODO: End playback? Unload resources? Leave that to user?
         avPlayer.pause()
+        playbackState = .stopped
         onPlaybackAborted(self)
         currentAsset?.analyticsProvider?.playbackAbortedEvent(player: self)
     }
@@ -343,8 +344,9 @@ extension Player: MediaPlayback {
     /// Returns true if playback has been started, but makes no assumtions regarding the playback rate.
     public var isActive: Bool {
         switch playbackState {
-        case .notStarted: return false
-        default: return true
+        case .paused: return true
+        case .playing: return true
+        default: return false
         }
     }
     
