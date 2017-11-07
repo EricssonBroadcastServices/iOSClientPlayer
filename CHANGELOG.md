@@ -4,7 +4,6 @@
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
 ## 0.2.1
-NO RELEASE DATE SET
 
 #### Changes
 * `EMP-10334` onPlaybackScrubbed event publishing.
@@ -12,6 +11,7 @@ NO RELEASE DATE SET
 * Requirements for `Xcode` set to `9.0+` and `Swift` to `4.0+`
 * `EMP-10445` Streaming may now be stared with an `AVURLAsset`
 * Removed internal reference to `mediaLocator`
+*`EMP-10242` `AnalyticsProvider` and `playSessionId` associated with `MediaAsset` instead of `Player`
 
 ## 0.2.0
 Released 5 Sep 2017
