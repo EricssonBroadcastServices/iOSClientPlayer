@@ -24,13 +24,31 @@ internal class MediaAsset {
     /// Loads, configures and validates *Fairplay* `DRM` protected assets.
     internal let fairplayRequester: FairplayRequester?
     
+    /// Analytics delivery per media asset
+    internal let analyticsProvider: AnalyticsProvider?
+    
+    /// Returns a token string uniquely identifying this playSession.
+    /// Example: “E621E1F8-C36C-495A-93FC-0C247A3E6E5F”
+    fileprivate(set) internal var playSessionId: String
+    
+    
+    /// Returns a string created from the UUID, such as "E621E1F8-C36C-495A-93FC-0C247A3E6E5F"
+    ///
+    /// A unique playSessionId should be generated for each new playSession.
+    fileprivate static func generatePlaySessionId() -> String {
+        return UUID().uuidString
+    }
+    
     /// Creates the media asset
     ///
     /// - parameter mediaLocator: *Path* to where the media is located
     /// - parameter fairplayRequester: Will handle *Fairplay* `DRM`
+    /// - parameter analyticsProvider: Delivers analytics per media asset
     /// - throws: `PlayerError` if configuration is faulty or incomplete.
-    internal init(mediaLocator: String, fairplayRequester: FairplayRequester? = nil) throws {
+    internal init(mediaLocator: String, fairplayRequester: FairplayRequester? = nil, analyticsProvider: AnalyticsProvider? = nil, playSessionId: String? = nil) throws {
         self.fairplayRequester = fairplayRequester
+        self.analyticsProvider = analyticsProvider
+        self.playSessionId = playSessionId ?? MediaAsset.generatePlaySessionId()
         
         guard let url = URL(string:mediaLocator) else {
             throw PlayerError.asset(reason: .missingMediaUrl)
@@ -43,8 +61,10 @@ internal class MediaAsset {
         }
     }
     
-    internal init(avUrlAsset: AVURLAsset, fairplayRequester: FairplayRequester? = nil) {
+    internal init(avUrlAsset: AVURLAsset, fairplayRequester: FairplayRequester? = nil, analyticsProvider: AnalyticsProvider? = nil, playSessionId: String? = nil) {
         self.fairplayRequester = fairplayRequester
+        self.analyticsProvider = analyticsProvider
+        self.playSessionId = playSessionId ?? MediaAsset.generatePlaySessionId()
         
         urlAsset = avUrlAsset
         if fairplayRequester != nil {

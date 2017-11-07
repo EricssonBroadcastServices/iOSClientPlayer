@@ -11,7 +11,7 @@ import Foundation
 /// `AnalyticsEventPublisher` triggers events specified by the `AnalyticsProvider`.
 public protocol AnalyticsEventPublisher: class {
     /// Events will be triggered on this `AnalyticsProvider`.
-    var analyticsProvider: AnalyticsProvider? { get set }
+    var analyticsProviderGenerator: (() -> AnalyticsProvider)? { get set }
 }
 
 extension AnalyticsEventPublisher {
@@ -20,8 +20,8 @@ extension AnalyticsEventPublisher {
     /// - parameter provider: `AnalyticsProvider` to publish events to.
     /// - returns: `Self`
     @discardableResult
-    public func analytics(provider: AnalyticsProvider) -> Self {
-        analyticsProvider = provider
+    public func analytics(callback: @escaping () -> AnalyticsProvider) -> Self {
+        analyticsProviderGenerator = callback
         return self
     }
 }

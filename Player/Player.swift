@@ -20,14 +20,15 @@ public final class Player {
     
     /// Returns a token string uniquely identifying this playSession.
     /// Example: “E621E1F8-C36C-495A-93FC-0C247A3E6E5F”
-    fileprivate(set) public var playSessionId: String
+    public var playSessionId: String? {
+        return currentAsset?.playSessionId
+    }
     
     /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
     public var autoplay: Bool = false
     
     public init() {
         avPlayer = AVPlayer()
-        playSessionId = Player.generatePlaySessionId()
         
         handleCurrentItemChanges()
         handlePlaybackStateChanges()
@@ -41,13 +42,6 @@ public final class Player {
         playerObserver.unsubscribeAll()
         
         NotificationCenter.default.removeObserver(self)
-    }
-    
-    /// Returns a string created from the UUID, such as "E621E1F8-C36C-495A-93FC-0C247A3E6E5F"
-    ///
-    /// A unique playSessionId should be generated for each new playSession.
-    fileprivate static func generatePlaySessionId() -> String {
-        return UUID().uuidString
     }
     
     /*
@@ -90,8 +84,8 @@ public final class Player {
     /// `BufferState` is a private state tracking buffering events. It should not be exposed externally.
     fileprivate var bufferState: BufferState = .notInitialized
     
-    // MARK: AnalyticsEventPublisher
-    public var analyticsProvider: AnalyticsProvider?
+    // MARK: AnalyticProvider
+    public var analyticsProviderGenerator: (() -> AnalyticsProvider)? = nil
     
     // MARK: SessionShift
     /// `Bookmark` is a private state tracking `SessionShift` status. It should not be exposed externally.
@@ -310,6 +304,7 @@ extension Player: MediaPlayback {
         case notStarted
         case playing
         case paused
+        case stopped
     }
     
     /// Starts or resumes playback.
@@ -334,8 +329,9 @@ extension Player: MediaPlayback {
     public func stop() {
         // TODO: End playback? Unload resources? Leave that to user?
         avPlayer.pause()
+        playbackState = .stopped
         onPlaybackAborted(self)
-        analyticsProvider?.playbackAbortedEvent(player: self)
+        currentAsset?.analyticsProvider?.playbackAbortedEvent(player: self)
     }
     
     /// Returns true if playback has been started and the current rate is not equal to 0
@@ -348,8 +344,9 @@ extension Player: MediaPlayback {
     /// Returns true if playback has been started, but makes no assumtions regarding the playback rate.
     public var isActive: Bool {
         switch playbackState {
-        case .notStarted: return false
-        default: return true
+        case .paused: return true
+        case .playing: return true
+        default: return false
         }
     }
     
@@ -362,7 +359,7 @@ extension Player: MediaPlayback {
         currentAsset?.playerItem.seek(to: cmTime) { success in
             if success {
                 self.onPlaybackScrubbed(self, seekTime)
-                self.analyticsProvider?.playbackScrubbedTo(player: self, offset: seekTime)
+                self.currentAsset?.analyticsProvider?.playbackScrubbedTo(player: self, offset: seekTime)
             }
         }
     }
@@ -409,51 +406,56 @@ extension Player {
     /// - parameter mediaLocator: Specfies the *path* to where the media asset can be found.
     /// - parameter fairplayRequester: Required for *Fairplay* `DRM` requests.
     /// - parameter playSessionId: Optionally specify a unique session id for the playback session. If not provided, the system will generate a random `UUID`.
-    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester? = nil, playSessionId: String? = nil) {
+    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester? = nil, analyticsProvider: AnalyticsProvider? = nil, playSessionId: String? = nil) {
+        let provider = analyticsProvider ?? analyticsProviderGenerator?()
         do {
-            let mediaAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester)
-            stream(mediaAsset: mediaAsset, using: fairplayRequester, playSessionId: playSessionId)
+            let mediaAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester, analyticsProvider: provider, playSessionId: playSessionId)
+            stream(mediaAsset: mediaAsset)
         }
         catch {
             if let playerError = error as? PlayerError {
-                handle(error: playerError)
+                handle(error: playerError, with: provider)
             }
             else {
                 let playerError = PlayerError.generalError(error: error)
-                handle(error: playerError)
+                handle(error: playerError, with: provider)
             }
         }
     }
     
-    public func stream(urlAsset: AVURLAsset, using fairplayRequester: FairplayRequester? = nil, playSessionId: String? = nil) {
-        let mediaAsset = MediaAsset(avUrlAsset: urlAsset, fairplayRequester: fairplayRequester)
-        stream(mediaAsset: mediaAsset, using: fairplayRequester, playSessionId: playSessionId)
+    public func stream(urlAsset: AVURLAsset, using fairplayRequester: FairplayRequester? = nil, analyticsProvider: AnalyticsProvider? = nil, playSessionId: String? = nil) {
+        let mediaAsset = MediaAsset(avUrlAsset: urlAsset, fairplayRequester: fairplayRequester, analyticsProvider: analyticsProvider, playSessionId: playSessionId)
+        stream(mediaAsset: mediaAsset)
     }
     
-    internal func stream(mediaAsset: MediaAsset, using fairplayRequester: FairplayRequester? = nil, playSessionId: String? = nil) {
-        currentAsset = mediaAsset
-        // Use the supplied play token or generate a new one
-        self.playSessionId = playSessionId ?? Player.generatePlaySessionId()
+    internal func stream(mediaAsset: MediaAsset) {
+        // Unsubscribe any current item
+        currentAsset?.itemObserver.stopObservingAll()
+        currentAsset?.itemObserver.unsubscribeAll()
         
+        // TODO: Stop playback?
+        playbackState = .stopped
+        avPlayer.pause()
+        currentAsset?.analyticsProvider?.playbackAbortedEvent(player: self)
+        
+        // Start notifications on new session
         onPlaybackCreated(self)
-        analyticsProvider?.playbackCreatedEvent(player: self)
+        mediaAsset.analyticsProvider?.playbackCreatedEvent(player: self)
         
         // Reset playbackState
         playbackState = .notStarted
         
-        currentAsset?.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
-            guard let weakSelf = self, let currentAsset = weakSelf.currentAsset else {
-                return
-            }
+        mediaAsset.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
+            guard let weakSelf = self else { return }
             guard error == nil else {
-                weakSelf.handle(error: error!)
+                weakSelf.handle(error: error!, for: mediaAsset)
                 return
             }
             
             weakSelf.onPlaybackPrepared(weakSelf)
-            weakSelf.analyticsProvider?.playbackPreparedEvent(player: weakSelf)
+            mediaAsset.analyticsProvider?.playbackPreparedEvent(player: weakSelf)
             
-            weakSelf.readyPlayback(with: currentAsset)
+            weakSelf.readyPlayback(with: mediaAsset)
         }
     }
     
@@ -461,10 +463,6 @@ extension Player {
     ///
     /// Finally, once the `Player` is configured, the `currentMedia` is replaced with the newly created one. The system now awaits playback status to return `.readyToPlay`.
     fileprivate func readyPlayback(with mediaAsset: MediaAsset) {
-        // Unsubscribe any current item
-        currentAsset?.itemObserver.stopObservingAll()
-        currentAsset?.itemObserver.unsubscribeAll()
-        
         currentAsset = mediaAsset
         
         let playerItem = mediaAsset.playerItem
@@ -523,7 +521,11 @@ extension Player {
     /// Generic method to propagate `error` to any `onError` *listener* and the `AnalyticsProvider`.
     ///
     /// - parameter error: `PlayerError` to forward
-    fileprivate func handle(error: PlayerError) {
+    fileprivate func handle(error: PlayerError, for mediaAsset: MediaAsset) {
+        handle(error: error, with: mediaAsset.analyticsProvider)
+    }
+    
+    fileprivate func handle(error: PlayerError, with analyticsProvider: AnalyticsProvider?) {
         onError(self, error)
         analyticsProvider?.playbackErrorEvent(player: self, error: error)
     }
@@ -619,7 +621,7 @@ extension Player {
                     }
                 case .failed:
                     let error = PlayerError.asset(reason: .failedToReady(error: item.error))
-                    self.handle(error: error)
+                    self.handle(error: error, for: mediaAsset)
                 }
             }
         }
@@ -628,7 +630,7 @@ extension Player {
     /// Private function to trigger the necessary final events right before playback starts.
     private func startPlayback() {
         self.onPlaybackReady(self)
-        self.analyticsProvider?.playbackReadyEvent(player: self)
+        self.currentAsset?.analyticsProvider?.playbackReadyEvent(player: self)
         
         // Start playback if autoplay is enabled
         if self.autoplay { self.play() }
@@ -655,7 +657,7 @@ extension Player {
                                                     currentRate: currentEvent.indicatedBitrate)
                     DispatchQueue.main.async {
                         self.onBitrateChanged(event)
-                        self.analyticsProvider?.playbackBitrateChanged(event: event)
+                        self.currentAsset?.analyticsProvider?.playbackBitrateChanged(event: event)
                     }
                 }
             }
@@ -687,7 +689,7 @@ extension Player {
                 case .buffering:
                     self.bufferState = .onPace
                     self.onBufferingStopped(self)
-                    self.analyticsProvider?.playbackBufferingStopped(player: self)
+                    self.currentAsset?.analyticsProvider?.playbackBufferingStopped(player: self)
                 default: return
                 }
             }
@@ -705,7 +707,7 @@ extension Player {
                 case .onPace, .notInitialized:
                     self.bufferState = .buffering
                     self.onBufferingStarted(self)
-                    self.analyticsProvider?.playbackBufferingStarted(player: self)
+                    self.currentAsset?.analyticsProvider?.playbackBufferingStarted(player: self)
                 default: return
                 }
             }
@@ -738,7 +740,7 @@ extension Player {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: playerItem) { [unowned self] notification in
             self.onPlaybackCompleted(self)
-            self.analyticsProvider?.playbackCompletedEvent(player: self)
+            self.currentAsset?.analyticsProvider?.playbackCompletedEvent(player: self)
         }
     }
 }
@@ -758,12 +760,14 @@ extension Player {
                     case .notStarted:
                         self.playbackState = .playing
                         self.onPlaybackStarted(self)
-                        self.analyticsProvider?.playbackStartedEvent(player: self)
+                        self.currentAsset?.analyticsProvider?.playbackStartedEvent(player: self)
                     case .paused:
                         self.playbackState = .playing
                         self.onPlaybackResumed(self)
-                        self.analyticsProvider?.playbackResumedEvent(player: self)
+                        self.currentAsset?.analyticsProvider?.playbackResumedEvent(player: self)
                     case .playing:
+                        return
+                    case .stopped:
                         return
                     }
                 }
@@ -776,7 +780,9 @@ extension Player {
                     case .playing:
                         self.playbackState = .paused
                         self.onPlaybackPaused(self)
-                        self.analyticsProvider?.playbackPausedEvent(player: self)
+                        self.currentAsset?.analyticsProvider?.playbackPausedEvent(player: self)
+                    case .stopped:
+                        return
                     }
                 }
             }
