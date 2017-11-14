@@ -56,12 +56,12 @@ Authenticate(environment: environment)
     .login(username: "username", password: "password")
     .request()
     .validate()
-    .response{ (response: ExposureResponse<Credentials>) in
-    if let error = response.error {
+    .response{
+    if let error = $0.error {
         // Handle typed ExposureError
     }
 
-    if let sessionToken = response.value.sessionToken {
+    if let sessionToken = $0.value.sessionToken {
         // Proceed, possibly storing the token for later use
     }
 }
@@ -93,12 +93,12 @@ let request = Entitlement(environment: environment
     .vod(assetId: "qwerty")
     .request()
     .validate()
-    .response{ (response: ExposureResponse<PlaybackEntitlement>) in
-    if let error = response.error {
+    .response{
+    if let error = $0.error {
         // Handle typed ExposureError
     }
 
-    if let entitlement = response.value {
+    if let entitlement = $0.value {
         // Proceed with playback using entitlement
     }
 }
