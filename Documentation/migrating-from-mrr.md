@@ -9,13 +9,13 @@ A main goal with the new architecture has been to promote a modular approach. Cu
 Each module center around a *core* use case, such as playback or analytics. The initial release will contain [`Player`](https://github.com/EricssonBroadcastServices/iOSClientPlayer), [`Exposure`](https://github.com/EricssonBroadcastServices/iOSClientExposure), [`Utilities`](https://github.com/EricssonBroadcastServices/iOSClientUtilities), [`Analytics`](https://github.com/EricssonBroadcastServices/iOSClientAnalytics) and a [reference app](https://github.com/EricssonBroadcastServices/iOSClientRefApp) implementing and demonstrating the system together.
 
 #### Player
-`Player` contains a fully fledged media player, based on the native `AVPlayer`. It exposes key functionality such as *Playback Control*, *Fairplay* `DRM` protection, *Event publishing*, *Pluggable analytics provider* and *Airplay. Designed and built with stability, resilience and usability in mind.
+`Player` contains a fully fledged media player, based on the native `AVPlayer`. It exposes key functionality such as *Playback Control*, *Fairplay* `DRM` protection, *Event publishing*, *Pluggable analytics provider* and *Airplay*. Designed and built with stability, resilience and usability in mind.
 
 #### Exposure
 `Exposure` conveys seamless integration with the *EMP Exposure Layer* and enables client applications quick access to functionality such as *authentication*, *entitlement requests* and *EPG*.
 
 #### Analytics
-`Analytics`* module provides an out of the box Analytics Dispatcher* which seamlessly integrates with the EMP platform. It delivers the full *EMP* analytics specification while at the same time offering customization where needed.
+`Analytics` module provides an out of the box *Analytics Dispatcher* which seamlessly integrates with the EMP platform. It delivers the full *EMP* analytics specification while at the same time offering customization where needed.
 
 Dispatch is done in real time in self contained batches. In the event of network disturbances or other errors, *payload* is encrypted and stored on device for later delivery.
 
@@ -50,21 +50,21 @@ if (success) {
 The new architecture implements a different approach. The `SessionToken` itself is represented as a `typed object` in the form of a `struct`. It is aquired through authentication related *endpoint* integration, `Authenticate`, which has this single responsbility.
 
 ```Swift
-let environment = Environment(baseUrl: "https://path.to.host", customer: "CUSTOMER" businessUnit: "BUSINESSUNIT")
+let environment = Environment(baseUrl: "https://path.to.host", customer: "CUSTOMER", businessUnit: "BUSINESSUNIT")
 
 Authenticate(environment: environment)
     .login(username: "username", password: "password")
     .request()
     .validate()
     .response{
-    if let error = $0.error {
-        // Handle typed ExposureError
-    }
+        if let error = $0.error {
+            // Handle typed ExposureError
+        }
 
-    if let sessionToken = $0.value.sessionToken {
-        // Proceed, possibly storing the token for later use
+        if let sessionToken = $0.value.sessionToken {
+            // Proceed, possibly storing the token for later use
+        }
     }
-}
 ``` 
 
 This separated workflow enables a less tightly coupled application architecture. Client developers are no longer required to pass around a *master object*, ie `EmpClient`, to handle completely different user experiences. Login is now decoupled from playback which in turn is decoupled from entitlement requests, content discovery and so on.
@@ -94,14 +94,14 @@ let request = Entitlement(environment: environment
     .request()
     .validate()
     .response{
-    if let error = $0.error {
-        // Handle typed ExposureError
+        if let error = $0.error {
+            // Handle typed ExposureError
+        }
+            
+        if let entitlement = $0.value {
+            // Proceed with playback using entitlement
+        }
     }
-
-    if let entitlement = $0.value {
-        // Proceed with playback using entitlement
-    }
-}
 ```
 
 ### Playback Configuration
