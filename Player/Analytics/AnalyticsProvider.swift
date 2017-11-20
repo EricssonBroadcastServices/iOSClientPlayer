@@ -8,73 +8,95 @@
 
 import Foundation
 
-/// Specifies a set of events for which analytics can be associated.
-public protocol AnalyticsProvider {
+/// Typealias for an `EventResponder` associated with analytics.
+public typealias AnalyticsProvider = EventResponder
+
+/// Specifies a set of events that will be listened to.
+public protocol EventResponder {
     /// Triggered when the requested media is created, but not yet loaded
     ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackCreatedEvent(player: Player)
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onCreated<Context>(tech: Tech<Context>, source: Context.Source)
     
     /// Triggered once the requested media is loaded
     ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackPreparedEvent(player: Player)
-    
-    /// Triggered if the player encounters an error during its lifetime
-    ///
-    /// - parameter player: `Player` broadcasting the event
-    /// - parameter error: `PlayerError` causing the event to fire
-    func playbackErrorEvent(player: Player, error: PlayerError)
-    
-    /// Triggered when the bitrate changes
-    ///
-    /// - parameter event: Event describing the bitrate change
-    func playbackBitrateChanged(event: BitrateChangedEvent)
-    
-    /// Triggered when buffering is required
-    ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackBufferingStarted(player: Player)
-    
-    /// Triggered when buffering finished
-    ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackBufferingStopped(player: Player)
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onPrepared<Context>(tech: Tech<Context>, source: Context.Source)
     
     /// Triggered when playback is ready to start
     ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackReadyEvent(player: Player)
-    
-    /// Triggered once playback reaches end of stream
-    ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackCompletedEvent(player: Player)
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onReady<Context>(tech: Tech<Context>, source: Context.Source)
     
     /// Triggered once the playback starts for the first time
     ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackStartedEvent(player: Player)
-    
-    /// Triggered by the user aborting playback
-    ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackAbortedEvent(player: Player)
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onStarted<Context>(tech: Tech<Context>, source: Context.Source)
     
     /// Triggered by the user pausing playback
     ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackPausedEvent(player: Player)
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onPaused<Context>(tech: Tech<Context>, source: Context.Source)
     
     /// Triggered by the user resuming playback
     ///
-    /// - parameter player: `Player` broadcasting the event
-    func playbackResumedEvent(player: Player)
-
-
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onResumed<Context>(tech: Tech<Context>, source: Context.Source)
+    
+    /// Triggered by the user aborting playback
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onAborted<Context>(tech: Tech<Context>, source: Context.Source)
+    
+    /// Triggered once playback reaches end of stream
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onCompleted<Context>(tech: Tech<Context>, source: Context.Source)
+    
+    /// Triggered if the player encounters an error during its lifetime
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    /// - parameter error: `Error` encountered
+    func onError<Context>(tech: Tech<Context>, source: Context.Source, error: Context.ContextError)
+    
+    /// Triggered when the bitrate changes
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    /// - parameter bitrate: New bitrate
+    func onBitrateChanged<Context>(tech: Tech<Context>, source: Context.Source, bitrate: Double)
+    
+    /// Triggered when buffering is required
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onBufferingStarted<Context>(tech: Tech<Context>, source: Context.Source)
+    
+    /// Triggered when buffering finished
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onBufferingStopped<Context>(tech: Tech<Context>, source: Context.Source)
+    
     /// Triggered by the user seeking to time
     ///
-    /// - parameter player: `Player` broadcasting the evet
-    /// - parameter offset: `Int64` time beeing seekd
-    func playbackScrubbedTo(player: Player, offset: Int64)
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    /// - parameter offset: New offset
+    func onScrubbedTo<Context>(tech: Tech<Context>, source: Context.Source, offset: Int64)
+    
+    /// Triggered when the duration of `source` changes
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    func onDurationChanged<Context>(tech: Tech<Context>, source: Context.Source)
 }

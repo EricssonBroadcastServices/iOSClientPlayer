@@ -152,7 +152,7 @@ catch {
 }
 ```
 
-Configuration, rights, `DRM` and everything related to creating and managing a playback session is included in the `PlaybackEntitlement` retrieved through `Exposure.
+Configuration, rights, `DRM` and everything related to creating and managing a playback session is included in the `PlaybackEntitlement` retrieved through *Exposure*.
 
 ### Player Lifecycle
 Streaming media is an interently asynchronous process. Listening and responding to playback related events is central to a smooth user experience. This is an area where, while the implementation might differ, the two clients have a similair approach.

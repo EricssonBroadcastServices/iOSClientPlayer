@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		7602E8891F38341A00601CD4 /* SessionShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7602E8881F38341A00601CD4 /* SessionShift.swift */; };
 		76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
-		76139F811F1CD30700822023 /* AnalyticsEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F801F1CD30700822023 /* AnalyticsEventPublisher.swift */; };
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
 		764863641EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764863621EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift */; };
 		764863651EE6CDB600083DB5 /* SWXMLHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764863631EE6CDB600083DB5 /* SWXMLHash.swift */; };
@@ -62,7 +61,6 @@
 /* Begin PBXFileReference section */
 		7602E8881F38341A00601CD4 /* SessionShift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionShift.swift; sourceTree = "<group>"; };
 		76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
-		76139F801F1CD30700822023 /* AnalyticsEventPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsEventPublisher.swift; sourceTree = "<group>"; };
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
 		764863621EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SWXMLHash+TypeConversion.swift"; sourceTree = "<group>"; };
 		764863631EE6CDB600083DB5 /* SWXMLHash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWXMLHash.swift; sourceTree = "<group>"; };
@@ -137,7 +135,6 @@
 			isa = PBXGroup;
 			children = (
 				76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */,
-				76139F801F1CD30700822023 /* AnalyticsEventPublisher.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -207,6 +204,22 @@
 			path = Observation;
 			sourceTree = "<group>";
 		};
+		766AC2271FC2F89300843FEF /* MediaSource */ = {
+			isa = PBXGroup;
+			children = (
+				766AC1E11FC2E61100843FEF /* MediaSource.swift */,
+				766AC2281FC2F89300843FEF /* Manifest */,
+			);
+			path = MediaSource;
+			sourceTree = "<group>";
+		};
+		766AC2281FC2F89300843FEF /* Manifest */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Manifest;
+			sourceTree = "<group>";
+		};
 		768162B61F584DF1003C654E /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
@@ -252,6 +265,7 @@
 				76139F7D1F1CCFD600822023 /* Analytics */,
 				76A843731EA7819D00BDAF2C /* Events */,
 				76A843761EA7819D00BDAF2C /* Extensions */,
+				766AC2271FC2F89300843FEF /* MediaSource */,
 				76A843851EA7819D00BDAF2C /* Protocols */,
 				766AC1E31FC2E72B00843FEF /* Tech */,
 				76A843891EA7819D00BDAF2C /* Views */,
@@ -303,7 +317,6 @@
 				76A843881EA7819D00BDAF2C /* MediaRendering.swift */,
 				7602E8881F38341A00601CD4 /* SessionShift.swift */,
 				766AC1DF1FC2E5DE00843FEF /* PlaybackContext.swift */,
-				766AC1E11FC2E61100843FEF /* MediaSource.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -454,7 +467,6 @@
 				766AC2141FC2F6B700843FEF /* AVAsset+LoadableKeys.swift in Sources */,
 				76A8439B1EA7819D00BDAF2C /* MediaPlayback.swift in Sources */,
 				766AC2181FC2F6B700843FEF /* HLSNative.swift in Sources */,
-				76139F811F1CD30700822023 /* AnalyticsEventPublisher.swift in Sources */,
 				766AC1E51FC2E73B00843FEF /* Tech.swift in Sources */,
 				766AC21F1FC2F6B700843FEF /* Observer.swift in Sources */,
 				766AC1E01FC2E5DE00843FEF /* PlaybackContext.swift in Sources */,

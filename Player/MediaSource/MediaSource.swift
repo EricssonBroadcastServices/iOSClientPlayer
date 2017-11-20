@@ -9,7 +9,6 @@
 import Foundation
 
 public protocol MediaSource {
-    associatedtype SourceError: MediaSourceError
     associatedtype Connector: AnalyticsConnector
     var analyticsConnector: Connector { get }
     
@@ -21,15 +20,13 @@ public protocol MediaSource {
     
     /// The location for this media
     var url: URL { get }
-    
-    //    func load<Tech: Tech>(using tech: Tech, callback: @escaping (Tech.TechError?) -> Void)
 }
 
-extension MediaSource {
-    func loadableBy(tech: Tech<Self>) -> Bool {
-        return false
-    }
-}
+//extension MediaSource {
+//    func loadableBy(tech: Tech<Self>) -> Bool {
+//        return false
+//    }
+//}
 
 extension MediaSource {
     var externalDrmAgent: ExternalDrm? {

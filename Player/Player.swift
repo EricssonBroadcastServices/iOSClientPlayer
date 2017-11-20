@@ -11,54 +11,70 @@ import AVFoundation
 
 
 
-public struct ManifestContext: PlaybackContext {
-    public typealias Source = Manifest
-    public let source: Manifest
+public final class ManifestContext: PlaybackContext {
+    public typealias ContextError = ManifestContextError
     
-    public let preferredTech: Tech<Manifest>? = HLSNative<Manifest>()
+    public typealias Source = Manifest
+    
+    func manifest(from url: URL) -> Manifest {
+        let source = Manifest(playSessionId: UUID().uuidString,
+                              url: url)
+        source.analyticsConnector.providers = analyticsGenerator(source)
+        return source
+    }
+    
+    public let preferredTech: Tech<ManifestContext>? = HLSNative<ManifestContext>()
     public var analyticsGenerator: (Source) -> [AnalyticsProvider] = { _ in return [] }
 }
 
-public struct Manifest: MediaSource {
-    public typealias SourceError = ManifestError
-    
+public class Manifest: MediaSource {
+    public let analyticsConnector: PassThroughConnector = PassThroughConnector()
     public let drmAgent = DrmAgent.selfContained
     public let playSessionId: String
     public let url: URL
     
-    func loadableBy(tech: Tech<Manifest>) -> Bool {
-        return tech is HLSNative<Manifest>
+    public init(playSessionId: String, url: URL) {
+        self.playSessionId = playSessionId
+        self.url = url
     }
+//    func loadableBy(tech: Tech<ManifestContext>) -> Bool {
+//        return tech is HLSNative<ManifestContext>
+//    }
 }
 
-public enum ManifestError: MediaSourceError {
+public enum ManifestContextError: PlaybackContextError {
+    case source(reason: Error)
     case tech(reason: Error)
     case drm(reason: Error)
     
-    public static func techError(from error: Error) -> ManifestError {
+    public static func sourceError(error: Error) -> ManifestContextError {
+        return .source(reason: error)
+    }
+    
+    public static func techError(from error: Error) -> ManifestContextError {
         return .tech(reason: error)
     }
     
-    public static func drmError(from error: Error) -> ManifestError {
+    public static func drmError(from error: Error) -> ManifestContextError {
         return .drm(reason: error)
     }
 }
 
 extension Player where Context == ManifestContext {
-    func play(manifest: Manifest) {
+    func logAnalytics() -> Self {
+        context.analyticsGenerator = { _ in [AnalyticsLogger()] }
+    }
+    
+    func stream(url: URL) {
         for tech in techs {
-            if manifest.loadableBy(tech: tech) {
-                tech.load(source: manifest)
+            if let native = tech as? HLSNative<Context> {
+                let manifest = context.manifest(from: url)
+                native.load(source: manifest)
                 break
             }
         }
     }
 }
-
-// PlaybackContext - ExposureContext
-// MediaSource - Entitlement
-// DrmAgent.ExternalDrm - ExposureFairplayRequester
-
 
 
 public enum DrmAgent {
@@ -66,47 +82,147 @@ public enum DrmAgent {
     case external(agent: ExternalDrm)
 }
 
-public protocol MediaSourceError: Error {
+public protocol ExternalDrm { }
+
+public protocol PlaybackContextError: Error {
+    static func sourceError(error: Error) -> Self
     static func techError(from error: Error) -> Self
     static func drmError(from error: Error) -> Self
+}
+
+
+
+public protocol AnalyticsConnector: EventResponder {
+    var providers: [AnalyticsProvider] { get set }
+}
+
+public class PassThroughConnector: AnalyticsConnector {
+    public var providers: [AnalyticsProvider] = []
     
+    public func onCreated<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onCreated(tech: tech, source: source) }
+    }
+    
+    public func onPrepared<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onPrepared(tech: tech, source: source) }
+    }
+    
+    public func onReady<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onReady(tech: tech, source: source) }
+    }
+    
+    public func onStarted<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onStarted(tech: tech, source: source) }
+    }
+    
+    public func onPaused<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onPaused(tech: tech, source: source) }
+    }
+    
+    public func onResumed<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onResumed(tech: tech, source: source) }
+    }
+    
+    public func onAborted<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onAborted(tech: tech, source: source) }
+    }
+    
+    public func onCompleted<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onCompleted(tech: tech, source: source) }
+    }
+    
+    public func onError<Context>(tech: Tech<Context>, source: Context.Source, error: Context.ContextError) {
+        providers.forEach{ $0.onError(tech: tech, source: source, error: error) }
+    }
+    
+    public func onBitrateChanged<Context>(tech: Tech<Context>, source: Context.Source, bitrate: Double) {
+        providers.forEach{ $0.onBitrateChanged(tech: tech, source: source, bitrate: bitrate) }
+    }
+    
+    public func onBufferingStarted<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onBufferingStarted(tech: tech, source: source) }
+    }
+    
+    public func onBufferingStopped<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onBufferingStopped(tech: tech, source: source) }
+    }
+    
+    public func onScrubbedTo<Context>(tech: Tech<Context>, source: Context.Source, offset: Int64) {
+        providers.forEach{ $0.onScrubbedTo(tech: tech, source: source, offset: offset) }
+    }
+    
+    public func onDurationChanged<Context>(tech: Tech<Context>, source: Context.Source) {
+        providers.forEach{ $0.onDurationChanged(tech: tech, source: source) }
+    }
 }
 
-public protocol ExternalDrm {
-//    associatedtype DrmError: Error
+public struct AnalyticsLogger: AnalyticsProvider {
+    public func onCreated<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"🏗 onCreated",source.playSessionId)
+    }
+    
+    public func onPrepared<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"🛁 onPrepared",source.playSessionId)
+    }
+    
+    public func onReady<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"👍 onReady",source.playSessionId)
+    }
+    
+    public func onStarted<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"🎬 onStarted",source.playSessionId)
+    }
+    
+    public func onPaused<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"⏸ onPaused",source.playSessionId)
+    }
+    
+    public func onResumed<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"▶️ onResumed",source.playSessionId)
+    }
+    
+    public func onAborted<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"⏹ onAborted",source.playSessionId)
+    }
+    
+    public func onCompleted<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"🏁 onCompleted",source.playSessionId)
+    }
+    
+    public func onError<Context>(tech: Tech<Context>, source: Context.Source, error: Context.ContextError) {
+        print("🏷 AnalyticsLogger",tech.name,"🚨 onError",source.playSessionId)
+    }
+    
+    public func onBitrateChanged<Context>(tech: Tech<Context>, source: Context.Source, bitrate: Double) {
+        print("🏷 AnalyticsLogger",tech.name,"📶 onBitrateChanged [\(bitrate)]",source.playSessionId)
+    }
+    
+    public func onBufferingStarted<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"⏳ onBufferingStarted",source.playSessionId)
+    }
+    
+    public func onBufferingStopped<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"⌛ onBufferingStopped",source.playSessionId)
+    }
+    
+    public func onScrubbedTo<Context>(tech: Tech<Context>, source: Context.Source, offset: Int64) {
+        print("🏷 AnalyticsLogger",tech.name,"🕘 onScrubbedTo [\(offset)]",source.playSessionId)
+    }
+    
+    public func onDurationChanged<Context>(tech: Tech<Context>, source: Context.Source) {
+        print("🏷 AnalyticsLogger",tech.name,"📅 onDurationChanged",source.playSessionId)
+    }
 }
-
-
-public protocol AnalyticsConnector {
-    func onCreated<Source>(tech: Tech<Source>, source: Source)
-    func onPrepared<Source>(tech: Tech<Source>, source: Source)
-    func onReady<Source>(tech: Tech<Source>, source: Source)
-    func onStarted<Source>(tech: Tech<Source>, source: Source)
-    func onPaused<Source>(tech: Tech<Source>, source: Source)
-    func onResumed<Source>(tech: Tech<Source>, source: Source)
-    func onAborted<Source>(tech: Tech<Source>, source: Source)
-    func onCompleted<Source>(tech: Tech<Source>, source: Source)
-    func onError<Source>(tech: Tech<Source>, source: Source, error: Source.SourceError)
-
-    func onBitrateChanged<Source>(tech: Tech<Source>, source: Source, bitrate: Double)
-    func onBufferingStarted<Source>(tech: Tech<Source>, source: Source)
-    func onBufferingStopped<Source>(tech: Tech<Source>, source: Source)
-    func onScrubbedTo<Source>(tech: Tech<Source>, source: Source, offset: Int64)
-    func onDurationChanged<Source>(tech: Tech<Source>, source: Source)
-}
-
-
-
 
 
 
 public final class Player<Context: PlaybackContext> {
-    private let techs: [Tech<Context.Source>]
-    fileprivate var selectedTech: Tech<Context.Source>
+    fileprivate(set) public var techs: [Tech<Context>]
+    fileprivate(set) public var selectedTech: Tech<Context>
     fileprivate(set) public var source: Context.Source?
     
-    private let context: Context
-    public init(context: Context, defaultTech: Tech<Context.Source> = HLSNative<Context.Source>()) {
+    fileprivate(set) public var context: Context
+    public init(context: Context, defaultTech: Tech<Context> = HLSNative<Context>()) {
         self.context = context
         self.selectedTech = context.preferredTech ?? defaultTech
         self.techs = [context.preferredTech, defaultTech].flatMap{ $0 }
@@ -122,39 +238,40 @@ public final class Player<Context: PlaybackContext> {
     public var autoplay: Bool = false
     
     
-    /*
-     Periodic Observer: AVPlayer
-     
-     open func addPeriodicTimeObserver(forInterval interval: CMTime, queue: DispatchQueue?, using block: @escaping (CMTime) -> Swift.Void) -> Any
-     open func addBoundaryTimeObserver(forTimes times: [NSValue], queue: DispatchQueue?, using block: @escaping () -> Swift.Void) -> Any
-     open func removeTimeObserver(_ observer: Any)
-    */
-    
     // MARK: PlayerEventPublisher
     // Stores the private callbacks specified by calling the associated `PlayerEventPublisher` functions.
-    fileprivate var onPlaybackCreated: (Player) -> Void = { _ in }
-    fileprivate var onPlaybackPrepared: (Player) -> Void = { _ in }
-    fileprivate var onError: (Player, PlayerError) -> Void = { _,_  in }
+    fileprivate var onPlaybackCreated: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onPlaybackPrepared: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onError: (Tech<Context>, Context.Source, Context.ContextError) -> Void = { _,_,_  in }
     
-    fileprivate var onBitrateChanged: (BitrateChangedEvent) -> Void = { _ in }
-    fileprivate var onBufferingStarted: (Player) -> Void = { _ in }
-    fileprivate var onBufferingStopped: (Player) -> Void = { _ in }
-    fileprivate var onDurationChanged: (Player) -> Void = { _ in }
+    fileprivate var onBitrateChanged: (Tech<Context>, Context.Source, Double) -> Void = { _,_,_ in }
+    fileprivate var onBufferingStarted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onBufferingStopped: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onDurationChanged: (Tech<Context>, Context.Source) -> Void = { _,_ in }
     
-    fileprivate var onPlaybackReady: (Player) -> Void = { _ in }
-    fileprivate var onPlaybackCompleted: (Player) -> Void = { _ in }
-    fileprivate var onPlaybackStarted: (Player) -> Void = { _ in }
-    fileprivate var onPlaybackAborted: (Player) -> Void = { _ in }
-    fileprivate var onPlaybackPaused: (Player) -> Void = { _ in }
-    fileprivate var onPlaybackResumed: (Player) -> Void = { _ in }
-    fileprivate var onPlaybackScrubbed: (Player, Int64) -> Void = { _,_  in }
-    
-    // MARK: AnalyticProvider
-    public var analyticsProviderGenerator: (() -> AnalyticsProvider)? = nil
+    fileprivate var onPlaybackReady: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onPlaybackCompleted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onPlaybackStarted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onPlaybackAborted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onPlaybackPaused: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onPlaybackResumed: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    fileprivate var onPlaybackScrubbed: (Tech<Context>, Context.Source, Int64) -> Void = { _,_,_  in }
     
     // MARK: SessionShift
     /// `Bookmark` is a private state tracking `SessionShift` status. It should not be exposed externally.
     fileprivate var bookmark: Bookmark = .notEnabled
+}
+
+extension Player {
+    /// Convenience function for setting an `AnalyticsProvider`, providing a chaining interface for configuration.
+    ///
+    /// - parameter provider: `AnalyticsProvider` to publish events to.
+    /// - returns: `Self`
+    @discardableResult
+    public func analytics(callback: @escaping (Context.Source) -> [AnalyticsProvider]) -> Self {
+        context.analyticsGenerator = callback
+        return self
+    }
 }
 
 // MARK: - PlayerEventPublisher
@@ -370,11 +487,6 @@ extension Player: MediaPlayback {
     public var currentBitrate: Double? {
         return selectedTech.currentBitrate
     }
-}
-
-// MARK: - AnalyticsEventPublisher
-extension Player: AnalyticsEventPublisher {
-    
 }
 
 //// MARK: - Playback

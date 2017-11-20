@@ -8,7 +8,9 @@
 
 import UIKit
 
-open class Tech<Source: MediaSource>: MediaRendering, MediaPlayback {
+open class Tech<Context: PlaybackContext>: MediaRendering, MediaPlayback {
+    public let name: String = "AbstractTech"
+    
     public func configure(playerView: UIView) { }
     
     public func play() { }
@@ -27,5 +29,5 @@ open class Tech<Source: MediaSource>: MediaRendering, MediaPlayback {
     
     public var currentBitrate: Double? { return nil }
     
-    public func load(source: Source) { }
+    public func load(source: Context.Source) { }
 }

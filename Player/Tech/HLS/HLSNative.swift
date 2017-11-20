@@ -8,22 +8,22 @@
 
 import AVFoundation
 
-public class HLSNative<Source: MediaSource>: Tech<Source> {
+public class HLSNative<Context: PlaybackContext>: Tech<Context> {
+    public let name: String = "HLSNative"
     
     //    fileprivate var currentSource:
-    public override func load(source: Source) {
+    public override func load(source: Context.Source) {
         let drm = source.externalDrmAgent as? FairplayRequester
-        let mediaAsset = MediaAsset<Source>(source: source)
+        let mediaAsset = MediaAsset<Context.Source>(source: source)
         
         // Unsubscribe any current item
         currentAsset?.itemObserver.stopObservingAll()
         currentAsset?.itemObserver.unsubscribeAll()
         
-        // THIS IS WHERE WE TRIGGER ASSET CHANGE CALLBACK
-        
         // TODO: Stop playback?
         playbackState = .stopped
         avPlayer.pause()
+        onPlaybackAborted(self)
         if let oldSource = currentAsset?.source { oldSource.analyticsConnector.onAborted(tech: self, source: oldSource) }
         
         // Start notifications on new session
@@ -41,7 +41,7 @@ public class HLSNative<Source: MediaSource>: Tech<Source> {
             }
             
             `self`.onPlaybackPrepared(`self`)
-            mediaAsset.source.analyticsConnector.onPaused(tech: `self`, source: mediaAsset.source)
+            mediaAsset.source.analyticsConnector.onPrepared(tech: `self`, source: mediaAsset.source)
             
             `self`.readyPlayback(with: mediaAsset)
         }
@@ -53,7 +53,7 @@ public class HLSNative<Source: MediaSource>: Tech<Source> {
     /// The currently active `MediaAsset` is stored here.
     ///
     /// This may be `nil` due to several reasons, for example before any media is loaded.
-    fileprivate var currentAsset: MediaAsset<Source>?
+    fileprivate var currentAsset: MediaAsset<Context.Source>?
     
     /// `BufferState` is a private state tracking buffering events. It should not be exposed externally.
     fileprivate var bufferState: BufferState = .notInitialized
