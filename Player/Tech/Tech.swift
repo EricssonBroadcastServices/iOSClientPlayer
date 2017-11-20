@@ -9,8 +9,6 @@
 import UIKit
 
 open class Tech<Context: PlaybackContext>: MediaRendering, MediaPlayback {
-    public let name: String = "AbstractTech"
-    
     public func configure(playerView: UIView) { }
     
     public func play() { }

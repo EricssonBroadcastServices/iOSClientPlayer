@@ -158,59 +158,59 @@ public class PassThroughConnector: AnalyticsConnector {
 
 public struct AnalyticsLogger: AnalyticsProvider {
     public func onCreated<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"🏗 onCreated",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"🏗 onCreated",source.playSessionId)
     }
     
     public func onPrepared<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"🛁 onPrepared",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"🛁 onPrepared",source.playSessionId)
     }
     
     public func onReady<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"👍 onReady",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"👍 onReady",source.playSessionId)
     }
     
     public func onStarted<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"🎬 onStarted",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"🎬 onStarted",source.playSessionId)
     }
     
     public func onPaused<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"⏸ onPaused",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"⏸ onPaused",source.playSessionId)
     }
     
     public func onResumed<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"▶️ onResumed",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"▶️ onResumed",source.playSessionId)
     }
     
     public func onAborted<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"⏹ onAborted",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"⏹ onAborted",source.playSessionId)
     }
     
     public func onCompleted<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"🏁 onCompleted",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"🏁 onCompleted",source.playSessionId)
     }
     
     public func onError<Context>(tech: Tech<Context>, source: Context.Source, error: Context.ContextError) {
-        print("🏷 AnalyticsLogger",tech.name,"🚨 onError",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"🚨 onError",source.playSessionId)
     }
     
     public func onBitrateChanged<Context>(tech: Tech<Context>, source: Context.Source, bitrate: Double) {
-        print("🏷 AnalyticsLogger",tech.name,"📶 onBitrateChanged [\(bitrate)]",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"📶 onBitrateChanged [\(bitrate)]",source.playSessionId)
     }
     
     public func onBufferingStarted<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"⏳ onBufferingStarted",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"⏳ onBufferingStarted",source.playSessionId)
     }
     
     public func onBufferingStopped<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"⌛ onBufferingStopped",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"⌛ onBufferingStopped",source.playSessionId)
     }
     
     public func onScrubbedTo<Context>(tech: Tech<Context>, source: Context.Source, offset: Int64) {
-        print("🏷 AnalyticsLogger",tech.name,"🕘 onScrubbedTo [\(offset)]",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"🕘 onScrubbedTo [\(offset)]",source.playSessionId)
     }
     
     public func onDurationChanged<Context>(tech: Tech<Context>, source: Context.Source) {
-        print("🏷 AnalyticsLogger",tech.name,"📅 onDurationChanged",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"📅 onDurationChanged",source.playSessionId)
     }
 }
 

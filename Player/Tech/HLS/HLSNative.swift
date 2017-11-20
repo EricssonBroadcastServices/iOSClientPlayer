@@ -9,12 +9,12 @@
 import AVFoundation
 
 public class HLSNative<Context: PlaybackContext>: Tech<Context> {
-    public let name: String = "HLSNative"
     
-    //    fileprivate var currentSource:
     public override func load(source: Context.Source) {
         let drm = source.externalDrmAgent as? FairplayRequester
         let mediaAsset = MediaAsset<Context.Source>(source: source)
+        
+        let t = HLSNative(name: "Test")
         
         // Unsubscribe any current item
         currentAsset?.itemObserver.stopObservingAll()
@@ -39,7 +39,6 @@ public class HLSNative<Context: PlaybackContext>: Tech<Context> {
                 `self`.handle(error: error!, for: mediaAsset)
                 return
             }
-            
             `self`.onPlaybackPrepared(`self`)
             mediaAsset.source.analyticsConnector.onPrepared(tech: `self`, source: mediaAsset.source)
             
@@ -61,8 +60,7 @@ public class HLSNative<Context: PlaybackContext>: Tech<Context> {
     /// `PlaybackState` is a private state tracker and should not be exposed externally.
     fileprivate var playbackState: PlaybackState = .notStarted
     
-    public override init() {
-        super.init()
+    override public init() {
         avPlayer = AVPlayer()
         
         handleCurrentItemChanges()
@@ -90,7 +88,7 @@ public class HLSNative<Context: PlaybackContext>: Tech<Context> {
     /// Once the `MediaAsset` has been *prepared* through `mediaAsset.prepare(loading: callback:)` the relevant `KVO` and `Notificaion`s are subscribed.
     ///
     /// Finally, once the `Player` is configured, the `currentMedia` is replaced with the newly created one. The system now awaits playback status to return `.readyToPlay`.
-    fileprivate func readyPlayback(with mediaAsset: MediaAsset<Source>) {
+    fileprivate func readyPlayback(with mediaAsset: MediaAsset<Context.Source>) {
         currentAsset = mediaAsset
         
         let playerItem = mediaAsset.playerItem
