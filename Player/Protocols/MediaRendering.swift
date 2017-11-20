@@ -16,10 +16,4 @@ public protocol MediaRendering {
     /// - parameter playerView: *User supplied* view to configure for playback rendering.
     func configure(playerView: UIView)
     
-    /// Should offers advanced configuration behavior specified by `closure`.
-    ///
-    /// Rendering is expected to take place in the `AVPlayerLayer` returned by `closure`.
-    ///
-    /// - parameter callback: closure detailing the custom rendering.
-    func configureRendering(closure: () -> AVPlayerLayer)
 }

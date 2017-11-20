@@ -36,4 +36,7 @@ public protocol MediaPlayback {
     ///
     /// - note: If this is a live stream, duration should be `nil`
     var duration: Int64? { get }
+    
+    /// The throughput required to play the stream, as advertised by the server, in *bits per second*. Should return nil if no bitrate can be reported.
+    var currentBitrate: Double? { get }
 }
