@@ -27,6 +27,5 @@ open class Tech<Source: MediaSource>: MediaRendering, MediaPlayback {
     
     public var currentBitrate: Double? { return nil }
     
-    
     public func load(source: Source) { }
 }
