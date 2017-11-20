@@ -10,6 +10,6 @@ import Foundation
 import AVFoundation
 
 /// Specialized *named* protocol extending `AVAssetResourceLoaderDelegate` intended to be used for *Fairplay* `DRM` management.
-public protocol FairplayRequester: AVAssetResourceLoaderDelegate {
+public protocol FairplayRequester: ExternalDrm, AVAssetResourceLoaderDelegate {
     
 }
