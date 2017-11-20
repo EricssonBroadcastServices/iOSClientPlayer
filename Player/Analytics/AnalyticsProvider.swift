@@ -61,12 +61,14 @@ public protocol EventResponder {
     /// - parameter source: `MediaSource` causing the event
     func onCompleted<Context>(tech: Tech<Context>, source: Context.Source)
     
+    
+    
     /// Triggered if the player encounters an error during its lifetime
     ///
     /// - parameter tech: `Tech` broadcasting the event
     /// - parameter source: `MediaSource` causing the event
     /// - parameter error: `Error` encountered
-    func onError<Context>(tech: Tech<Context>, source: Context.Source, error: Context.ContextError)
+    func onError<Context>(tech: Tech<Context>?, source: Context.Source?, error: Context.ContextError)
     
     /// Triggered when the bitrate changes
     ///

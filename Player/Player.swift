@@ -131,7 +131,7 @@ public class PassThroughConnector: AnalyticsConnector {
         providers.forEach{ $0.onCompleted(tech: tech, source: source) }
     }
     
-    public func onError<Context>(tech: Tech<Context>, source: Context.Source, error: Context.ContextError) {
+    public func onError<Context>(tech: Tech<Context>?, source: Context.Source?, error: Context.ContextError) {
         providers.forEach{ $0.onError(tech: tech, source: source, error: error) }
     }
     
@@ -189,7 +189,7 @@ public struct AnalyticsLogger: AnalyticsProvider {
         print("🏷 AnalyticsLogger",type(of: tech),"🏁 onCompleted",source.playSessionId)
     }
     
-    public func onError<Context>(tech: Tech<Context>, source: Context.Source, error: Context.ContextError) {
+    public func onError<Context>(tech: Tech<Context>?, source: Context.Source?, error: Context.ContextError) {
         print("🏷 AnalyticsLogger",type(of: tech),"🚨 onError",source.playSessionId)
     }
     
@@ -215,17 +215,39 @@ public struct AnalyticsLogger: AnalyticsProvider {
 }
 
 
+public class EventDispatcher<Context: PlaybackContext> {
+    // MARK: EventPublisher
+    // Stores the private callbacks specified by calling the associated `EventPublisher` functions.
+    
+    internal(set) public var onPlaybackCreated: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onPlaybackPrepared: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onPlaybackReady: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onPlaybackStarted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onPlaybackPaused: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onPlaybackResumed: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onPlaybackAborted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onPlaybackCompleted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onError: (Tech<Context>?, Context.Source?, Context.ContextError) -> Void = { _,_,_  in }
+    internal(set) public var onBitrateChanged: (Tech<Context>, Context.Source, Double) -> Void = { _,_,_ in }
+    internal(set) public var onBufferingStarted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onBufferingStopped: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+    internal(set) public var onPlaybackScrubbed: (Tech<Context>, Context.Source, Int64) -> Void = { _,_,_  in }
+    internal(set) public var onDurationChanged: (Tech<Context>, Context.Source) -> Void = { _,_ in }
+}
 
 public final class Player<Context: PlaybackContext> {
     fileprivate(set) public var techs: [Tech<Context>]
     fileprivate(set) public var selectedTech: Tech<Context>
     fileprivate(set) public var source: Context.Source?
+    fileprivate(set) public var eventDispatcher: EventDispatcher<Context> = EventDispatcher()
     
     fileprivate(set) public var context: Context
     public init(context: Context, defaultTech: Tech<Context> = HLSNative<Context>()) {
         self.context = context
         self.selectedTech = context.preferredTech ?? defaultTech
         self.techs = [context.preferredTech, defaultTech].flatMap{ $0 }
+        
+        activate(tech: selectedTech)
     }
     
     /// Returns a token string uniquely identifying this playSession.
@@ -237,25 +259,11 @@ public final class Player<Context: PlaybackContext> {
     /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
     public var autoplay: Bool = false
     
+    private func activate(tech: Tech<Context>) {
+        tech.
+    }
     
-    // MARK: PlayerEventPublisher
-    // Stores the private callbacks specified by calling the associated `PlayerEventPublisher` functions.
-    fileprivate var onPlaybackCreated: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onPlaybackPrepared: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onError: (Tech<Context>, Context.Source, Context.ContextError) -> Void = { _,_,_  in }
     
-    fileprivate var onBitrateChanged: (Tech<Context>, Context.Source, Double) -> Void = { _,_,_ in }
-    fileprivate var onBufferingStarted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onBufferingStopped: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onDurationChanged: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    
-    fileprivate var onPlaybackReady: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onPlaybackCompleted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onPlaybackStarted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onPlaybackAborted: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onPlaybackPaused: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onPlaybackResumed: (Tech<Context>, Context.Source) -> Void = { _,_ in }
-    fileprivate var onPlaybackScrubbed: (Tech<Context>, Context.Source, Int64) -> Void = { _,_,_  in }
     
     // MARK: SessionShift
     /// `Bookmark` is a private state tracking `SessionShift` status. It should not be exposed externally.
@@ -275,107 +283,36 @@ extension Player {
 }
 
 // MARK: - PlayerEventPublisher
-extension Player: PlayerEventPublisher {
-    public typealias PlayerEventError = PlayerError
+extension Player: EventPublisher {
+    public typealias EventContext = Context
     
-    
-    // MARK: Lifecycle
     /// Sets the callback to fire when the associated media is created but not yet loaded. Playback is not yet ready to start.
-    ///
-    /// At this point the `AVURLAsset` has yet to perform async loading of values (such as `duration`, `tracks` or `playable`) through `loadValuesAsynchronously`.
     ///
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackCreated(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackCreated = callback
+    public func onPlaybackCreated(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onPlaybackCreated = callback
         return self
     }
     
     /// Sets the callback to fire when the associated media has loaded but is not playback ready.
     ///
-    /// At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
-    ///
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self
     @discardableResult
-    public func onPlaybackPrepared(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackPrepared = callback
+    public func onPlaybackPrepared(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onPlaybackPrepared = callback
         return self
     }
     
-    /// Sets the callback to fire whenever an `error` occurs. Errors are thrown from throughout the `player` lifecycle. Make sure to handle them. If appropriate, present valid information to *end users*.
-    ///
-    /// - parameter callback: callback to fire once the event is fired. `PlayerError` specifies that error.
-    /// - returns: `Self`
-    @discardableResult
-    public func onError(callback: @escaping (Player, PlayerError) -> Void) -> Self {
-        onError = callback
-        return self
-    }
-    
-    
-    // MARK: Configuration
-    /// Sets the callback to fire whenever the current *Bitrate* changes.
-    ///
-    /// - parameter callback: callback to fire once the event is fired. `BitrateChangedEvent` specifies the event.
-    /// - returns: `Self`
-    @discardableResult
-    public func onBitrateChanged(callback: @escaping (BitrateChangedEvent) -> Void) -> Self {
-        onBitrateChanged = callback
-        return self
-    }
-    
-    /// Sets the callback to fire once buffering started.
-    ///
-    /// - parameter callback: callback to fire once the event is fired.
-    /// - returns: `Self`
-    @discardableResult
-    public func onBufferingStarted(callback: @escaping (Player) -> Void) -> Self {
-        onBufferingStarted = callback
-        return self
-    }
-    
-    /// Sets the callback to fire once buffering stopped.
-    ///
-    /// - parameter callback: callback to fire once the event is fired.
-    /// - returns: `Self`
-    @discardableResult
-    public func onBufferingStopped(callback: @escaping (Player) -> Void) -> Self {
-        onBufferingStopped = callback
-        return self
-    }
-    
-    /// Sets the callback to fire once the current playback `duration` changes.
-    ///
-    /// - parameter callback: callback to fire once the event is fired.
-    /// - returns: `Self`
-    @discardableResult
-    public func onDurationChanged(callback: @escaping (Player) -> Void) -> Self {
-        onDurationChanged = callback
-        return self
-    }
-    
-    // MARK: Playback
     /// Sets the callback to fire once the associated media has loaded and is ready for playback. At this point, starting playback should be possible.
     ///
-    /// Status for the `AVPlayerItem` associated with the media in preparation has reached `.readyToPlay` state.
-    ///
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackReady(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackReady = callback
-        return self
-    }
-    
-    /// Sets the callback to fire once playback reached the end of the current media, ie when playback reaches `duration`.
-    ///
-    /// - parameter callback: callback to fire once the event is fired.
-    /// - returns: `Self`
-    @discardableResult
-    public func onPlaybackCompleted(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackCompleted = callback
+    public func onPlaybackReady(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onPlaybackReady = callback
         return self
     }
     
@@ -384,28 +321,18 @@ extension Player: PlayerEventPublisher {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackStarted(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackStarted = callback
+    public func onPlaybackStarted(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onPlaybackStarted = callback
         return self
     }
     
-    /// Sets the callback to fire once playback is stopped by user action.
+    /// Sets the callback to fire if playback rate for transitions from *non-zero* to *zero.
     ///
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackAborted(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackAborted = callback
-        return self
-    }
-    
-    /// Sets the callback to fire if playback rate for `AVPlayer` transitions from *non-zero* to *zero.
-    ///
-    /// - parameter callback: callback to fire once the event is fired.
-    /// - returns: `Self`
-    @discardableResult
-    public func onPlaybackPaused(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackPaused = callback
+    public func onPlaybackPaused(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onPlaybackPaused = callback
         return self
     }
     
@@ -416,21 +343,90 @@ extension Player: PlayerEventPublisher {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackResumed(callback: @escaping (Player) -> Void) -> Self {
-        onPlaybackResumed = callback
-        return self
-    }
-
-    /// Sets the callback to fire if user scrubs in player
-    /// 
-    /// - parameter callback: callback to fire once the event is fired.
-    /// - returns: `Self`
-    @discardableResult
-    public func onPlaybackScrubbed(callback: @escaping (Player, _ toTime: Int64) -> Void) -> Self {
-        onPlaybackScrubbed = callback
+    public func onPlaybackResumed(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onPlaybackResumed = callback
         return self
     }
     
+    /// Sets the callback to fire once playback is stopped by user action.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackAborted(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onPlaybackAborted = callback
+        return self
+    }
+    
+    /// Sets the callback to fire once playback reached the end of the current media, ie when playback reaches `duration`.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackCompleted(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onPlaybackCompleted = callback
+        return self
+    }
+    
+    /// Sets the callback to fire whenever an `error` occurs. Errors are thrown from throughout the `player` lifecycle. Make sure to handle them. If appropriate, present valid information to *end users*.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onError(callback: @escaping (Tech<Context>?, Context.Source?, Context.ContextError) -> Void) -> Self {
+        eventDispatcher.onError = callback
+        return self
+    }
+    
+    /// Sets the callback to fire whenever the current *Bitrate* changes.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onBitrateChanged(callback: @escaping (Tech<Context>, Context.Source, Double) -> Void) -> Self {
+        eventDispatcher.onBitrateChanged = callback
+        return self
+    }
+    
+    /// Sets the callback to fire once buffering started.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onBufferingStarted(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onBufferingStarted = callback
+        return self
+    }
+    
+    /// Sets the callback to fire once buffering stopped.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onBufferingStopped(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onBufferingStopped = callback
+        return self
+    }
+    
+    /// Sets the callback to fire if user scrubs in player
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackScrubbed(callback: @escaping (Tech<Context>, Context.Source, Int64) -> Void) -> Self {
+        eventDispatcher.onPlaybackScrubbed = callback
+        return self
+    }
+    
+    /// Sets the callback to fire once the current playback `duration` changes.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onDurationChanged(callback: @escaping (Tech<Context>, Context.Source) -> Void) -> Self {
+        eventDispatcher.onDurationChanged = callback
+        return self
+    }
 }
 
 // MARK: - MediaRendering
@@ -537,20 +533,6 @@ extension Player: MediaPlayback {
 //}
 
 
-/// Handle Errors
-extension Player {
-    /// Generic method to propagate `error` to any `onError` *listener* and the `AnalyticsProvider`.
-    ///
-    /// - parameter error: `PlayerError` to forward
-    fileprivate func handle(error: PlayerError, for mediaAsset: MediaAsset) {
-        handle(error: error, with: mediaAsset.analyticsProvider)
-    }
-    
-    fileprivate func handle(error: PlayerError, with analyticsProvider: AnalyticsProvider?) {
-        onError(self, error)
-        analyticsProvider?.playbackErrorEvent(player: self, error: error)
-    }
-}
 
 // MARK: - SessionShift
 extension Player: SessionShift {
