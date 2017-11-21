@@ -8,7 +8,6 @@
 
 import Foundation
 
-/// Specifies the basic interface for user control of playback.
 public protocol MediaPlayback {
     /// Starts playback
     func play()
@@ -32,11 +31,14 @@ public protocol MediaPlayback {
     /// Should return the current timestamp in the playback session
     var currentTime: Int64 { get }
     
-    /// Playback duration. 
+    /// Playback duration.
     ///
     /// - note: If this is a live stream, duration should be `nil`
     var duration: Int64? { get }
     
     /// The throughput required to play the stream, as advertised by the server, in *bits per second*. Should return nil if no bitrate can be reported.
     var currentBitrate: Double? { get }
+    
+    /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
+    var autoplay: Bool { get set }
 }

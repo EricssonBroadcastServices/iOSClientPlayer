@@ -8,6 +8,15 @@
 
 import UIKit
 
+public protocol TechType {
+    associatedtype Components: TechComponent
+}
+
+public protocol TechComponent {
+    
+}
+
+
 open class Tech<Context: PlaybackContext>: MediaRendering, MediaPlayback {
     public required init(eventDispatcher: EventDispatcher<Context>? = nil) {
         self.eventDispatcher = eventDispatcher
@@ -39,5 +48,4 @@ open class Tech<Context: PlaybackContext>: MediaRendering, MediaPlayback {
     public var currentTime: Int64 { return 0 }
     public var duration: Int64? { return nil }
     public var currentBitrate: Double? { return nil }
-    
 }

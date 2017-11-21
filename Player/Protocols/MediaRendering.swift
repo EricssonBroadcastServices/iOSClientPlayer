@@ -10,10 +10,14 @@ import UIKit
 import AVFoundation
 
 /// MediaRendering defines how the player configures a *user supplied* view for playback rendering.
-public protocol MediaRendering {
+public protocol MediaRenderingComponent {
     /// Configures `playerView` according to specifications supplied by the adopter.
     ///
     /// - parameter playerView: *User supplied* view to configure for playback rendering.
     func configure(playerView: UIView)
     
+}
+
+public protocol MediaRendering: MediaRenderingComponent {
+    var mediaRenderingComponent: MediaRenderingComponent { get }
 }
