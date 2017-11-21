@@ -63,7 +63,7 @@ public class HLSNative<Context: PlaybackContext>: Tech<Context> {
     /// `PlaybackState` is a private state tracker and should not be exposed externally.
     fileprivate var playbackState: PlaybackState = .notStarted
     
-    override public init() {
+    required public init() {
         avPlayer = AVPlayer()
         
         handleCurrentItemChanges()

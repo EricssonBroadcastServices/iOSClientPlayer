@@ -15,7 +15,8 @@ public protocol PlaybackContext: class {
     /// TODO: Fetch/generate the playback context. This is optionaly an async process, contacting an external server.
     //    func fetch(callback: @escaping (Source?, ContextError?) -> Void)
     
-    var preferredTech: Tech<Self>? { get }
+    var supportedTechs: [Tech<Self>.Type] { get }
+    var preferredTech: Tech<Self>.Type? { get }
     var analyticsGenerator: (Source) -> [AnalyticsProvider] { get set }
     
     //    /// Returns a string created from the UUID, such as "E621E1F8-C36C-495A-93FC-0C247A3E6E5F"

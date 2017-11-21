@@ -8,7 +8,14 @@
 
 import UIKit
 
-open class Tech<Context: PlaybackContext>: MediaRendering, MediaPlayback {
+public protocol TechType {
+    init()
+}
+
+open class Tech<Context: PlaybackContext>: MediaRendering, MediaPlayback, TechType {
+    public required init() { }
+    
+    
     public weak var eventDispatcher: EventDispatcher<Context>?
     
     public func configure(playerView: UIView) { }

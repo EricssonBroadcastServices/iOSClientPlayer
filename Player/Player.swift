@@ -23,7 +23,10 @@ public final class ManifestContext: PlaybackContext {
         return source
     }
     
-    public let preferredTech: Tech<ManifestContext>? = HLSNative<ManifestContext>()
+    public let supportedTechs: [Tech<ManifestContext>.Type] = [HLSNative<ManifestContext>.self]
+    public var preferredTech: Tech<ManifestContext>.Type? {
+        return supportedTechs.first
+    }
     public var analyticsGenerator: (Source) -> [AnalyticsProvider] = { _ in return [] }
 }
 
@@ -63,16 +66,18 @@ public enum ManifestContextError: PlaybackContextError {
 extension Player where Context == ManifestContext {
     func logAnalytics() -> Self {
         context.analyticsGenerator = { _ in [AnalyticsLogger()] }
+        return self
     }
     
     func stream(url: URL) {
-        for tech in techs {
-            if let native = tech as? HLSNative<Context> {
-                let manifest = context.manifest(from: url)
-                native.load(source: manifest)
-                break
-            }
-        }
+        let manifest = context.manifest(from: url)
+//        for tech in techs {
+//            if let native = tech as? HLSNative<Context> {
+//                let manifest = context.manifest(from: url)
+//                load(source: manifest, using: native)
+//                break
+//            }
+//        }
     }
 }
 
@@ -190,7 +195,7 @@ public struct AnalyticsLogger: AnalyticsProvider {
     }
     
     public func onError<Context>(tech: Tech<Context>?, source: Context.Source?, error: Context.ContextError) {
-        print("🏷 AnalyticsLogger",type(of: tech),"🚨 onError",source.playSessionId)
+        print("🏷 AnalyticsLogger",type(of: tech),"🚨 onError",source?.playSessionId ?? "")
     }
     
     public func onBitrateChanged<Context>(tech: Tech<Context>, source: Context.Source, bitrate: Double) {
@@ -236,18 +241,24 @@ public class EventDispatcher<Context: PlaybackContext> {
 }
 
 public final class Player<Context: PlaybackContext> {
-    fileprivate(set) public var techs: [Tech<Context>]
+    fileprivate(set) public var techs: [Tech<Context>.Type]
     fileprivate(set) public var selectedTech: Tech<Context>
     fileprivate(set) public var source: Context.Source?
     fileprivate(set) public var eventDispatcher: EventDispatcher<Context> = EventDispatcher()
     
     fileprivate(set) public var context: Context
-    public init(context: Context, defaultTech: Tech<Context> = HLSNative<Context>()) {
+    public init(context: Context, defaultTech: Tech<Context>.Type = HLSNative<Context>.self) {
         self.context = context
-        self.selectedTech = context.preferredTech ?? defaultTech
-        self.techs = [context.preferredTech, defaultTech].flatMap{ $0 }
-        
-        activate(tech: selectedTech)
+        let declaredTechs = context.supportedTechs
+        let val = declaredTechs.contains{ $0 === context.preferredTech! }
+        if let protoTech = context.preferredTech {
+            self.selectedTech = protoTech.init()
+            self.techs = (protoTech === defaultTech) ? [protoTech] : [protoTech, defaultTech]
+        }
+        else {
+            self.selectedTech = defaultTech.init()
+            self.techs = [defaultTech]
+        }
     }
     
     /// Returns a token string uniquely identifying this playSession.
@@ -259,10 +270,25 @@ public final class Player<Context: PlaybackContext> {
     /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
     public var autoplay: Bool = false
     
-    private func activate(tech: Tech<Context>) {
-        tech.
+    public func load(source: Context.Source, using tech: Tech<Context>) {
+        let proto = techs.first!
+        let newTech = proto.init()
+        
+        let time = newTech.currentTime
+        // 1. Unload/deactivate current tech
+        //      * Stop current playback
+        //      * Deliver events
+        //      * Dispatch analytics
+        //      * Break eventDispatcher association
+        // 2. Load new tech
+        //      * Attach eventDispatcher
+        //      * Switch selectedTech
+        //      *
     }
     
+    public func unload(tech: Tech<Context>) {
+        
+    }
     
     
     // MARK: SessionShift
