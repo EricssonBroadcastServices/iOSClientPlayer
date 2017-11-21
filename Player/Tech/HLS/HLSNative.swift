@@ -49,6 +49,10 @@ public class HLSNative<Context: PlaybackContext>: Tech<Context> {
         }
     }
     
+    public override func prepare(callback: @escaping (Context.ContextError?) -> Void) {
+        callback(nil)
+    }
+    
     /// *Native* `AVPlayer` used for playback purposes.
     fileprivate var avPlayer: AVPlayer
     
@@ -63,7 +67,9 @@ public class HLSNative<Context: PlaybackContext>: Tech<Context> {
     /// `PlaybackState` is a private state tracker and should not be exposed externally.
     fileprivate var playbackState: PlaybackState = .notStarted
     
-    required public init() {
+    public required init(eventDispatcher: EventDispatcher<Context>? = nil) {
+        super.init(eventDispatcher: eventDispatcher)
+        
         avPlayer = AVPlayer()
         
         handleCurrentItemChanges()

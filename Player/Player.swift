@@ -40,9 +40,6 @@ public class Manifest: MediaSource {
         self.playSessionId = playSessionId
         self.url = url
     }
-//    func loadableBy(tech: Tech<ManifestContext>) -> Bool {
-//        return tech is HLSNative<ManifestContext>
-//    }
 }
 
 public enum ManifestContextError: PlaybackContextError {
@@ -71,13 +68,7 @@ extension Player where Context == ManifestContext {
     
     func stream(url: URL) {
         let manifest = context.manifest(from: url)
-//        for tech in techs {
-//            if let native = tech as? HLSNative<Context> {
-//                let manifest = context.manifest(from: url)
-//                load(source: manifest, using: native)
-//                break
-//            }
-//        }
+        load(source: manifest)
     }
 }
 
@@ -221,9 +212,6 @@ public struct AnalyticsLogger: AnalyticsProvider {
 
 
 public class EventDispatcher<Context: PlaybackContext> {
-    // MARK: EventPublisher
-    // Stores the private callbacks specified by calling the associated `EventPublisher` functions.
-    
     internal(set) public var onPlaybackCreated: (Tech<Context>, Context.Source) -> Void = { _,_ in }
     internal(set) public var onPlaybackPrepared: (Tech<Context>, Context.Source) -> Void = { _,_ in }
     internal(set) public var onPlaybackReady: (Tech<Context>, Context.Source) -> Void = { _,_ in }
@@ -242,18 +230,21 @@ public class EventDispatcher<Context: PlaybackContext> {
 
 public final class Player<Context: PlaybackContext> {
     fileprivate(set) public var techs: [Tech<Context>.Type]
-    fileprivate(set) public var selectedTech: Tech<Context>
+    fileprivate var selectedTech: Tech<Context>
+    public var activeTech: Tech<Context>.Type {
+        return type(of: selectedTech)
+    }
+    
     fileprivate(set) public var source: Context.Source?
     fileprivate(set) public var eventDispatcher: EventDispatcher<Context> = EventDispatcher()
     
     fileprivate(set) public var context: Context
     public init(context: Context, defaultTech: Tech<Context>.Type = HLSNative<Context>.self) {
         self.context = context
-        let declaredTechs = context.supportedTechs
-        let val = declaredTechs.contains{ $0 === context.preferredTech! }
+        
         if let protoTech = context.preferredTech {
             self.selectedTech = protoTech.init()
-            self.techs = (protoTech === defaultTech) ? [protoTech] : [protoTech, defaultTech]
+            self.techs = (protoTech == defaultTech) ? [protoTech] : [protoTech, defaultTech]
         }
         else {
             self.selectedTech = defaultTech.init()
@@ -270,36 +261,128 @@ public final class Player<Context: PlaybackContext> {
     /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
     public var autoplay: Bool = false
     
-    public func load(source: Context.Source, using tech: Tech<Context>) {
-        let proto = techs.first!
-        let newTech = proto.init()
-        
-        let time = newTech.currentTime
-        // 1. Unload/deactivate current tech
-        //      * Stop current playback
-        //      * Deliver events
-        //      * Dispatch analytics
-        //      * Break eventDispatcher association
-        // 2. Load new tech
-        //      * Attach eventDispatcher
-        //      * Switch selectedTech
-        //      *
-    }
-    
-    public func unload(tech: Tech<Context>) {
-        
-    }
-    
     
     // MARK: SessionShift
     /// `Bookmark` is a private state tracking `SessionShift` status. It should not be exposed externally.
     fileprivate var bookmark: Bookmark = .notEnabled
 }
 
+// MARK: - Tech
 extension Player {
-    /// Convenience function for setting an `AnalyticsProvider`, providing a chaining interface for configuration.
+    
+    public func load(source: Context.Source) {
+        // 1. Check if the current tech can load this source
+        let usableTech = canPlay(source: source)
+        
+        switch usableTech {
+        case .active(tech: let tech): tech.load(source: source)
+        case .available(techs: let available):
+            cycle(techs: available) { success in
+                if let prepared = success {
+                    print("Tech: Prepared tech: \(prepared.name)")
+                }
+                else {
+                    print("Tech: Unable to prepare")
+                }
+            }
+        case .supportedButUnavailable(tech: let unavailable):
+            print("Tech: Remaining techs \(unavailable) supported by context not available to load")
+        }
+    }
+    
+    public func select(tech protoTech: Tech<Context>.Type) {
+        selectAndPrepare(tech: protoTech) { _ in }
+    }
+    
+    private func cycle(techs: [Tech<Context>.Type], callback: @escaping (Tech<Context>.Type?) -> Void) {
+        guard !techs.isEmpty else {
+            callback(nil)
+            return
+        }
+        let protoTech = techs.first!
+        selectAndPrepare(tech: protoTech) { [weak self] success in
+            if success {
+                callback(protoTech)
+            }
+            else {
+                let slice = Array(techs[1..<techs.count])
+                self?.cycle(techs: slice, callback: callback)
+            }
+        }
+    }
+    
+    private func selectAndPrepare(tech protoTech: Tech<Context>.Type, callback: @escaping (Bool) -> Void) {
+        // 1. Same Tech, return
+        guard activeTech != protoTech else { return }
+        
+        // 2. Change Tech
+        unload(tech: selectedTech)
+        
+        // 3. Load new tech
+        //      * Attach eventDispatcher
+        //      * Switch selectedTech
+        let realizedTech = protoTech.init(eventDispatcher: eventDispatcher)
+        selectedTech = realizedTech
+        realizedTech.prepare{ [weak self] in
+            if let error = $0 {
+                self?.eventDispatcher.onError(realizedTech, nil, error)
+            }
+        }
+    }
+    
+    private func unload(tech: Tech<Context>) {
+        // 1. Unload/deactivate current tech
+        //      * Stop current playback
+        //      * Deliver events
+        //      * Dispatch analytics
+        //      * Break eventDispatcher association
+        
+    }
+    
+    private enum CanPlay {
+        case active(tech: Tech<Context>)
+        case available(techs: [Tech<Context>.Type])
+        case supportedButUnavailable(tech: [Tech<Context>.Type])
+    }
+    
+    private func canPlay(source: Context.Source) -> CanPlay {
+        // 1. Active Tech
+        let selected = context.supportedTechs.contains{ $0 == activeTech }
+        if selected { return .active(tech: selectedTech) }
+        
+        // 2. Available Techs
+        let available = match(left: techs, right: context.supportedTechs)
+        if !available.isEmpty { return .available(techs: available) }
+        
+        // 3. Supported But Unavailable Techs
+        return .supportedButUnavailable(tech: not(in: techs, butIn: context.supportedTechs))
+    }
+    
+    
+    private func match(left: [Tech<Context>.Type], right: [Tech<Context>.Type]) -> [Tech<Context>.Type] {
+        return left.filter{ val -> Bool in
+            return right.contains{ val == $0 }
+        }
+    }
+    
+    private func not(in left: [Tech<Context>.Type], butIn right: [Tech<Context>.Type]) -> [Tech<Context>.Type] {
+        return left.filter{ val -> Bool in
+        return right.contains{ val != $0 }
+        }
+    }
+    
+    private func exists(left: [Tech<Context>.Type], right: [Tech<Context>.Type]) -> Bool {
+        return left.reduce(false) { prev, next in
+            return prev || right.contains{ $0 == next }
+        }
+    }
+}
+
+// MARK: - Analytics Generator
+extension Player {
+    /// Convenience function for setting `AnalyticsProvider`s through a generator.
     ///
-    /// - parameter provider: `AnalyticsProvider` to publish events to.
+    /// - parameter callback: closure to use for generating [`AnalyticsProvider`].
     /// - returns: `Self`
     @discardableResult
     public func analytics(callback: @escaping (Context.Source) -> [AnalyticsProvider]) -> Self {
