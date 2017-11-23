@@ -8,13 +8,13 @@
 
 import AVFoundation
 
+public protocol HLSNativeConfigurable {
+    var hlsNativeConfiguration: HLSNativeConfiguration { get }
+}
+
 public struct HLSNativeConfiguration {
     let url: URL
     let drm: FairplayRequester?
-}
-
-public protocol HLSNativeConfigurable {
-    var hlsNativeConfiguration: HLSNativeConfiguration { get }
 }
 
 public final class HLSNative<Context: MediaContext>: PlaybackTech {
@@ -31,11 +31,32 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// This may be `nil` due to several reasons, for example before any media is loaded.
     fileprivate var currentAsset: MediaAsset<Context.Source>?
     
+    
     /// `BufferState` is a private state tracking buffering events. It should not be exposed externally.
     fileprivate var bufferState: BufferState = .notInitialized
     
+    /// Private buffer state
+    fileprivate enum BufferState {
+        /// Buffering has not been started yet.
+        case notInitialized
+        
+        /// Currently buffering
+        case buffering
+        
+        /// Buffer has enough data to keep up with playback.
+        case onPace
+    }
+    
     /// `PlaybackState` is a private state tracker and should not be exposed externally.
     fileprivate var playbackState: PlaybackState = .notStarted
+    
+    /// Internal state for tracking playback.
+    fileprivate enum PlaybackState {
+        case notStarted
+        case playing
+        case paused
+        case stopped
+    }
     
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
     ///
@@ -145,14 +166,6 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     }()
 }
 
-// MARK: - MediaPlayback
-/// Internal state for tracking playback.
-fileprivate enum PlaybackState {
-    case notStarted
-    case playing
-    case paused
-    case stopped
-}
 
 extension HLSNative where Context.Source: HLSNativeConfigurable {
     
@@ -184,7 +197,9 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         mediaAsset.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
             guard let `self` = self else { return }
             guard error == nil else {
-                `self`.handle(error: .techError(from: error!), for: mediaAsset.source)
+                let techError = PlayerError<HLSNative<Context>,Context>.tech(error: error!)
+                `self`.eventDispatcher.onError(`self`, mediaAsset.source, techError)
+                mediaAsset.source.analyticsConnector.onError(tech: `self`, source: mediaAsset.source, error: techError)
                 return
             }
             // At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
@@ -379,16 +394,16 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
     }
 }
 
-/// Handle Errors
-extension HLSNative {
-    /// Generic method to propagate `error`s encountered
-    ///
-    /// - parameter error: `ContextError` to forward
-    fileprivate func handle(error: Context.ContextError, for source: Context.Source) {
-        eventDispatcher.onError(self, source, error)
-        source.analyticsConnector.onError(tech: self, source: source, error: error)
-    }
-}
+///// Handle Errors
+//extension HLSNative {
+//    /// Generic method to propagate `error`s encountered
+//    ///
+//    /// - parameter error: `ContextError` to forward
+//    fileprivate func handle(error: Context.ContextError, for source: Context.Source) {
+//        eventDispatcher.onError(self, source, error)
+//        source.analyticsConnector.onError(tech: self, source: source, error: error)
+//    }
+//}
 
 // MARK: - Events
 /// Player Item Status Change Events
@@ -473,18 +488,6 @@ extension HLSNative {
             }
         }
     }
-}
-
-/// Private buffer state
-fileprivate enum BufferState {
-    /// Buffering has not been started yet.
-    case notInitialized
-    
-    /// Currently buffering
-    case buffering
-    
-    /// Buffer has enough data to keep up with playback.
-    case onPace
 }
 
 /// Buffering Events

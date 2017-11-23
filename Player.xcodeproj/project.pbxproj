@@ -15,7 +15,7 @@
 		7667AEC51EC5C0FE00C308FC /* Appfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC31EC5C0FE00C308FC /* Appfile */; };
 		7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC41EC5C0FE00C308FC /* Fastfile */; };
 		7667AEC81EC5C12100C308FC /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC71EC5C12100C308FC /* .env */; };
-		766AC1E01FC2E5DE00843FEF /* PlaybackContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1DF1FC2E5DE00843FEF /* PlaybackContext.swift */; };
+		766AC1E01FC2E5DE00843FEF /* MediaContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1DF1FC2E5DE00843FEF /* MediaContext.swift */; };
 		766AC1E21FC2E61100843FEF /* MediaSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1E11FC2E61100843FEF /* MediaSource.swift */; };
 		766AC1E51FC2E73B00843FEF /* Tech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1E41FC2E73B00843FEF /* Tech.swift */; };
 		766AC2141FC2F6B700843FEF /* AVAsset+LoadableKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2081FC2F6B700843FEF /* AVAsset+LoadableKeys.swift */; };
@@ -67,7 +67,7 @@
 		7667AEC31EC5C0FE00C308FC /* Appfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
 		7667AEC41EC5C0FE00C308FC /* Fastfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7667AEC71EC5C12100C308FC /* .env */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
-		766AC1DF1FC2E5DE00843FEF /* PlaybackContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContext.swift; sourceTree = "<group>"; };
+		766AC1DF1FC2E5DE00843FEF /* MediaContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaContext.swift; sourceTree = "<group>"; };
 		766AC1E11FC2E61100843FEF /* MediaSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaSource.swift; sourceTree = "<group>"; };
 		766AC1E41FC2E73B00843FEF /* Tech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tech.swift; sourceTree = "<group>"; };
 		766AC2081FC2F6B700843FEF /* AVAsset+LoadableKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAsset+LoadableKeys.swift"; sourceTree = "<group>"; };
@@ -204,13 +204,14 @@
 			path = Observation;
 			sourceTree = "<group>";
 		};
-		766AC2271FC2F89300843FEF /* MediaSource */ = {
+		766AC2271FC2F89300843FEF /* Context */ = {
 			isa = PBXGroup;
 			children = (
+				766AC1DF1FC2E5DE00843FEF /* MediaContext.swift */,
 				766AC1E11FC2E61100843FEF /* MediaSource.swift */,
 				766AC2281FC2F89300843FEF /* Manifest */,
 			);
-			path = MediaSource;
+			path = Context;
 			sourceTree = "<group>";
 		};
 		766AC2281FC2F89300843FEF /* Manifest */ = {
@@ -265,8 +266,8 @@
 				76139F7D1F1CCFD600822023 /* Analytics */,
 				76A843731EA7819D00BDAF2C /* Events */,
 				76A843761EA7819D00BDAF2C /* Extensions */,
-				766AC2271FC2F89300843FEF /* MediaSource */,
-				76A843851EA7819D00BDAF2C /* Protocols */,
+				766AC2271FC2F89300843FEF /* Context */,
+				76A843851EA7819D00BDAF2C /* Components */,
 				766AC1E31FC2E72B00843FEF /* Tech */,
 				76A843891EA7819D00BDAF2C /* Views */,
 				764863611EE6CDB600083DB5 /* Dependencies */,
@@ -310,15 +311,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		76A843851EA7819D00BDAF2C /* Protocols */ = {
+		76A843851EA7819D00BDAF2C /* Components */ = {
 			isa = PBXGroup;
 			children = (
 				76A843871EA7819D00BDAF2C /* MediaPlayback.swift */,
 				76A843881EA7819D00BDAF2C /* MediaRendering.swift */,
 				7602E8881F38341A00601CD4 /* SessionShift.swift */,
-				766AC1DF1FC2E5DE00843FEF /* PlaybackContext.swift */,
 			);
-			path = Protocols;
+			path = Components;
 			sourceTree = "<group>";
 		};
 		76A843891EA7819D00BDAF2C /* Views */ = {
@@ -469,7 +469,7 @@
 				766AC2181FC2F6B700843FEF /* HLSNative.swift in Sources */,
 				766AC1E51FC2E73B00843FEF /* Tech.swift in Sources */,
 				766AC21F1FC2F6B700843FEF /* Observer.swift in Sources */,
-				766AC1E01FC2E5DE00843FEF /* PlaybackContext.swift in Sources */,
+				766AC1E01FC2E5DE00843FEF /* MediaContext.swift in Sources */,
 				766AC2151FC2F6B700843FEF /* AVPlayer+KeyValueObservable.swift in Sources */,
 				766AC21B1FC2F6B700843FEF /* KeyValueObserver.swift in Sources */,
 				7602E8891F38341A00601CD4 /* SessionShift.swift in Sources */,

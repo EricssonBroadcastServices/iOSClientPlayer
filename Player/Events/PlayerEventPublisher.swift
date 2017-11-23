@@ -10,7 +10,7 @@ import Foundation
 
 /// Event publishing defines a set of events that can be listened to.
 public protocol EventPublisher {
-    associatedtype Context: PlaybackContext
+    associatedtype Context: MediaContext
     associatedtype Tech: PlaybackTech
     
     /// Published when associated media is created but not yet loaded. Playback is not yet ready to start.

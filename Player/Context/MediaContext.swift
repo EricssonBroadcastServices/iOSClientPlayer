@@ -1,5 +1,5 @@
 //
-//  PlaybackContext.swift
+//  MediaContext.swift
 //  Player
 //
 //  Created by Fredrik Sjöberg on 2017-11-20.

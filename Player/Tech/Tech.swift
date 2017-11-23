@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol PlaybackTech {
+public protocol PlaybackTech: class {
     associatedtype TechError: Error
     associatedtype Configuration
     associatedtype Context: MediaContext

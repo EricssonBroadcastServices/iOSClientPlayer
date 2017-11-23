@@ -68,7 +68,7 @@ public protocol EventResponder {
     /// - parameter tech: `Tech` broadcasting the event
     /// - parameter source: `MediaSource` causing the event
     /// - parameter error: `Error` encountered
-    func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech: PlaybackTech, Source: MediaSource, Context: PlaybackContext
+    func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech: PlaybackTech, Source: MediaSource, Context: MediaContext
     
     /// Triggered when the bitrate changes
     ///
@@ -144,7 +144,7 @@ public class PassThroughConnector: AnalyticsConnector {
         providers.forEach{ $0.onCompleted(tech: tech, source: source) }
     }
     
-    public func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : PlaybackContext {
+    public func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
         providers.forEach{ $0.onError(tech: tech, source: source, error: error) }
     }
     
@@ -203,7 +203,7 @@ public struct AnalyticsLogger: AnalyticsProvider {
         print("🏷 AnalyticsLogger",type(of: tech),"🏁 onCompleted",source.playSessionId)
     }
     
-    public func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : PlaybackContext {
+    public func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
         print("🏷 AnalyticsLogger",type(of: tech),"🚨 onError",source?.playSessionId ?? "")
     }
     
