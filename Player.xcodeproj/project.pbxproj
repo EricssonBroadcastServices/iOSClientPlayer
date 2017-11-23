@@ -18,6 +18,8 @@
 		766039171FC6DFA200E79091 /* AnalyticsConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039161FC6DFA200E79091 /* AnalyticsConnector.swift */; };
 		7660391B1FC6E07500E79091 /* PassThroughConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660391A1FC6E07500E79091 /* PassThroughConnector.swift */; };
 		7660391E1FC6E0BB00E79091 /* AnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660391D1FC6E0BB00E79091 /* AnalyticsLogger.swift */; };
+		766039211FC6E14E00E79091 /* DrmAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039201FC6E14E00E79091 /* DrmAgent.swift */; };
+		766039231FC6E17900E79091 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039221FC6E17900E79091 /* EventDispatcher.swift */; };
 		7667AEC51EC5C0FE00C308FC /* Appfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC31EC5C0FE00C308FC /* Appfile */; };
 		7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC41EC5C0FE00C308FC /* Fastfile */; };
 		7667AEC81EC5C12100C308FC /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 7667AEC71EC5C12100C308FC /* .env */; };
@@ -75,6 +77,8 @@
 		766039161FC6DFA200E79091 /* AnalyticsConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsConnector.swift; sourceTree = "<group>"; };
 		7660391A1FC6E07500E79091 /* PassThroughConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughConnector.swift; sourceTree = "<group>"; };
 		7660391D1FC6E0BB00E79091 /* AnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsLogger.swift; sourceTree = "<group>"; };
+		766039201FC6E14E00E79091 /* DrmAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrmAgent.swift; sourceTree = "<group>"; };
+		766039221FC6E17900E79091 /* EventDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDispatcher.swift; sourceTree = "<group>"; };
 		7667AEC31EC5C0FE00C308FC /* Appfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Appfile; sourceTree = "<group>"; };
 		7667AEC41EC5C0FE00C308FC /* Fastfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7667AEC71EC5C12100C308FC /* .env */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
@@ -248,6 +252,7 @@
 			children = (
 				766AC1DF1FC2E5DE00843FEF /* MediaContext.swift */,
 				766AC1E11FC2E61100843FEF /* MediaSource.swift */,
+				766039201FC6E14E00E79091 /* DrmAgent.swift */,
 				766AC2281FC2F89300843FEF /* Manifest */,
 			);
 			path = Context;
@@ -338,6 +343,7 @@
 			isa = PBXGroup;
 			children = (
 				766039141FC6DF4500E79091 /* EventResponder.swift */,
+				766039221FC6E17900E79091 /* EventDispatcher.swift */,
 			);
 			path = Events;
 			sourceTree = "<group>";
@@ -502,6 +508,8 @@
 				766AC21C1FC2F6B700843FEF /* KVOChange.swift in Sources */,
 				766039151FC6DF4500E79091 /* EventResponder.swift in Sources */,
 				766AC21D1FC2F6B700843FEF /* NotificationObserver.swift in Sources */,
+				766039211FC6E14E00E79091 /* DrmAgent.swift in Sources */,
+				766039231FC6E17900E79091 /* EventDispatcher.swift in Sources */,
 				766AC2261FC2F77000843FEF /* PlayerObserver.swift in Sources */,
 				766AC2191FC2F6B700843FEF /* HLSNativeError.swift in Sources */,
 				76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */,

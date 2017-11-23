@@ -21,12 +21,6 @@ public protocol MediaSource {
     var url: URL { get }
 }
 
-//extension MediaSource {
-//    func loadableBy(tech: Tech<Self>) -> Bool {
-//        return false
-//    }
-//}
-
 extension MediaSource {
     var externalDrmAgent: ExternalDrm? {
         switch drmAgent {
