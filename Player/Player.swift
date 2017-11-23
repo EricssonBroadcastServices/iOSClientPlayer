@@ -18,12 +18,6 @@ public enum PlayerError<Tech: PlaybackTech, Context: MediaContext> {
     case context(error: ContextError)
 }
 
-extension Player where Tech == HLSNative<ManifestContext> {
-    func stream(url: URL) {
-        let manifest = context.manifest(from: url)
-        tech.load(source: manifest)
-    }
-}
 
 
 

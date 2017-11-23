@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// Simple `AnalyticsConnector` that forwards all events to the specified `AnalyticsProviders`
+/// Simple `AnalyticsConnector` that forwards all events to the specified `AnalyticsProvider`s
 public class PassThroughConnector: AnalyticsConnector {
     public var providers: [AnalyticsProvider] = []
     

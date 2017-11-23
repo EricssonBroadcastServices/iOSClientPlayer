@@ -8,6 +8,10 @@
 * [Installation](#installation)
 * Usage
     - [Getting Started](#getting-started)
+    - [Modular Playback Technology](#modular-playback-technology)
+    - [Context Sensitive Playback](#context-sensitive-playback)
+    - [Features as Components](#features-as-components)
+    - [Drm Agents and FairPlay](#drm-agents-and-fairplay)
     - [Responding to Playback Events](#responding-to-playback-events)
     - [Enabling Airplay](#enabling-airplay)
     - [Analytics How-To](#analytics-how-to)
@@ -20,13 +24,16 @@
 
 
 ## Features
-- [x] VoD, live and catchup streaming
-- [x] FairPlay DRM protection
+
+- [x] Modular `PlaybackTech`
+- [x] Context sensitive playback
+- [x] Features as components
+- [x] Customizable `DrmAgent`s
+- [x] Pluggable analytics
 - [x] Playback event publishing
-- [x] Pluggable analytics provider
-- [x] Airplay
 - [x] Custom playback controls
-- [x] Multi-device session shift
+- [x] Airplay
+
 
 ## Requirements
 
@@ -57,35 +64,66 @@ Running `carthage update` will fetch your dependencies and place them in `/Carth
 Finaly, make sure you add the `.framework`s to your targets *General -> Embedded Binaries* section. 
 
 ## Usage
-`Player` has been designed with a minimalistic but extendable approach in mind. It is a *stand-alone* player based on `AVFoundation` with an easy to use yet powerful `API`.
+`Player` has been designed with a minimalistic but extendable approach in mind. It is a *stand-alone* playback protocol designed to use modular playback technologies and context sensitive playback sources. *Features as components* allow `PlaybackTech` or `MediaContext` specific functionality when so desired. This flexible yet powerful model allows targeted behavior tailored for client specific needs.
+The framework also contains a  `PlaybackTech` implementation, `HLSNative`, supporting playback using the built in `AVPlayer`.
 
 ### Getting Started
-The `Player` class is self-contained and will handle setup and teardown of associated resources as you load media into it. This allows you to instantiate it inside your `viewController`.
+The `Player` class acts as an *api provider* granting *client applications* access to tailored, self-contained playback experience. Instantiation is done by defining the `PlaybackTech` and `MediaContext` to use. The following examples will use `HLSNative<ManifestContext>` to demonstrate the proceedure
 
 ```Swift
 class PlayerViewController: UIViewController {
-    fileprivate let player: Player = Player()
+    fileprivate let context = ManifestContext()
+    fileprivate let tech = HLSNative<ManifestContext>()
+    fileprivate var player: Player<HLSNative<ManifestContext>>!
     
-    ...
+    override func viewDidLoad() {
+        player = Player(tech: tech, context: context)
+    }
 }
 ```
 
-Media rendering is done by an `AVPlayerLayer` attached to a subview of a *user supplied* view. This means *customized overlay controls* are easy to implement.
+Media rendering can be done using `UIView` as defined by a *Component* called `MediaRendering`. It allows *client applications* to supply a `view` in which the media will be rendered under custom overlay controls.
 
 ```Swift
 player.configure(playerView: customPlayerView)
 ```
 
-Loading and preparation of a stream is as simple as calling
+Loading and preparation of a stream using the built in `HLSNative` `Tech` takes place in a multi-step process.
+First, the `ManifestContext` supplied to `Player` on initialisation defines the context in which source media exists. This `MediaContext` is responsible for producing a `MediaSource` when asked to do so. Our example case only relies on a valid media `URL` but more complex contexts likely involve fetching assets from a remote location or processing data on device.
 
 ```Swift
-player.stream(url: pathToMedia)
+let manifest = context.manifest(from: someUrl)
 ```
+
+The next step involves *loading* this context generated `MediaSource` into the selected `PlaybackTech`. In general, the `Tech` in question is completely agnostic when it comes to the media source loaded. This means the source is responsible for producing the `Tech`-specific `Configuration` type that encapsulate the information required for configuration.
+
+In the example case with  `ManifestContext`, `Manifest` adopts `HLSNativeConfigurable`. This allows us to define a set of *constrained extensions* on `Player` in accordance with the *Features as components* approach.
+
+```Swift
+extension Player where Tech == HLSNative<ManifestContext> {
+    func stream(url: URL) {
+        let manifest = context.manifest(from: url)
+        tech.load(source: manifest)
+    }
+}
+```
+
+### Modular Playback Technology
+`HLSNative`
+- [x] VoD, live and catchup streaming
+- [x] FairPlay DRM protection
+- [x] Multi-device session shift
+
+### Context Sensitive Playback
+
+### Features as Components
+
+### Drm Agents and FairPlay
 
 Please note that streaming *FairPlay* protected media assets will require the client application implements a `FairplayRequester` to manage the `DRM` vaidation. This protocol extends the *Apple* supplied `AVAssetResourceLoaderDelegate` protocol. **EMP** provides an out of the box implementation for *FairPlay* protection through the [Exposure module](https://github.com/EricssonBroadcastServices/iOSClientExposure) which integrates seamlessly with the rest of the platform.
 
 ### Responding to Playback Events
-Streaming media over *HLS* is an inherently asychronous process. Preparation and initialisation of a *playback session* is subject to a host of outside factors, such as network avaliability, content hosting and possibly `DRM` validation. An active session must respond to environmental changes, report on playback progress and optionally deliver event specific [analytics](#analytics-how-to) data. Additionally, user interaction must be handled in a reliable and responsive way.
+Streaming media is an inherently asychronous process. Preparation and initialisation of a *playback session* is subject to a host of outside factors, such as network avaliability, content hosting and possibly `DRM` validation. An active session must respond to environmental changes, report on playback progress and optionally deliver event specific [analytics](#analytics-how-to) data. Additionally, user interaction must be handled in a reliable and responsive way.
 
 Finally, [error handling](#error-handling) needs to be robust.
 
@@ -98,16 +136,16 @@ Subsequent steps load and prepare the *stream*.
 
 ```Swift
 myPlayer
-    .onPlaybackCreated{ player in
+    .onPlaybackCreated{ tech, source in
         // Fires once the associated MediaAsset has been created.
         // Playback is not ready to start at this point.
     }
-    .onPlaybackPrepared{ player in
+    .onPlaybackPrepared{ tech, source in
         // Published when the associated MediaAsset completed asynchronous loading of relevant properties.
         // Internally, no KVO or Notifications have been registered yet at this point.
         // Playback is not ready to start at this point.
     }
-    .onPlaybackReady{ player in
+    .onPlaybackReady{ tech, source in
         // When this event fires starting playback is possible
         player.play()
     }
@@ -118,23 +156,23 @@ Once playback is in progress the `Player` continuously publishes *events* relate
 
 ```Swift
 myPlayer
-    .onPlaybackStarted{ player in
+    .onPlaybackStarted{ tech, source in
         // Published once the playback starts for the first time.
         // This is a one-time event.
     }
-    .onPlaybackPaused{ [weak self] player in
+    .onPlaybackPaused{ [weak self] tech, source in
         // Fires when the playback pauses for some reason
         self?.pausePlayButton.toggle(paused: true)
     }
-    .onPlaybackResumed{ [weak self] player in
+    .onPlaybackResumed{ [weak self] tech, source in
         // Fires when the playback resumes from a paused state
         self?.pausePlayButton.toggle(paused: false)
     }
-    .onPlaybackAborted{ player in
+    .onPlaybackAborted{ tech, source in
         // Published once the player.stop() method is called.
         // This is considered a user action
     }
-    .onPlaybackCompleted{ player in
+    .onPlaybackCompleted{ tech, source in
         // Published when playback reached the end of the current media.
     }
 ```
@@ -142,18 +180,17 @@ Besides playback control events `Player` also publishes several status related e
 
 ```Swift
 myPlayer
-    .onBitrateChanged{ [weak self] event in
+    .onBitrateChanged{ [weak self] tech, source, bitrate in
         // Published whenever the current bitrate changes
-        // Details about the changes can be found in the supplied event
-        self?.updateQualityIndicator(with: event.currentRate)
+        self?.updateQualityIndicator(with: bitrate)
     }
-    .onBufferingStarted{ player in
+    .onBufferingStarted{ tech, source in
         // Fires whenever the buffer is unable to keep up with playback
     }
-    .onBufferingStopped{ player in
+    .onBufferingStopped{ tech, source in
         // Fires when buffering is no longer needed
     }
-    .onDurationChanged{ player in
+    .onDurationChanged{ tech, source in
         // Published when the active media received an update to its duration property
     }
 ```
@@ -215,7 +252,7 @@ An increased control over configuration and management of the rendering view can
 Client applications should register to receive errors through the `Player` method `onError(callback:)`, as defined by the `PlayerEventPublisher` protocol.
 
 ```Swift
-myPlayer.onError{ player, error in
+myPlayer.onError{ tech, source, error in
     // Handle the error
 }
 ```

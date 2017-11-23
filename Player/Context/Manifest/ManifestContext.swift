@@ -9,8 +9,6 @@
 import Foundation
 
 /// Basic `MediaContext` that allows playback of *unencrypted* media through a specified `URL`
-///
-///
 public final class ManifestContext: MediaContext {
     /// Simple error
     public typealias ContextError = Error
@@ -22,7 +20,7 @@ public final class ManifestContext: MediaContext {
     ///
     /// - parameter url: `URL` to the media source
     /// - returns: `Manifest` describing the media source
-    func manifest(from url: URL, fairplayRequester: FairplayRequester?) -> Manifest {
+    func manifest(from url: URL, fairplayRequester: FairplayRequester? = nil) -> Manifest {
         let source = Manifest(url: url)
         source.analyticsConnector.providers = analyticsGenerator(source)
         return source
