@@ -9,8 +9,7 @@
 import Foundation
 
 public protocol MediaSource {
-    associatedtype Connector: AnalyticsConnector
-    var analyticsConnector: Connector { get }
+    var analyticsConnector: AnalyticsConnector { get set }
     
     /// Optional DRM agent used to validate the context
     var drmAgent: DrmAgent { get }
