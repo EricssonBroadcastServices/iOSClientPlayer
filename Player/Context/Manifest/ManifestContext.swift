@@ -8,20 +8,28 @@
 
 import Foundation
 
+/// Basic `MediaContext` that allows playback of *unencrypted* media through a specified `URL`
+///
+///
 public final class ManifestContext: MediaContext {
+    /// Simple error
     public typealias ContextError = Error
+    
+    /// Source is defined as a `Manifest`
     public typealias Source = Manifest
     
-    func manifest(from url: URL) -> Manifest {
-        let source = Manifest(playSessionId: UUID().uuidString,
-                              url: url)
+    /// Creates a `Manifest` from the specified `URL`
+    ///
+    /// - parameter url: `URL` to the media source
+    /// - returns: `Manifest` describing the media source
+    func manifest(from url: URL, fairplayRequester: FairplayRequester?) -> Manifest {
+        let source = Manifest(url: url)
         source.analyticsConnector.providers = analyticsGenerator(source)
         return source
     }
     
+    /// Default analytics contains an `AnalyticsLogger`
     public var analyticsGenerator: (Source) -> [AnalyticsProvider] = { _ in return [AnalyticsLogger()] }
     
-    public enum Error: Swift.Error {
-        case someError
-    }
+    public enum Error: Swift.Error { }
 }

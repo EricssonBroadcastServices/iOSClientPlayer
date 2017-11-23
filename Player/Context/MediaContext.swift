@@ -8,20 +8,16 @@
 
 import Foundation
 
+/// Core protocol defining a strict context in which playback can take place.
+///
+/// This context should be considered a staging ground for defining, managing and preparing playback sessions.
 public protocol MediaContext: class {
+    /// Context related error
     associatedtype ContextError: Error
+    
+    /// Defines the individual source object used to initate a distinct playback session.
     associatedtype Source: MediaSource
     
-    /// TODO: Fetch/generate the playback context. This is optionaly an async process, contacting an external server.
-    //    func fetch(callback: @escaping (Source?, ContextError?) -> Void)
-    
-    
+    /// A generator closure which creates `AnalyticsProvider`s per `Source`.
     var analyticsGenerator: (Source) -> [AnalyticsProvider] { get set }
-    
-    //    /// Returns a string created from the UUID, such as "E621E1F8-C36C-495A-93FC-0C247A3E6E5F"
-    //    ///
-    //    /// A unique playSessionId should be generated for each new playSession.
-    //    fileprivate static func generatePlaySessionId() -> String {
-    //      return UUID().uuidString
-    //    }
 }

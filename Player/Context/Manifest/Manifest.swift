@@ -14,7 +14,7 @@ public class Manifest: MediaSource {
     public let playSessionId: String
     public let url: URL
     
-    public init(playSessionId: String, url: URL) {
+    public init(url: URL, playSessionId: String = UUID().uuidString) {
         self.playSessionId = playSessionId
         self.url = url
     }

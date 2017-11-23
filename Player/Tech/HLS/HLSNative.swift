@@ -87,10 +87,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         
         /// Creates the media asset
         ///
-        /// - parameter mediaLocator: *Path* to where the media is located
-        /// - parameter analyticsConnector: Delivers analytics per media session
-        /// - parameter fairplayRequester: Will handle *Fairplay* `DRM`
-        /// - throws: `PlayerError` if configuration is faulty or incomplete.
+        /// - parameter source: `MediaSource` defining the playback
+        /// - parameter configuration: HLS specific configuration
         internal init(source: Source, configuration: HLSNativeConfiguration) {
             self.source = source
             self.fairplayRequester = configuration.drm

@@ -21,7 +21,7 @@ public enum PlayerError<Tech: PlaybackTech, Context: MediaContext> {
 extension Player where Tech == HLSNative<ManifestContext> {
     func stream(url: URL) {
         let manifest = context.manifest(from: url)
-        tech
+        tech.load(source: manifest)
     }
 }
 
