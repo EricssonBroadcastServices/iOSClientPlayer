@@ -14,6 +14,7 @@ public protocol HLSNativeConfigurable {
 
 public struct HLSNativeConfiguration {
     let url: URL
+    let playSessionId: String
     let drm: FairplayRequester?
 }
 
@@ -90,15 +91,14 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         /// - parameter analyticsConnector: Delivers analytics per media session
         /// - parameter fairplayRequester: Will handle *Fairplay* `DRM`
         /// - throws: `PlayerError` if configuration is faulty or incomplete.
-        internal init(source: Source) {
+        internal init(source: Source, configuration: HLSNativeConfiguration) {
             self.source = source
-            let drmAgent = source.externalDrmAgent as? FairplayRequester
-            self.fairplayRequester = drmAgent
+            self.fairplayRequester = configuration.drm
             
-            urlAsset = AVURLAsset(url: source.url)
+            urlAsset = AVURLAsset(url: configuration.url)
             if fairplayRequester != nil {
                 urlAsset.resourceLoader.setDelegate(fairplayRequester,
-                                                    queue: DispatchQueue(label: source.playSessionId + "-fairplayLoader"))
+                                                    queue: DispatchQueue(label: configuration.playSessionId + "-fairplayLoader"))
             }
         }
         
@@ -178,8 +178,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
 extension HLSNative where Context.Source: HLSNativeConfigurable {
     
     public func load(source: Context.Source) {
+        let configuration = source.hlsNativeConfiguration
         
-        let mediaAsset = MediaAsset<Context.Source>(source: source)
+        let mediaAsset = MediaAsset<Context.Source>(source: source, configuration: configuration)
         
         // Unsubscribe any current item
         currentAsset?.itemObserver.stopObservingAll()
@@ -190,13 +191,13 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         avPlayer.pause()
         
         if let oldSource = currentAsset?.source {
-//            eventDispatcher.onPlaybackAborted(self, oldSource)
+            eventDispatcher.onPlaybackAborted(self, oldSource)
             oldSource.analyticsConnector.onAborted(tech: self, source: oldSource)
         }
         
         // Start notifications on new session
         // At this point the `AVURLAsset` has yet to perform async loading of values (such as `duration`, `tracks` or `playable`) through `loadValuesAsynchronously`.
-//        eventDispatcher.onPlaybackCreated(self, mediaAsset.source)
+        eventDispatcher.onPlaybackCreated(self, mediaAsset.source)
         mediaAsset.source.analyticsConnector.onCreated(tech: self, source: mediaAsset.source)
         
         // Reset playbackState
@@ -217,12 +218,6 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             `self`.readyPlayback(with: mediaAsset)
         }
     }
-    
-//    public override func prepare(callback: @escaping (Context.ContextError?) -> Void) {
-//        callback(nil)
-//    }
-    
-    
     
     /// Once the `MediaAsset` has been *prepared* through `mediaAsset.prepare(loading: callback:)` the relevant `KVO` and `Notificaion`s are subscribed.
     ///
@@ -312,16 +307,6 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
     
 }
 
-///// Handle Errors
-//extension HLSNative {
-//    /// Generic method to propagate `error`s encountered
-//    ///
-//    /// - parameter error: `ContextError` to forward
-//    fileprivate func handle(error: Context.ContextError, for source: Context.Source) {
-//        eventDispatcher.onError(self, source, error)
-//        source.analyticsConnector.onError(tech: self, source: source, error: error)
-//    }
-//}
 
 // MARK: - Events
 /// Player Item Status Change Events
@@ -393,11 +378,6 @@ extension HLSNative {
             guard let `self` = self else { return }
             if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
                 if let currentEvent = accessLog.events.last {
-//                    let prXeviousIndex = accessLog
-//                        .events
-//                        .index(of: currentEvent)?
-//                        .advanced(by: -1)
-//                    let previousEvent = previousIndex != nil ? accessLog.events[previousIndex!] : nil
                     let newBitrate = currentEvent.indicatedBitrate
                     DispatchQueue.main.async {
                         `self`.eventDispatcher.onBitrateChanged(`self`, mediaAsset.source, newBitrate)

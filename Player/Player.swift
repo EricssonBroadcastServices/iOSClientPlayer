@@ -18,47 +18,12 @@ public enum PlayerError<Tech: PlaybackTech, Context: MediaContext> {
     case context(error: ContextError)
 }
 
-public final class ManifestContext: MediaContext {
-    public typealias ContextError = Error
-    public typealias Source = Manifest
-    
-    func manifest(from url: URL) -> Manifest {
-        let source = Manifest(playSessionId: UUID().uuidString,
-                              url: url)
-        source.analyticsConnector.providers = analyticsGenerator(source)
-        return source
-    }
-    
-    public var analyticsGenerator: (Source) -> [AnalyticsProvider] = { _ in return [AnalyticsLogger()] }
-    
-    public enum Error: Swift.Error {
-        case someError
+extension Player where Tech == HLSNative<ManifestContext> {
+    func stream(url: URL) {
+        let manifest = context.manifest(from: url)
+        tech
     }
 }
-
-public class Manifest: MediaSource {
-    public var analyticsConnector: AnalyticsConnector = PassThroughConnector()
-    public let drmAgent = DrmAgent.selfContained
-    public let playSessionId: String
-    public let url: URL
-    
-    public init(playSessionId: String, url: URL) {
-        self.playSessionId = playSessionId
-        self.url = url
-    }
-}
-
-//extension Player where Context == ManifestContext {
-//    func logAnalytics() -> Self {
-//        context.analyticsGenerator = { _ in [AnalyticsLogger()] }
-//        return self
-//    }
-//    
-//    func stream(url: URL) {
-//        let manifest = context.manifest(from: url)
-//        load(source: manifest)
-//    }
-//}
 
 
 
