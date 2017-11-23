@@ -48,17 +48,17 @@ public class Manifest: MediaSource {
     }
 }
 
-extension Player where Context == ManifestContext {
-    func logAnalytics() -> Self {
-        context.analyticsGenerator = { _ in [AnalyticsLogger()] }
-        return self
-    }
-    
-    func stream(url: URL) {
-        let manifest = context.manifest(from: url)
-        load(source: manifest)
-    }
-}
+//extension Player where Context == ManifestContext {
+//    func logAnalytics() -> Self {
+//        context.analyticsGenerator = { _ in [AnalyticsLogger()] }
+//        return self
+//    }
+//    
+//    func stream(url: URL) {
+//        let manifest = context.manifest(from: url)
+//        load(source: manifest)
+//    }
+//}
 
 
 public enum DrmAgent {
@@ -90,7 +90,6 @@ public class EventDispatcher<Context: MediaContext, Tech: PlaybackTech> {
 
 public final class Player<Tech: PlaybackTech> {
     fileprivate(set) public var source: Tech.Context.Source?
-//    fileprivate(set) public var eventDispatcher: EventDispatcher<Tech.Context, Tech> = EventDispatcher()
     
     fileprivate(set) public var tech: Tech
     fileprivate(set) public var context: Tech.Context
@@ -104,14 +103,6 @@ public final class Player<Tech: PlaybackTech> {
 //    public var playSessionId: String? {
 //        return source?.playSessionId
 //    }
-//
-//    /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
-//    public var autoplay: Bool = false
-//
-//
-//    // MARK: SessionShift
-//    /// `Bookmark` is a private state tracking `SessionShift` status. It should not be exposed externally.
-//    fileprivate var bookmark: Bookmark = .notEnabled
 }
 
 
@@ -129,206 +120,150 @@ public final class Player<Tech: PlaybackTech> {
 //}
 
 // MARK: - PlayerEventPublisher
-//extension Player: EventPublisher {
-//
-//    /// Sets the callback to fire when the associated media is created but not yet loaded. Playback is not yet ready to start.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onPlaybackCreated(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onPlaybackCreated = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire when the associated media has loaded but is not playback ready.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self
-//    @discardableResult
-//    public func onPlaybackPrepared(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onPlaybackPrepared = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire once the associated media has loaded and is ready for playback. At this point, starting playback should be possible.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onPlaybackReady(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onPlaybackReady = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire once the playback first starts. This is fired once.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onPlaybackStarted(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onPlaybackStarted = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire if playback rate for transitions from *non-zero* to *zero.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onPlaybackPaused(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onPlaybackPaused = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire if playback is resumed from a paused state.
-//    ///
-//    /// This will not fire if the playback has not yet been started, ie `onPlaybackStarted:` has not fired yet.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onPlaybackResumed(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onPlaybackResumed = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire once playback is stopped by user action.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onPlaybackAborted(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onPlaybackAborted = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire once playback reached the end of the current media, ie when playback reaches `duration`.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onPlaybackCompleted(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onPlaybackCompleted = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire whenever an `error` occurs. Errors are thrown from throughout the `player` lifecycle. Make sure to handle them. If appropriate, present valid information to *end users*.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onError(callback: @escaping (Tech?, Context.Source?, Context.ContextError) -> Void) -> Self {
-//        eventDispatcher.onError = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire whenever the current *Bitrate* changes.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onBitrateChanged(callback: @escaping (Tech, Context.Source, Double) -> Void) -> Self {
-//        eventDispatcher.onBitrateChanged = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire once buffering started.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onBufferingStarted(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onBufferingStarted = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire once buffering stopped.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onBufferingStopped(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onBufferingStopped = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire if user scrubs in player
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onPlaybackScrubbed(callback: @escaping (Tech, Context.Source, Int64) -> Void) -> Self {
-//        eventDispatcher.onPlaybackScrubbed = callback
-//        return self
-//    }
-//
-//    /// Sets the callback to fire once the current playback `duration` changes.
-//    ///
-//    /// - parameter callback: callback to fire once the event is fired.
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func onDurationChanged(callback: @escaping (Tech, Context.Source) -> Void) -> Self {
-//        eventDispatcher.onDurationChanged = callback
-//        return self
-//    }
-//}
+extension Player {
+    /// Sets the callback to fire when the associated media is created but not yet loaded. Playback is not yet ready to start.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackCreated(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackCreated = callback
+        return self
+    }
 
-// MARK: - MediaRendering
-//extension Player: MediaRendering {
-//    /// Creates and configures the view used to render the media output.
-//    ///
-//    /// - parameter playerView:  *User supplied* view to configure for playback rendering.
-//    public func configure(playerView: UIView) {
-//        selectedTech.configure(playerView: playerView)
-//    }
-//}
-//
-//// MARK: - MediaPlayback
-//extension Player: MediaPlayback {
-//    /// Starts or resumes playback.
-//    public func play() {
-//        selectedTech.play()
-//    }
-//
-//    /// Pause playback if currently active
-//    public func pause() {
-//        selectedTech.pause()
-//    }
-//
-//    /// Stops playback. This will trigger `PlaybackAborted` callbacks and analytics publication.
-//    public func stop() {
-//        selectedTech.stop()
-//    }
-//
-//
-//    /// Returns true if playback has been started and the current rate is not equal to 0
-//    public var isPlaying: Bool {
-//        return selectedTech.isPlaying
-//    }
-//
-//    /// Use this method to seek to a specified time in the media timeline. The seek request will fail if interrupted by another seek request or by any other operation.
-//    ///
-//    /// - Parameter timeInterval: in milliseconds
-//    public func seek(to timeInterval: Int64) {
-//        selectedTech.seek(to: timeInterval)
-//    }
-//
-//    /// Returns the current playback position of the player in *milliseconds*
-//    public var currentTime: Int64 {
-//        return selectedTech.currentTime
-//    }
-//
-//    /// Returns the current playback position of the player in *milliseconds*, or `nil` if duration is infinite (live streams for example).
-//    public var duration: Int64? {
-//        return selectedTech.duration
-//    }
-//
-//    /// The throughput required to play the stream, as advertised by the server, in *bits per second*. Will return nil if no bitrate can be reported.
-//    public var currentBitrate: Double? {
-//        return selectedTech.currentBitrate
-//    }
-//}
+    /// Sets the callback to fire when the associated media has loaded but is not playback ready.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self
+    @discardableResult
+    public func onPlaybackPrepared(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackPrepared = callback
+        return self
+    }
+
+    /// Sets the callback to fire once the associated media has loaded and is ready for playback. At this point, starting playback should be possible.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackReady(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackReady = callback
+        return self
+    }
+
+    /// Sets the callback to fire once the playback first starts. This is fired once.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackStarted(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackStarted = callback
+        return self
+    }
+
+    /// Sets the callback to fire if playback rate for transitions from *non-zero* to *zero.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackPaused(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackPaused = callback
+        return self
+    }
+
+    /// Sets the callback to fire if playback is resumed from a paused state.
+    ///
+    /// This will not fire if the playback has not yet been started, ie `onPlaybackStarted:` has not fired yet.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackResumed(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackResumed = callback
+        return self
+    }
+
+    /// Sets the callback to fire once playback is stopped by user action.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackAborted(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackAborted = callback
+        return self
+    }
+
+    /// Sets the callback to fire once playback reached the end of the current media, ie when playback reaches `duration`.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackCompleted(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackCompleted = callback
+        return self
+    }
+
+    /// Sets the callback to fire whenever an `error` occurs. Errors are thrown from throughout the `player` lifecycle. Make sure to handle them. If appropriate, present valid information to *end users*.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onError(callback: @escaping (Tech?, Tech.Context.Source?, PlayerError<Tech, Tech.Context>) -> Void) -> Self {
+        tech.eventDispatcher.onError = callback
+        return self
+    }
+
+    /// Sets the callback to fire whenever the current *Bitrate* changes.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onBitrateChanged(callback: @escaping (Tech, Tech.Context.Source, Double) -> Void) -> Self {
+        tech.eventDispatcher.onBitrateChanged = callback
+        return self
+    }
+
+    /// Sets the callback to fire once buffering started.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onBufferingStarted(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onBufferingStarted = callback
+        return self
+    }
+
+    /// Sets the callback to fire once buffering stopped.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onBufferingStopped(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onBufferingStopped = callback
+        return self
+    }
+
+    /// Sets the callback to fire if user scrubs in player
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onPlaybackScrubbed(callback: @escaping (Tech, Tech.Context.Source, Int64) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackScrubbed = callback
+        return self
+    }
+
+    /// Sets the callback to fire once the current playback `duration` changes.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onDurationChanged(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onDurationChanged = callback
+        return self
+    }
+}
+
 
 //// MARK: - Playback
 //extension Player {
@@ -375,60 +310,5 @@ public final class Player<Tech: PlaybackTech> {
 //        stream(mediaAsset: mediaAsset)
 //    }
 //
-//}
-
-
-
-//// MARK: - SessionShift
-//extension Player: SessionShift {
-//    /// Internal state for tracking Bookmarks.
-//    internal enum Bookmark {
-//        /// Bookmarking is not enabled
-//        case notEnabled
-//
-//        /// Bookmarking is enabled. Optionaly, with a specified `offset`. No offset suggests that offset will be supplied at a later time.
-//        case enabled(offset: Int64?)
-//    }
-//
-//    /// Is *Session Shift* enabled or not.
-//    ///
-//    /// SessionShift may be enabled without a specific `offset` defined.
-//    public var sessionShiftEnabled: Bool {
-//        switch bookmark {
-//        case .notEnabled: return false
-//        case .enabled(offset: _): return true
-//        }
-//    }
-//
-//    /// Returns a *Session Shift* `offset` if one has been specified, else `nil`.
-//    ///
-//    /// No specified `offset` does not necessary mean *Session Shift* is disabled.
-//    public var sessionShiftOffset: Int64? {
-//        switch bookmark {
-//        case .notEnabled: return nil
-//        case .enabled(offset: let offset): return offset
-//        }
-//    }
-//
-//    /// By specifying `true` you are signaling `sessionShift` is enabled and a starting `offset` will be supplied at *some time*, when is undefined.
-//    ///
-//    /// This is useful when you rely on some external party to supply the `player` with an `offset` at some point in its lifecycle.
-//    ///
-//    /// - parameter enabled: `true` if enabled, `false` otherwise
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func sessionShift(enabled: Bool) -> Player {
-//        bookmark = enabled ? .enabled(offset: nil) : .notEnabled
-//        return self
-//    }
-//
-//    /// Configure the `player` to start playback at the specified `offset`.
-//    ///
-//    /// - parameter offset: Offset into the media, in *milliseconds*.
-//    @discardableResult
-//    public func sessionShift(enabledAt offset: Int64) -> Player {
-//        bookmark = .enabled(offset: offset)
-//        return self
-//    }
 //}
 

@@ -21,7 +21,7 @@ public protocol MediaRendering {
 extension Player where Tech: MediaRendering {/// Configures `playerView` according to specifications supplied by the adopter.
     ///
     /// - parameter playerView: *User supplied* view to configure for playback rendering.
-    func configure(playerView: UIView) {
+    public func configure(playerView: UIView) {
         tech.configure(playerView: playerView)
     }
 }

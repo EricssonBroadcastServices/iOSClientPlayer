@@ -35,12 +35,12 @@ extension Player where Tech: SessionShift {
     /// Returns an `offset` if it has been specified, else `nil`.
     ///
     /// No specified `offset` does not necessary mean *Session Shift* is disabled.
-    var sessionShiftOffset: Int64? {
+    public var sessionShiftOffset: Int64? {
         return tech.sessionShiftOffset
     }
     
     /// Is *Session Shift* enabled or not.
-    var sessionShiftEnabled: Bool {
+    public var sessionShiftEnabled: Bool {
         return tech.sessionShiftEnabled
     }
     
@@ -50,7 +50,7 @@ extension Player where Tech: SessionShift {
     ///
     /// - parameter enabled: `true` if enabled, `false` otherwise
     /// - returns: `Self`
-    func sessionShift(enabled: Bool) -> Self {
+    public func sessionShift(enabled: Bool) -> Self {
         tech.sessionShift(enabled: enabled)
         return self
     }
@@ -59,7 +59,7 @@ extension Player where Tech: SessionShift {
     ///
     /// - parameter offset: Offset in the related stream where playback should start
     /// - returns: `Self`
-    func sessionShift(enabledAt offset: Int64) -> Self {
+    public func sessionShift(enabledAt offset: Int64) -> Self {
         tech.sessionShift(enabledAt: offset)
         return self
     }

@@ -24,19 +24,19 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     
     
     /// *Native* `AVPlayer` used for playback purposes.
-    fileprivate var avPlayer: AVPlayer
+    internal var avPlayer: AVPlayer
     
     /// The currently active `MediaAsset` is stored here.
     ///
     /// This may be `nil` due to several reasons, for example before any media is loaded.
-    fileprivate var currentAsset: MediaAsset<Context.Source>?
+    internal var currentAsset: MediaAsset<Context.Source>?
     
     
     /// `BufferState` is a private state tracking buffering events. It should not be exposed externally.
-    fileprivate var bufferState: BufferState = .notInitialized
+    internal var bufferState: BufferState = .notInitialized
     
     /// Private buffer state
-    fileprivate enum BufferState {
+    internal enum BufferState {
         /// Buffering has not been started yet.
         case notInitialized
         
@@ -48,15 +48,23 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     }
     
     /// `PlaybackState` is a private state tracker and should not be exposed externally.
-    fileprivate var playbackState: PlaybackState = .notStarted
+    internal var playbackState: PlaybackState = .notStarted
     
     /// Internal state for tracking playback.
-    fileprivate enum PlaybackState {
+    internal enum PlaybackState {
         case notStarted
         case playing
         case paused
         case stopped
     }
+    
+    /// Storage for autoplay toggle
+    public var autoplay: Bool = false
+    
+    // MARK: SessionShift
+    /// `Bookmark` is a private state tracking `SessionShift` status. It should not be exposed externally.
+    internal var bookmark: Bookmark = .notEnabled
+
     
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
     ///
@@ -146,8 +154,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         
         handleCurrentItemChanges()
         handlePlaybackStateChanges()
-        handleAudioSessionInteruptionEvents()
-        handleBackgroundingEvents()
+//        handleAudioSessionInteruptionEvents()
+//        handleBackgroundingEvents()
     }
     
     deinit {
@@ -302,96 +310,6 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         layer.player = avPlayer
     }
     
-    
-    /// Starts or resumes playback.
-    public func play() {
-        switch playbackState {
-        case .notStarted:
-            avPlayer.play()
-        case .paused:
-            avPlayer.play()
-        default:
-            return
-        }
-    }
-    
-    /// Pause playback if currently active
-    public func pause() {
-        guard isPlaying else { return }
-        avPlayer.pause()
-    }
-    
-    /// Stops playback. This will trigger `PlaybackAborted` callbacks and analytics publication.
-    public func stop() {
-        // TODO: End playback? Unload resources? Leave that to user?
-        switch playbackState {
-        case .stopped:
-            return
-        default:
-            avPlayer.pause()
-            playbackState = .stopped
-            if let source = currentAsset?.source {
-                self.eventDispatcher.onPlaybackAborted(self, source)
-                source.analyticsConnector.onAborted(tech: self, source: source)
-            }
-        }
-    }
-    
-    /// Returns true if playback has been started and the current rate is not equal to 0
-    public var isPlaying: Bool {
-        guard isActive else { return false }
-        // TODO: How does this relate to PlaybackState? NOT good practice with the currently uncoupled behavior.
-        return avPlayer.rate != 0
-    }
-    
-    /// Returns true if playback has been started, but makes no assumtions regarding the playback rate.
-    private var isActive: Bool {
-        switch playbackState {
-        case .paused: return true
-        case .playing: return true
-        default: return false
-        }
-    }
-    
-    /// Use this method to seek to a specified time in the media timeline. The seek request will fail if interrupted by another seek request or by any other operation.
-    ///
-    /// - Parameter timeInterval: in milliseconds
-    public func seek(to timeInterval: Int64) {
-        let seekTime = timeInterval > 0 ? timeInterval : 0
-        let cmTime = CMTime(value: seekTime, timescale: 1000)
-        currentAsset?.playerItem.seek(to: cmTime) { [weak self] success in
-            guard let `self` = self else { return }
-            if success {
-                if let source = `self`.currentAsset?.source {
-                    `self`.eventDispatcher.onPlaybackScrubbed(`self`, source, seekTime)
-                    source.analyticsConnector.onScrubbedTo(tech: `self`, source: source, offset: seekTime) }
-            }
-        }
-    }
-    
-    /// Returns the current playback position of the player in *milliseconds*
-    public var currentTime: Int64 {
-        guard let cmTime = currentAsset?.playerItem.currentTime() else { return 0 }
-        return Int64(cmTime.seconds*1000)
-    }
-    
-    /// Returns the current playback position of the player in *milliseconds*, or `nil` if duration is infinite (live streams for example).
-    public var duration: Int64? {
-        guard let cmTime = currentAsset?.playerItem.duration else { return nil }
-        guard !cmTime.isIndefinite else { return nil }
-        return Int64(cmTime.seconds*1000)
-    }
-    
-    /// The throughput required to play the stream, as advertised by the server, in *bits per second*. Will return nil if no bitrate can be reported.
-    public var currentBitrate: Double? {
-        return currentAsset?
-            .playerItem
-            .accessLog()?
-            .events
-            .last?
-            .indicatedBitrate
-        
-    }
 }
 
 ///// Handle Errors
@@ -442,8 +360,9 @@ extension HLSNative {
                         }
                     }
                 case .failed:
-                    let error = HLSNativeError.failedToReady(error: item.error)
-                    `self`.handle(error: .techError(from: error), for: mediaAsset.source)
+                    let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
+                    `self`.eventDispatcher.onError(`self`, mediaAsset.source, techError)
+                    mediaAsset.source.analyticsConnector.onError(tech: `self`, source: mediaAsset.source, error: techError)
                 }
             }
         }
@@ -627,56 +546,57 @@ extension HLSNative {
     }
 }
 
-/// Audio Session Interruption Events
-extension HLSNative {
-    /// Subscribes to *Audio Session Interruption* `Notification`s.
-    fileprivate func handleAudioSessionInteruptionEvents() {
-        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.audioSessionInterruption), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
-    }
-    
-    /// Handles *Audio Session Interruption* events by resuming playback if instructed to do so.
-    @objc fileprivate func audioSessionInterruption(notification: Notification) {
-        guard let userInfo = notification.userInfo,
-            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-            let type = AVAudioSessionInterruptionType(rawValue: typeValue) else {
-                return
-        }
-        switch type {
-        case .began:
-            print("AVAudioSessionInterruption BEGAN")
-        case .ended:
-            guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
-            let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
-            print("AVAudioSessionInterruption ENDED",flags)
-            if flags.contains(.shouldResume) {
-                self.play()
-            }
-        }
-    }
-}
+///// Audio Session Interruption Events
+//extension HLSNative {
+//    /// Subscribes to *Audio Session Interruption* `Notification`s.
+//    fileprivate func handleAudioSessionInteruptionEvents() {
+//        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.audioSessionInterruption), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
+//    }
+//
+//    /// Handles *Audio Session Interruption* events by resuming playback if instructed to do so.
+//    @objc fileprivate func audioSessionInterruption(notification: Notification) {
+//        guard let userInfo = notification.userInfo,
+//            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+//            let type = AVAudioSessionInterruptionType(rawValue: typeValue) else {
+//                return
+//        }
+//        switch type {
+//        case .began:
+//            print("AVAudioSessionInterruption BEGAN")
+//        case .ended:
+//            guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+//            let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
+//            print("AVAudioSessionInterruption ENDED",flags)
+//            if flags.contains(.shouldResume) {
+//                self.play()
+//            }
+//        }
+//    }
+//}
+//
+///// Backgrounding Events
+//extension HLSNative {
+//    /// Backgrounding the player events.
+//    fileprivate func handleBackgroundingEvents() {
+//        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.appWillTerminate), name: .UIApplicationWillTerminate, object: nil)
+//    }
+//
+//    @objc fileprivate func appDidEnterBackground() {
+//        print("UIApplicationDidEnterBackground")
+//    }
+//
+//    @objc fileprivate func appWillEnterForeground() {
+//        print("UIApplicationWillEnterForeground")
+//    }
+//
+//    /// If the app is about to terminate make sure to stop playback. This will initiate teardown.
+//    ///
+//    /// Any attached `AnalyticsProvider` should hopefully be given enough time to finalize.
+//    @objc fileprivate func appWillTerminate() {
+//        print("UIApplicationWillTerminate")
+//        self.stop()
+//    }
+//}
 
-/// Backgrounding Events
-extension HLSNative {
-    /// Backgrounding the player events.
-    fileprivate func handleBackgroundingEvents() {
-        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.appWillTerminate), name: .UIApplicationWillTerminate, object: nil)
-    }
-    
-    @objc fileprivate func appDidEnterBackground() {
-        print("UIApplicationDidEnterBackground")
-    }
-    
-    @objc fileprivate func appWillEnterForeground() {
-        print("UIApplicationWillEnterForeground")
-    }
-    
-    /// If the app is about to terminate make sure to stop playback. This will initiate teardown.
-    ///
-    /// Any attached `AnalyticsProvider` should hopefully be given enough time to finalize.
-    @objc fileprivate func appWillTerminate() {
-        print("UIApplicationWillTerminate")
-        self.stop()
-    }
-}

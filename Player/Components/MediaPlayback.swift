@@ -45,57 +45,62 @@ public protocol MediaPlayback: class {
 
 extension Player where Tech: MediaPlayback {
     /// Starts playback
-    func play() {
+    public func play() {
         tech.play()
     }
     
     /// Pauses playback
-    func pause() {
+    public func pause() {
         tech.pause()
     }
     
     /// Stops playback
-    func stop() {
+    public func stop() {
         tech.stop()
     }
     
     /// Should return `true` if the playback rate, forward or backwards, is *non-zero*. Ie: Has the player been instructed to proceed.
     ///
     /// - note: This should not return `false` if playback has stopped due to *buffering* or similair events.
-    var isPlaying: Bool {
+    public var isPlaying: Bool {
         return tech.isPlaying
     }
     
     /// Should seek the current playback to timestamp
     ///
     /// - Parameter timeInterval: target timestamp
-    func seek(to timeInterval: Int64) {
+    public func seek(to timeInterval: Int64) {
         tech.seek(to: timeInterval)
     }
     
     /// Should return the current timestamp in the playback session
-    var currentTime: Int64 {
+    public var currentTime: Int64 {
         return tech.currentTime
     }
     
     /// Playback duration.
     ///
     /// - note: If this is a live stream, duration should be `nil`
-    var duration: Int64? {
+    public var duration: Int64? {
         return tech.duration
     }
     
     /// The throughput required to play the stream, as advertised by the server, in *bits per second*. Should return nil if no bitrate can be reported.
-    var currentBitrate: Double? {
+    public var currentBitrate: Double? {
         return tech.currentBitrate
     }
     
     /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
-    var autoplayEnabled: Bool {
+    public var autoplayEnabled: Bool {
         return tech.autoplay
     }
     
-    func autoplay(enabled: Bool) -> Self {
+    /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
+    ///
+    /// - parameter enabled: `true` if enabled, `false` otherwise
+    /// - returns: `Self`
+    @discardableResult
+    public func autoplay(enabled: Bool) -> Self {
         tech.autoplay = enabled
         return self
     }
