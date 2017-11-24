@@ -19,5 +19,5 @@ public protocol MediaContext: class {
     associatedtype Source: MediaSource
     
     /// A generator closure which creates `AnalyticsProvider`s per `Source`.
-    var analyticsGenerator: (Source) -> [AnalyticsProvider] { get set }
+    var analyticsGenerator: (Source?) -> [AnalyticsProvider] { get set }
 }

@@ -27,7 +27,7 @@ public final class ManifestContext: MediaContext {
     }
     
     /// Default analytics contains an `AnalyticsLogger`
-    public var analyticsGenerator: (Source) -> [AnalyticsProvider] = { _ in return [AnalyticsLogger()] }
+    public var analyticsGenerator: (Source?) -> [AnalyticsProvider] = { _ in return [AnalyticsLogger()] }
     
     public enum Error: Swift.Error { }
 }

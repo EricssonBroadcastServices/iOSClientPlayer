@@ -13,9 +13,15 @@ public protocol HLSNativeConfigurable {
 }
 
 public struct HLSNativeConfiguration {
-    let url: URL
-    let playSessionId: String
-    let drm: FairplayRequester?
+    public let url: URL
+    public let playSessionId: String
+    public let drm: FairplayRequester?
+    
+    public init(url: URL, playSessionId: String, drm: FairplayRequester?) {
+        self.url = url
+        self.playSessionId = playSessionId
+        self.drm = drm
+    }
 }
 
 public final class HLSNative<Context: MediaContext>: PlaybackTech {

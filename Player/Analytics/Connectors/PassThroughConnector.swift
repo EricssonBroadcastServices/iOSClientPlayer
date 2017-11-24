@@ -10,7 +10,11 @@ import Foundation
 
 /// Simple `AnalyticsConnector` that forwards all events to the specified `AnalyticsProvider`s
 public class PassThroughConnector: AnalyticsConnector {
-    public var providers: [AnalyticsProvider] = []
+    public init(providers: [AnalyticsProvider] = []) {
+        self.providers = providers
+    }
+    
+    public var providers: [AnalyticsProvider]
     
     public func onCreated<Tech, Source>(tech: Tech, source: Source) where Tech : PlaybackTech, Source : MediaSource {
         providers.forEach{ $0.onCreated(tech: tech, source: source) }
