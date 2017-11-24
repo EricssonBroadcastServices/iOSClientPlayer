@@ -10,6 +10,7 @@ import Foundation
 
 /// Simple `AnalyticsProvider` that logs any events it receives to the console.
 public struct AnalyticsLogger: AnalyticsProvider {
+    public init() { }
     public func onCreated<Tech, Source>(tech: Tech, source: Source) where Tech : PlaybackTech, Source : MediaSource {
         print("🏷 AnalyticsLogger",type(of: tech),"🏗 onCreated",source.playSessionId)
     }

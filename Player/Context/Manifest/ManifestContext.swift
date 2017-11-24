@@ -22,12 +22,12 @@ public final class ManifestContext: MediaContext {
     /// - returns: `Manifest` describing the media source
     func manifest(from url: URL, fairplayRequester: FairplayRequester? = nil) -> Manifest {
         let source = Manifest(url: url)
-        source.analyticsConnector.providers = analyticsGenerator(source)
+        source.analyticsConnector.providers = analyticsProviders(for: source)
         return source
     }
     
     /// Default analytics contains an `AnalyticsLogger`
-    public var analyticsGenerator: (Source?) -> [AnalyticsProvider] = { _ in return [AnalyticsLogger()] }
+    public var analyticsGenerators: [(Source?) -> AnalyticsProvider] = [{ _ in return AnalyticsLogger() }]
     
     public enum Error: ErrorCode {
         public var localizedDescription: String { return "ManifestError" }

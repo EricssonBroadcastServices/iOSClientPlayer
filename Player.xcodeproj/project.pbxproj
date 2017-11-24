@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7602E8891F38341A00601CD4 /* SessionShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7602E8881F38341A00601CD4 /* SessionShift.swift */; };
 		76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
+		7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */; };
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
 		764863641EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764863621EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift */; };
 		764863651EE6CDB600083DB5 /* SWXMLHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764863631EE6CDB600083DB5 /* SWXMLHash.swift */; };
@@ -70,6 +71,7 @@
 /* Begin PBXFileReference section */
 		7602E8881F38341A00601CD4 /* SessionShift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionShift.swift; sourceTree = "<group>"; };
 		76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
+		7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaRendering.swift"; sourceTree = "<group>"; };
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
 		764863621EE6CDB600083DB5 /* SWXMLHash+TypeConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SWXMLHash+TypeConversion.swift"; sourceTree = "<group>"; };
 		764863631EE6CDB600083DB5 /* SWXMLHash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWXMLHash.swift; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */,
+				7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */,
 				766039121FC6D1DC00E79091 /* HLSNative+SessionShift.swift */,
 			);
 			path = Components;
@@ -529,6 +532,7 @@
 				766AC1E01FC2E5DE00843FEF /* MediaContext.swift in Sources */,
 				7660391E1FC6E0BB00E79091 /* AnalyticsLogger.swift in Sources */,
 				766AC2151FC2F6B700843FEF /* AVPlayer+KeyValueObservable.swift in Sources */,
+				7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */,
 				766039131FC6D1DC00E79091 /* HLSNative+SessionShift.swift in Sources */,
 				766AC21B1FC2F6B700843FEF /* KeyValueObserver.swift in Sources */,
 				7602E8891F38341A00601CD4 /* SessionShift.swift in Sources */,

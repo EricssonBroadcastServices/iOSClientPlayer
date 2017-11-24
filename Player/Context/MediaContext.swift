@@ -18,6 +18,13 @@ public protocol MediaContext: class {
     /// Defines the individual source object used to initate a distinct playback session.
     associatedtype Source: MediaSource
     
-    /// A generator closure which creates `AnalyticsProvider`s per `Source`.
-    var analyticsGenerator: (Source?) -> [AnalyticsProvider] { get set }
+    /// A collection of generator closures which creates `AnalyticsProvider`s per `Source`.
+    var analyticsGenerators: [(Source?) -> AnalyticsProvider] { get set }
+}
+
+extension MediaContext {
+    /// Generate all `AnalyticsProvider`s for the specified source
+    public func analyticsProviders(for source: Source?) -> [AnalyticsProvider] {
+        return analyticsGenerators.map{ $0(source) }
+    }
 }
