@@ -13,7 +13,7 @@ import Foundation
 /// This context should be considered a staging ground for defining, managing and preparing playback sessions.
 public protocol MediaContext: class {
     /// Context related error
-    associatedtype ContextError: Error
+    associatedtype ContextError: ErrorCode
     
     /// Defines the individual source object used to initate a distinct playback session.
     associatedtype Source: MediaSource

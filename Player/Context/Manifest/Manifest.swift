@@ -10,23 +10,22 @@ import Foundation
 
 public class Manifest: MediaSource {
     public var analyticsConnector: AnalyticsConnector = PassThroughConnector()
-    public let drmAgent: DrmAgent
+    public let fairplayRequester: FairplayRequester?
     public let playSessionId: String
     public let url: URL
     
     public init(url: URL, playSessionId: String = UUID().uuidString, fairplayRequester: FairplayRequester? = nil) {
         self.url = url
         self.playSessionId = playSessionId
-        self.drmAgent = fairplayRequester != nil ? .selfContained : .external(agent: fairplayRequester!)
+        self.fairplayRequester = fairplayRequester
     }
 }
-
 
 extension Manifest: HLSNativeConfigurable {
     public var hlsNativeConfiguration: HLSNativeConfiguration {
-        let agent = externalDrmAgent as? FairplayRequester
         return HLSNativeConfiguration(url: url,
                                       playSessionId: playSessionId,
-                                      drm: agent)
+                                      drm: fairplayRequester)
     }
 }
+

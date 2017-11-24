@@ -18,7 +18,6 @@
 		766039171FC6DFA200E79091 /* AnalyticsConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039161FC6DFA200E79091 /* AnalyticsConnector.swift */; };
 		7660391B1FC6E07500E79091 /* PassThroughConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660391A1FC6E07500E79091 /* PassThroughConnector.swift */; };
 		7660391E1FC6E0BB00E79091 /* AnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660391D1FC6E0BB00E79091 /* AnalyticsLogger.swift */; };
-		766039211FC6E14E00E79091 /* DrmAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039201FC6E14E00E79091 /* DrmAgent.swift */; };
 		766039231FC6E17900E79091 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039221FC6E17900E79091 /* EventDispatcher.swift */; };
 		766039251FC6E24500E79091 /* ManifestContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039241FC6E24500E79091 /* ManifestContext.swift */; };
 		766039271FC6E25800E79091 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039261FC6E25800E79091 /* Manifest.swift */; };
@@ -80,7 +79,6 @@
 		766039161FC6DFA200E79091 /* AnalyticsConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsConnector.swift; sourceTree = "<group>"; };
 		7660391A1FC6E07500E79091 /* PassThroughConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughConnector.swift; sourceTree = "<group>"; };
 		7660391D1FC6E0BB00E79091 /* AnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsLogger.swift; sourceTree = "<group>"; };
-		766039201FC6E14E00E79091 /* DrmAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrmAgent.swift; sourceTree = "<group>"; };
 		766039221FC6E17900E79091 /* EventDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDispatcher.swift; sourceTree = "<group>"; };
 		766039241FC6E24500E79091 /* ManifestContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestContext.swift; sourceTree = "<group>"; };
 		766039261FC6E25800E79091 /* Manifest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
@@ -258,7 +256,6 @@
 			children = (
 				766AC1DF1FC2E5DE00843FEF /* MediaContext.swift */,
 				766AC1E11FC2E61100843FEF /* MediaSource.swift */,
-				766039201FC6E14E00E79091 /* DrmAgent.swift */,
 				766AC2281FC2F89300843FEF /* Manifest */,
 			);
 			path = Context;
@@ -517,7 +514,6 @@
 				766AC21C1FC2F6B700843FEF /* KVOChange.swift in Sources */,
 				766039151FC6DF4500E79091 /* EventResponder.swift in Sources */,
 				766AC21D1FC2F6B700843FEF /* NotificationObserver.swift in Sources */,
-				766039211FC6E14E00E79091 /* DrmAgent.swift in Sources */,
 				766039251FC6E24500E79091 /* ManifestContext.swift in Sources */,
 				766039231FC6E17900E79091 /* EventDispatcher.swift in Sources */,
 				766AC2261FC2F77000843FEF /* PlayerObserver.swift in Sources */,

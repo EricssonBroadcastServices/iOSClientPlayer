@@ -10,7 +10,7 @@ import Foundation
 
 /// `HLSNativeError` is the error type specific to the `HLSNative` `Tech`. It can manifest as both *native errors* to the framework and *nested errors* specific to underlying frameworks.
 /// Effective error handling thus requires a deeper undestanding of the overall architecture.
-public enum HLSNativeError: Error {
+public enum HLSNativeError: ErrorCode {
     /// Media is missing a valid `URL` to load data from.
         case missingMediaUrl
         

@@ -18,7 +18,27 @@ public enum PlayerError<Tech: PlaybackTech, Context: MediaContext> {
     case context(error: ContextError)
 }
 
+extension PlayerError {
+    public var localizedDescription: String {
+        switch self {
+        case .tech(error: let error): return error.localizedDescription
+        case .context(error: let error): return error.localizedDescription
+        }
+    }
+}
 
+extension PlayerError {
+    public var code: Int {
+        switch self {
+        case .tech(error: let error): return error.code
+        case .context(error: let error): return error.code
+        }
+    }
+}
+
+public protocol ErrorCode: Error {
+    var code: Int { get }
+}
 
 
 

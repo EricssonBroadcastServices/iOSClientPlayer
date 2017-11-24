@@ -15,6 +15,8 @@ public protocol HLSNativeConfigurable {
 public struct HLSNativeConfiguration {
     public let url: URL
     public let playSessionId: String
+    
+    /// DRM agent used to validate the context source
     public let drm: FairplayRequester?
     
     public init(url: URL, playSessionId: String, drm: FairplayRequester?) {
