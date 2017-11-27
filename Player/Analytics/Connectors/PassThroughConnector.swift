@@ -57,7 +57,7 @@ public class PassThroughConnector: AnalyticsConnector {
     }
     
     public func onBufferingStarted<Tech, Source>(tech: Tech, source: Source) where Tech : PlaybackTech, Source : MediaSource {
-        providers.forEach{ $0.onBufferingStopped(tech: tech, source: source) }
+        providers.forEach{ $0.onBufferingStarted(tech: tech, source: source) }
     }
     
     public func onBufferingStopped<Tech, Source>(tech: Tech, source: Source) where Tech : PlaybackTech, Source : MediaSource {

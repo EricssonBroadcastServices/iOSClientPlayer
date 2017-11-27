@@ -310,6 +310,8 @@ extension HLSNative {
                     //  - after seeking
                     // Only send onPlaybackReady if the stream has not been started yet.
                     if self.playbackState == .notStarted {
+                        `self`.eventDispatcher.onPlaybackReady(`self`, mediaAsset.source)
+                        mediaAsset.source.analyticsConnector.onReady(tech: `self`, source: mediaAsset.source)
                         if case let .enabled(value) = `self`.bookmark, let offset = value {
                             let cmTime = CMTime(value: offset, timescale: 1000)
                             `self`.avPlayer.seek(to: cmTime, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero) { [weak self] success in
