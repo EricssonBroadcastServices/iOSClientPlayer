@@ -1,9 +1,14 @@
 # CHANGELOG
 
-* `0.2.x` Releases - [0.2.0](#020) | [0.2.1](#021)
+* `0.72.x` Releases - [0.72.0](#0720)
+* `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
-## 0.2.1
+## 0.72.0
+
+#### Features
+* `EMP-10650` Context sensitive playback introduced.
+* `EMP-10649` Modular `Tech` introduced.
 
 #### Changes
 * `EMP-10334` onPlaybackScrubbed event publishing.

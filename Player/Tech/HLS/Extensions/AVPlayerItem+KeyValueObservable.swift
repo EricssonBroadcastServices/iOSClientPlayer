@@ -39,7 +39,6 @@ extension AVPlayerItem: KeyValueObservable {
         /// `avPlayerItem.playbackBufferEmpty`
         case isPlaybackBufferEmpty = "playbackBufferEmpty"
         
-        
         /// Returns all *Observable Keys*.
         var all: [ObservableKey] {
             return [.status, .tracks, .duration, .presentationSize, .timedMetadata, .isPlaybackLikelyToKeepUp, .isPlaybackBufferFull, .isPlaybackBufferEmpty]

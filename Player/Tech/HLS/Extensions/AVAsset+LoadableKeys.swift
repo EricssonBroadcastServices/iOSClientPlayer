@@ -15,20 +15,6 @@ extension AVAsset {
         /// Duration
         case duration = "duration"
         
-        
-        /*
-         // Preference
-         case preferredRate = "preferredRate"
-         case preferredVolume = "preferredVolume"
-         case preferredTransform = "preferredTransform"
-         
-         
-         case providesPreciseDurationAndTiming = "providesPreciseDurationAndTiming"
-         
-         // Reference Restrictions
-         case referenceRestrictions = "referenceRestrictions"*/
-        
-        
         /// Tracks
         case tracks = "tracks"
         //case trackGroups = "trackGroups"
@@ -36,7 +22,5 @@ extension AVAsset {
         
         /// Playable
         case playable = "playable"
-        
-        
     }
 }

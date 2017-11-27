@@ -33,9 +33,6 @@ extension AVPlayer: KeyValueObservable {
         /// `avPlayer.currentItemTimedMetadata`
         case currentItemTimedMetadata = "currentItem.timedMetadata"
         
-        //case isOutputObscuredDueToInsufficientExternalProtection = "isOutputObscuredDueToInsufficientExternalProtection"
-        
-        
         /// Returns all *Observable Keys*.
         var all: [ObservableKey] {
             return [.status, .rate, .timeControlStatus, .reasonForWaitingToPlay, .currentItem]
