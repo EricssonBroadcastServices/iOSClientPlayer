@@ -78,7 +78,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     // MARK: SessionShift
     /// `Bookmark` is a private state tracking `SessionShift` status. It should not be exposed externally.
     internal var bookmark: Bookmark = .notEnabled
-
+    
+    // Background notifier
+    internal let backgroundWatcher = BackgroundWatcher()
     
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
     ///
@@ -165,8 +167,17 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         
         handleCurrentItemChanges()
         handlePlaybackStateChanges()
-//        handleAudioSessionInteruptionEvents()
-//        handleBackgroundingEvents()
+        
+        backgroundWatcher.handleWillTerminate { [weak self] in self?.stop() }
+        backgroundWatcher.handleWillBackgrounding { }
+        backgroundWatcher.handleDidEnterBackgrounding { }
+        backgroundWatcher.handleAudioSessionInteruption { [weak self] event in
+            switch event {
+            case .began: return
+            case .ended(shouldResume: let shouldResume):
+                if shouldResume { self?.play() }
+            }
+        }
     }
     
     deinit {
@@ -492,57 +503,78 @@ extension HLSNative {
     }
 }
 
-///// Audio Session Interruption Events
-//extension HLSNative {
-//    /// Subscribes to *Audio Session Interruption* `Notification`s.
-//    fileprivate func handleAudioSessionInteruptionEvents() {
-//        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.audioSessionInterruption), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
-//    }
-//
-//    /// Handles *Audio Session Interruption* events by resuming playback if instructed to do so.
-//    @objc fileprivate func audioSessionInterruption(notification: Notification) {
-//        guard let userInfo = notification.userInfo,
-//            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-//            let type = AVAudioSessionInterruptionType(rawValue: typeValue) else {
-//                return
-//        }
-//        switch type {
-//        case .began:
-//            print("AVAudioSessionInterruption BEGAN")
-//        case .ended:
-//            guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
-//            let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
-//            print("AVAudioSessionInterruption ENDED",flags)
-//            if flags.contains(.shouldResume) {
-//                self.play()
-//            }
-//        }
-//    }
-//}
-//
-///// Backgrounding Events
-//extension HLSNative {
-//    /// Backgrounding the player events.
-//    fileprivate func handleBackgroundingEvents() {
-//        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(HLSNative.appWillTerminate), name: .UIApplicationWillTerminate, object: nil)
-//    }
-//
-//    @objc fileprivate func appDidEnterBackground() {
-//        print("UIApplicationDidEnterBackground")
-//    }
-//
-//    @objc fileprivate func appWillEnterForeground() {
-//        print("UIApplicationWillEnterForeground")
-//    }
-//
-//    /// If the app is about to terminate make sure to stop playback. This will initiate teardown.
-//    ///
-//    /// Any attached `AnalyticsProvider` should hopefully be given enough time to finalize.
-//    @objc fileprivate func appWillTerminate() {
-//        print("UIApplicationWillTerminate")
-//        self.stop()
-//    }
-//}
+/// Audio Session Interruption Events
+internal class BackgroundWatcher {
+    internal enum AudioSessionInterruption {
+        case began
+        case ended(shouldResume: Bool)
+    }
+    
+    /// Closure to fire when *Audio Session Interruption* `Notification`s fire.
+    fileprivate var onAudioSessionInterruption: (AudioSessionInterruption) -> Void = { _ in }
+    
+    /// Closure to fire when the app is about to enter foreground
+    fileprivate var onWillEnterForeground: () -> Void = { }
+    
+    /// Closure to fire when the app enters background
+    fileprivate var onDidEnterBackground: () -> Void = { }
+    
+    /// Closure to fire when the app is about to terminate
+    fileprivate var onWillTerminate: () -> Void = { }
+    
+    /// Subscribes to *Audio Session Interruption* `Notification`s.
+    internal func handleAudioSessionInteruption(callback: @escaping (AudioSessionInterruption) -> Void) {
+        onAudioSessionInterruption = callback
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.audioSessionInterruption), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
+    }
+
+    /// Handles *Audio Session Interruption* events by resuming playback if instructed to do so.
+    @objc internal func audioSessionInterruption(notification: Notification) {
+        guard let userInfo = notification.userInfo,
+            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+            let type = AVAudioSessionInterruptionType(rawValue: typeValue) else {
+                return
+        }
+        switch type {
+        case .began:
+            onAudioSessionInterruption(.began)
+        case .ended:
+            guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+            let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
+            onAudioSessionInterruption(.ended(shouldResume: flags.contains(.shouldResume)))
+        }
+    }
+}
+
+/// Backgrounding Events
+extension BackgroundWatcher {
+    /// Backgrounding the player events.
+    internal func handleDidEnterBackgrounding(callback: @escaping () -> Void) {
+        onDidEnterBackground = callback
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
+    }
+    internal func handleWillBackgrounding(callback: @escaping () -> Void) {
+        onWillEnterForeground = callback
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+    }
+    internal func handleWillTerminate(callback: @escaping () -> Void) {
+        onWillTerminate = callback
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillTerminate), name: .UIApplicationWillTerminate, object: nil)
+    }
+
+    @objc internal func appDidEnterBackground() {
+        onDidEnterBackground()
+    }
+
+    @objc internal func appWillEnterForeground() {
+        onWillEnterForeground()
+    }
+
+    /// If the app is about to terminate make sure to stop playback. This will initiate teardown.
+    ///
+    /// Any attached `AnalyticsProvider` should hopefully be given enough time to finalize.
+    @objc internal func appWillTerminate() {
+        onWillTerminate()
+    }
+}
 
