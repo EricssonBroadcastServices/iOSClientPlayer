@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// `HLSNative` adoption of `SessionShift`
 extension HLSNative: SessionShift {
     /// Internal state for tracking Bookmarks.
     internal enum Bookmark {

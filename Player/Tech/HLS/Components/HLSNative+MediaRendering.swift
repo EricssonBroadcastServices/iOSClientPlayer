@@ -9,6 +9,7 @@
 import Foundation
 import AVFoundation
 
+/// `HLSNative` adoption of `MediaRendering`
 extension HLSNative: MediaRendering {
     /// Creates and configures the associated `CALayer` used to render the media output. This view will be added to the *user supplied* `playerView` as a sub view at `index: 0`. A strong reference to `playerView` is also established.
     ///

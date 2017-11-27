@@ -10,56 +10,23 @@ import Foundation
 import AVFoundation
 
 
-public enum PlayerError<Tech: PlaybackTech, Context: MediaContext> {
-    public typealias TechError = Tech.TechError
-    public typealias ContextError = Context.ContextError
-    
-    case tech(error: TechError)
-    case context(error: ContextError)
-}
-
-extension PlayerError {
-    public var localizedDescription: String {
-        switch self {
-        case .tech(error: let error): return error.localizedDescription
-        case .context(error: let error): return error.localizedDescription
-        }
-    }
-}
-
-extension PlayerError {
-    public var code: Int {
-        switch self {
-        case .tech(error: let error): return error.code
-        case .context(error: let error): return error.code
-        }
-    }
-}
-
-public protocol ErrorCode: Error {
-    var code: Int { get }
-}
 
 
 
-
-
-
+/// Generic class which implements a base set of functionality not specific to actual playback of media sources. This functionality is instead aquired through *Feature Components* directly tied to the underlying `PlaybackTech` and `MediaContext`.
+///
+/// In practice, this means `Player`s with different *tech* or *media sources* can express context sensitive methods in a highly configurable way.
 public final class Player<Tech: PlaybackTech> {
-    fileprivate(set) public var source: Tech.Context.Source?
-    
+    /// Active `PlaybackTech`
     fileprivate(set) public var tech: Tech
+    
+    /// Current `MediaContext`
     fileprivate(set) public var context: Tech.Context
+    
     public init(tech: Tech, context: Tech.Context) {
         self.context = context
         self.tech = tech
     }
-    
-//    /// Returns a token string uniquely identifying this playSession.
-//    /// Example: “E621E1F8-C36C-495A-93FC-0C247A3E6E5F”
-//    public var playSessionId: String? {
-//        return source?.playSessionId
-//    }
 }
 
 
@@ -220,52 +187,3 @@ extension Player {
         return self
     }
 }
-
-
-//// MARK: - Playback
-//extension Player {
-//    /// Configure and prepare a `MediaAsset` for playback. Please note this is an asynchronous process.
-//    ///
-//    /// Make sure the relevant `PlayerEventPublisher` callbacks has been registered.
-//    ///
-//    /// ```swift
-//    /// player
-//    ///     .onError{ player, error in
-//    ///         // Handle and possibly present error to the user
-//    ///     }
-//    ///     .onPlaybackPaused{ player in
-//    ///         // Toggle play/pause button
-//    ///     }
-//    ///     .onBitrateChanged{ bitrateEvent in
-//    ///         // Update UI with stream quality indicator
-//    ///     }
-//    ///
-//    /// ```
-//    ///
-//    /// - parameter mediaLocator: Specfies the *path* to where the media asset can be found.
-//    /// - parameter fairplayRequester: Required for *Fairplay* `DRM` requests.
-//    /// - parameter playSessionId: Optionally specify a unique session id for the playback session. If not provided, the system will generate a random `UUID`.
-//    public func stream(url mediaLocator: String, using fairplayRequester: FairplayRequester? = nil, analyticsProvider: AnalyticsProvider? = nil, playSessionId: String? = nil) {
-//        let provider = analyticsProvider ?? analyticsProviderGenerator?()
-//        do {
-//            let mediaAsset = try MediaAsset(mediaLocator: mediaLocator, fairplayRequester: fairplayRequester, analyticsProvider: provider, playSessionId: playSessionId)
-//            stream(mediaAsset: mediaAsset)
-//        }
-//        catch {
-//            if let playerError = error as? PlayerError {
-//                handle(error: playerError, with: provider)
-//            }
-//            else {
-//                let playerError = PlayerError.generalError(error: error)
-//                handle(error: playerError, with: provider)
-//            }
-//        }
-//    }
-//
-//    public func stream(urlAsset: AVURLAsset, using fairplayRequester: FairplayRequester? = nil, analyticsProvider: AnalyticsProvider? = nil, playSessionId: String? = nil) {
-//        let mediaAsset = MediaAsset(avUrlAsset: urlAsset, fairplayRequester: fairplayRequester, analyticsProvider: analyticsProvider, playSessionId: playSessionId)
-//        stream(mediaAsset: mediaAsset)
-//    }
-//
-//}
-

@@ -9,8 +9,8 @@
 import Foundation
 import AVFoundation
 
+/// `HLSNative` adoption of `MediaPlayback`
 extension HLSNative: MediaPlayback {
-    
     /// Starts or resumes playback.
     public func play() {
         switch playbackState {

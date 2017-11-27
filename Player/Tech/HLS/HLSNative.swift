@@ -8,12 +8,17 @@
 
 import AVFoundation
 
+/// Defines a protocol enabling adopters to create the configuration source for a `HLSNative` *tech*.
 public protocol HLSNativeConfigurable {
     var hlsNativeConfiguration: HLSNativeConfiguration { get }
 }
 
+/// Playback configuration specific for the `HLSNative` *tech*.
 public struct HLSNativeConfiguration {
+    /// Media locator for the media source
     public let url: URL
+    
+    /// Unique playsession id
     public let playSessionId: String
     
     /// DRM agent used to validate the context source
