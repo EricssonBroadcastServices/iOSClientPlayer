@@ -29,20 +29,6 @@ public final class Player<Tech: PlaybackTech> {
     }
 }
 
-
-//// MARK: - Analytics Generator
-//extension Player {
-//    /// Convenience function for setting `AnalyticsProvider`s through a generator.
-//    ///
-//    /// - parameter callback: closure to use for generating [`AnalyticsProvider`].
-//    /// - returns: `Self`
-//    @discardableResult
-//    public func analytics(callback: @escaping (Context.Source) -> [AnalyticsProvider]) -> Self {
-//        context.analyticsGenerator = callback
-//        return self
-//    }
-//}
-
 // MARK: - PlayerEventPublisher
 extension Player {
     /// Sets the callback to fire when the associated media is created but not yet loaded. Playback is not yet ready to start.
