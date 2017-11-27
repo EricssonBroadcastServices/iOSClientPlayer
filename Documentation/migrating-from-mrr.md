@@ -141,15 +141,10 @@ Finally, await the `IMCDidReady` callback.
 
 At this moment, the underlying `AzukiIMC` instance has been configured with a `ConfigData` object but `EmpClient` (and as a result `EmpManager`) refers to the previously requested `ImcPlayBackArguments`.
 
-The new architecture changes this approach by having out of the box integration between entitlement requests through the `Exposure` module and playback using `Player`.
+The new architecture changes this approach by having out of the box integration between entitlement requests through the `Exposure` module and playback using `Player`. *Context sensitive* playback architecture allows for constrained extensions with functionality specific for certain `PlaybackTech` or `MediaContext`s. For example, starting playback using `ExposureContext` with `HLSNative` as the playback technology is as simple as:
 
 ```Swift
-do {
-    player.stream(playback: entitlement)
-}
-catch {
-    // Handle error
-}
+player.stream(vod: "someEMPAssetId")
 ```
 
 Configuration, rights, `DRM` and everything related to creating and managing a playback session is included in the `PlaybackEntitlement` retrieved through *Exposure*.
@@ -181,7 +176,7 @@ Streaming media is an interently asynchronous process. Listening and responding 
 ### Error Handling
 The *MRR-MC* based library throws `MRR` errors catchable through `IMCDidFail:withMessage`, in addition to *EMP* errors.
 
-Each module in the new architecture defines their own typed `Error` struct. Error codes are local to the `.framework` and may be nested. For example, an `AnalyticsError` may contain either a nested `ExposureError` or a `PlayerError`.
+Each module in the new architecture defines their own typed `Error` struct. Error codes are local to the `.framework`.
 
 ## Contract Restrictions and `DRM`
 Removing the dependency on *MRR* also means the only supported `DRM` solution right now is *FairPlay*.
