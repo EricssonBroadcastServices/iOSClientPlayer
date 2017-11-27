@@ -160,6 +160,14 @@
 			path = Analytics;
 			sourceTree = "<group>";
 		};
+		7619E55A1FCC161100ACACAE /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				766039281FC7069900E79091 /* Player+ManifestContext.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		766039111FC6D08E00E79091 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -258,7 +266,7 @@
 			children = (
 				766039241FC6E24500E79091 /* ManifestContext.swift */,
 				766039261FC6E25800E79091 /* Manifest.swift */,
-				766039281FC7069900E79091 /* Player+ManifestContext.swift */,
+				7619E55A1FCC161100ACACAE /* Components */,
 			);
 			path = Manifest;
 			sourceTree = "<group>";
