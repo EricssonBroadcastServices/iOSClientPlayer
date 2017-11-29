@@ -11,7 +11,7 @@ import UIKit
 /// A `PlaybackTech` is defined as a technology through which playback in a specified `Context` can occur.
 public protocol PlaybackTech: class {
     /// Error specific to the `Tech`
-    associatedtype TechError: ErrorCode
+    associatedtype TechError: ExpandedError
     
     /// Specifies the required data to configure the `Tech`.
     ///

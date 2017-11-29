@@ -9,7 +9,7 @@
 import Foundation
 
 /// Generic *wrapper* for the underlying `PlaybackTech` and `MediaContext` errors.
-public enum PlayerError<Tech: PlaybackTech, Context: MediaContext> {
+public enum PlayerError<Tech: PlaybackTech, Context: MediaContext>: ExpandedError {
     /// The related Tech error
     public typealias TechError = Tech.TechError
     
@@ -25,10 +25,10 @@ public enum PlayerError<Tech: PlaybackTech, Context: MediaContext> {
 
 extension PlayerError {
     /// The localized error description
-    public var localizedDescription: String {
+    public var message: String {
         switch self {
-        case .tech(error: let error): return error.localizedDescription
-        case .context(error: let error): return error.localizedDescription
+        case .tech(error: let error): return error.message
+        case .context(error: let error): return error.message
         }
     }
 }
@@ -44,6 +44,7 @@ extension PlayerError {
 }
 
 /// Extension on the basic `Swift.Error` protocol adding an error code.
-public protocol ErrorCode: Error {
+public protocol ExpandedError: Error {
     var code: Int { get }
+    var message: String { get }
 }

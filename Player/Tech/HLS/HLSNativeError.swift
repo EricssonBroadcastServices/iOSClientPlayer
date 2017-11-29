@@ -10,7 +10,7 @@ import Foundation
 
 /// `HLSNativeError` is the error type specific to the `HLSNative` `Tech`. It can manifest as both *native errors* to the framework and *nested errors* specific to underlying frameworks.
 /// Effective error handling thus requires a deeper undestanding of the overall architecture.
-public enum HLSNativeError: ErrorCode {
+public enum HLSNativeError: ExpandedError {
     /// Media is missing a valid `URL` to load data from.
         case missingMediaUrl
         
@@ -34,12 +34,15 @@ public enum HLSNativeError: ErrorCode {
 }
 
 extension HLSNativeError {
-    public var localizedDescription: String {
+    
+    public var message: String {
         switch self {
-        case .missingMediaUrl: return "Missing media url"
-        case .failedToPrepare(errors: let errors): return "Media failed to prepare: \(errors)"
-        case .loadedButNotPlayable: return "Asset loaded but not playable"
-        case .failedToReady(error: let error): return "Asset failed to ready: \(String(describing: error?.localizedDescription))"
+        case .missingMediaUrl: return "HLSNative: Missing media url"
+        case .failedToPrepare(errors: let errors):
+            let combined = errors.map{ $0.localizedDescription }.joined(separator: "\n")
+            return "HLSNative: Media failed to prepare:\n"+combined
+        case .loadedButNotPlayable: return "HLSNative: Asset loaded but not playable"
+        case .failedToReady(error: let error): return "HLSNative: Asset failed to ready: \(String(describing: error?.localizedDescription))"
         }
     }
 }

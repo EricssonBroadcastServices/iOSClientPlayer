@@ -29,8 +29,8 @@ public final class ManifestContext: MediaContext {
     /// Default analytics contains an `AnalyticsLogger`
     public var analyticsGenerators: [(Source?) -> AnalyticsProvider] = [{ _ in return AnalyticsLogger() }]
     
-    public enum Error: ErrorCode {
-        public var localizedDescription: String { return "ManifestError" }
+    public enum Error: ExpandedError {
+        public var message: String { return "ManifestError" }
         public var code: Int { return 1 }
     }
 }
