@@ -108,9 +108,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             self.source = source
             self.fairplayRequester = configuration.drm
             
-            let url = URL(string: "https://cache-dev.cdn.ebsd.ericsson.net/L24/SBS6/sbs6.isml/.m3u8")!
-            urlAsset = AVURLAsset(url: url)
-//            urlAsset = AVURLAsset(url: configuration.url)
+//            let url = URL(string: "https://cache-dev.cdn.ebsd.ericsson.net/L24/SBS6/sbs6.isml/.m3u8")!
+//            urlAsset = AVURLAsset(url: url)
+            urlAsset = AVURLAsset(url: configuration.url)
             if fairplayRequester != nil {
                 urlAsset.resourceLoader.setDelegate(fairplayRequester,
                                                     queue: DispatchQueue(label: configuration.playSessionId + "-fairplayLoader"))
