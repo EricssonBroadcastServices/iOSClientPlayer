@@ -1,8 +1,14 @@
 # CHANGELOG
 
+* `0.73.x` Releases - [0.73.0](#0730)
 * `0.72.x` Releases - [0.72.0](#0720)
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
+
+## 0.73.0
+
+#### Changes
+* `HLSNative` unloads current asset when stopped, either by user or by completing playback.
 
 ## 0.72.0
 

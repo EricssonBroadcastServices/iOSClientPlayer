@@ -37,12 +37,18 @@ extension HLSNative: MediaPlayback {
             return
         default:
             avPlayer.pause()
-            playbackState = .stopped
             if let source = currentAsset?.source {
                 self.eventDispatcher.onPlaybackAborted(self, source)
                 source.analyticsConnector.onAborted(tech: self, source: source)
             }
+            unloadOnStop()
         }
+    }
+    
+    internal func unloadOnStop() {
+        playbackState = .stopped
+        avPlayer.replaceCurrentItem(with: nil)
+        currentAsset = nil
     }
     
     /// Returns true if playback has been started and the current rate is not equal to 0

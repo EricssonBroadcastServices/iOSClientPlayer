@@ -436,8 +436,9 @@ extension HLSNative {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: playerItem) { [weak self] notification in
             guard let `self` = self else { return }
-            `self`.eventDispatcher.onPlaybackCompleted(`self`, mediaAsset.source)
-            mediaAsset.source.analyticsConnector.onCompleted(tech: `self`, source: mediaAsset.source)
+            self.eventDispatcher.onPlaybackCompleted(self, mediaAsset.source)
+            mediaAsset.source.analyticsConnector.onCompleted(tech: self, source: mediaAsset.source)
+            self.unloadOnStop()
         }
     }
 }
