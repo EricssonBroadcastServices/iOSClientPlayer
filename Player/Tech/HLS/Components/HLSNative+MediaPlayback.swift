@@ -29,7 +29,7 @@ extension HLSNative: MediaPlayback {
         avPlayer.pause()
     }
     
-    /// Stops playback. This will trigger `PlaybackAborted` callbacks and analytics publication.
+    /// Stops playback and unloads the currently active `Source`. This will trigger `PlaybackAborted` callbacks and analytics publication.
     public func stop() {
         // TODO: End playback? Unload resources? Leave that to user?
         switch playbackState {

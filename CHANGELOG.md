@@ -9,6 +9,7 @@
 
 #### Changes
 * `HLSNative` unloads current asset when stopped, either by user or by completing playback.
+* Exposed `currentSource` property on tech
 
 ## 0.72.0
 

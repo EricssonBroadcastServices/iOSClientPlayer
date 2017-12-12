@@ -36,6 +36,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public typealias TechError = HLSNativeError
     public var eventDispatcher: EventDispatcher<Context, HLSNative<Context>> = EventDispatcher()
     
+    public var currentSource: Context.Source? {
+        return currentAsset?.source
+    }
     
     /// *Native* `AVPlayer` used for playback purposes.
     internal var avPlayer: AVPlayer

@@ -25,5 +25,8 @@ public protocol PlaybackTech: class {
     ///
     /// `Tech`s are expected to trigger defined events according to their specification.
     var eventDispatcher: EventDispatcher<Context, Self> { get }
+    
+    /// Retrieve the currently active source, if any
+    var currentSource: Context.Source? { get }
 }
 
