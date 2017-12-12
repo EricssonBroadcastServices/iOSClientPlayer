@@ -14,6 +14,10 @@ public class PassThroughConnector: AnalyticsConnector {
         self.providers = providers
     }
     
+    deinit {
+        print("PassThroughConnector deinit")
+    }
+    
     public var providers: [AnalyticsProvider]
     
     public func onCreated<Tech, Source>(tech: Tech, source: Source) where Tech : PlaybackTech, Source : MediaSource {

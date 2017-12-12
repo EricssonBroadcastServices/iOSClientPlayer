@@ -11,6 +11,10 @@
 * `HLSNative` unloads current asset when stopped, either by user or by completing playback.
 * Exposed `currentSource` property on tech
 
+#### Bug fixes
+* Fixed an issue where `onPlaybackReady` was sent twice per session.
+* Make sure all observers are unregistered before clearing the current `MediaAsset`
+
 ## 0.72.0
 
 #### Features

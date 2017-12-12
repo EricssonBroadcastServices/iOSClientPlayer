@@ -125,6 +125,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             }()
         
         deinit {
+            print("MediaAsset deinit")
             itemObserver.stopObservingAll()
             itemObserver.unsubscribeAll()
         }
@@ -211,7 +212,6 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         currentAsset?.itemObserver.stopObservingAll()
         currentAsset?.itemObserver.unsubscribeAll()
         
-        // TODO: Stop playback?
         playbackState = .stopped
         avPlayer.pause()
         
@@ -232,15 +232,15 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             guard let `self` = self else { return }
             guard error == nil else {
                 let techError = PlayerError<HLSNative<Context>,Context>.tech(error: error!)
-                `self`.eventDispatcher.onError(`self`, mediaAsset.source, techError)
-                mediaAsset.source.analyticsConnector.onError(tech: `self`, source: mediaAsset.source, error: techError)
+                self.eventDispatcher.onError(self, mediaAsset.source, techError)
+                mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                 return
             }
             // At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
-            `self`.eventDispatcher.onPlaybackPrepared(`self`, mediaAsset.source)
-            mediaAsset.source.analyticsConnector.onPrepared(tech: `self`, source: mediaAsset.source)
+            self.eventDispatcher.onPlaybackPrepared(self, mediaAsset.source)
+            mediaAsset.source.analyticsConnector.onPrepared(tech: self, source: mediaAsset.source)
             
-            `self`.readyPlayback(with: mediaAsset)
+            self.readyPlayback(with: mediaAsset)
         }
     }
     
@@ -248,6 +248,7 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
     ///
     /// Finally, once the `Player` is configured, the `currentMedia` is replaced with the newly created one. The system now awaits playback status to return `.readyToPlay`.
     fileprivate func readyPlayback(with mediaAsset: MediaAsset<Context.Source>) {
+        
         currentAsset = mediaAsset
         
         let playerItem = mediaAsset.playerItem
@@ -263,11 +264,6 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         
         // Observe Duration changes
         handleDurationChangedEvent(mediaAsset: mediaAsset)
-        
-        // ADITIONAL KVO TO CONSIDER
-        //[_currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"]; // availableDuration?
-        //[_currentItem removeObserver:self forKeyPath:@"playbackBufferEmpty"]; // BUFFERING
-        //[_currentItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"]; // PLAYREADY?
         
         
         // Observe when currentItem has played to the end
@@ -313,39 +309,28 @@ extension HLSNative {
                     //  - after seeking
                     // Only send onPlaybackReady if the stream has not been started yet.
                     if self.playbackState == .notStarted {
-                        `self`.eventDispatcher.onPlaybackReady(`self`, mediaAsset.source)
-                        mediaAsset.source.analyticsConnector.onReady(tech: `self`, source: mediaAsset.source)
-                        if case let .enabled(value) = `self`.bookmark, let offset = value {
+                        if case let .enabled(value) = self.bookmark, let offset = value {
                             let cmTime = CMTime(value: offset, timescale: 1000)
-                            `self`.avPlayer.seek(to: cmTime, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero) { [weak self] success in
-                                
-                                self?.startPlayback()
+                            self.avPlayer.seek(to: cmTime, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero) { [weak self] success in
+                                guard let `self` = self else { return }
+                                self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
+                                mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
+                                if self.autoplay { self.play() }
                             }
                         }
                         else {
-                            `self`.startPlayback()
+                            self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
+                            mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
+                            if self.autoplay { self.play() }
                         }
                     }
                 case .failed:
                     let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
-                    `self`.eventDispatcher.onError(`self`, mediaAsset.source, techError)
-                    mediaAsset.source.analyticsConnector.onError(tech: `self`, source: mediaAsset.source, error: techError)
+                    self.eventDispatcher.onError(self, mediaAsset.source, techError)
+                    mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                 }
             }
         }
-    }
-    
-    /// Private function to trigger the necessary final events right before playback starts.
-    ///
-    /// Status for the `AVPlayerItem` associated with the media in preparation has reached `.readyToPlay` state.
-    private func startPlayback() {
-        if let source = currentAsset?.source {
-            eventDispatcher.onPlaybackStarted(self, source)
-            source.analyticsConnector.onReady(tech: self, source: source)
-        }
-        
-        // Start playback if autoplay is enabled
-        if self.autoplay { self.play() }
     }
 }
 

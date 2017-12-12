@@ -48,6 +48,9 @@ extension HLSNative: MediaPlayback {
     internal func unloadOnStop() {
         playbackState = .stopped
         avPlayer.replaceCurrentItem(with: nil)
+        
+        currentAsset?.itemObserver.stopObservingAll()
+        currentAsset?.itemObserver.unsubscribeAll()
         currentAsset = nil
     }
     
