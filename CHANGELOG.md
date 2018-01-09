@@ -12,7 +12,7 @@
 * `EMP-10646` `ExposureContext` exposes cached server time
 
 #### Changes
-* `EMP-10852` API changes to `MediaPlayback.currentTime`. Property renamed to `MediaPlayback.playheadTime` which better reflects the actual position of the playback.
+* `EMP-10852` API changes to `MediaPlayback.currentTime`. Property renamed to `MediaPlayback.playheadPosition` which better reflects the actual position of the playback.
 
 ## 0.73.0
 

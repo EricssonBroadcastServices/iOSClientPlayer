@@ -6,7 +6,7 @@
 Several API changes where introduced to streamline with *Android* and *HTML5* platforms.
 
 ##### `MediaPlayback`
-* `currentTime` renamed to `playheadTime`
+* `currentTime` renamed to `playheadPosition`
 
 
 ## 0.2.0 to 0.72.0

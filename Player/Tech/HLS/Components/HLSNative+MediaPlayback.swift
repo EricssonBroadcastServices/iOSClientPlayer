@@ -86,8 +86,8 @@ extension HLSNative: MediaPlayback {
         }
     }
     
-    /// Return the playhead position timestamp in *milliseconds*
-    public var playheadTime: Int64 {
+    /// Return the playhead position timestamp using the internal buffer time reference in milliseconds
+    public var playheadPosition: Int64 {
         guard let cmTime = currentAsset?.playerItem.currentTime() else { return 0 }
         return Int64(cmTime.seconds*1000)
     }

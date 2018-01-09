@@ -28,8 +28,8 @@ public protocol MediaPlayback: class {
     /// - Parameter timeInterval: target timestamp
     func seek(to timeInterval: Int64)
     
-    /// Should return the playhead position timestamp in milliseconds
-    var playheadTime: Int64 { get }
+    /// Should return the playhead position timestamp using the internal buffer time reference in milliseconds
+    var playheadPosition: Int64 { get }
     
     /// Playback duration.
     ///
@@ -73,9 +73,9 @@ extension Player where Tech: MediaPlayback {
         tech.seek(to: timeInterval)
     }
     
-    /// Should return the playhead position timestamp in milliseconds
-    public var playheadTime: Int64 {
-        return tech.playheadTime
+    /// Should return the playhead position timestamp using the internal buffer time reference in milliseconds
+    public var playheadPosition: Int64 {
+        return tech.playheadPosition
     }
     
     /// Playback duration.
