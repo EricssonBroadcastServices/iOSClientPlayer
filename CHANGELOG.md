@@ -5,6 +5,14 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
+## 0.75.0
+
+#### Features
+* `EMP-10646` `ExposureContext` exposes cached server time
+
+#### Changes
+* `EMP-10852` API changes to `MediaPlayback.currentTime`. Property renamed to `MediaPlayback.playheadTime` which better reflects the actual position of the playback.
+
 ## 0.73.0
 
 #### Changes
