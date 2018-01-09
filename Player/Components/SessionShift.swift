@@ -50,6 +50,7 @@ extension Player where Tech: SessionShift {
     ///
     /// - parameter enabled: `true` if enabled, `false` otherwise
     /// - returns: `Self`
+    @discardableResult
     public func sessionShift(enabled: Bool) -> Self {
         tech.sessionShift(enabled: enabled)
         return self
@@ -59,6 +60,7 @@ extension Player where Tech: SessionShift {
     ///
     /// - parameter offset: Offset in the related stream where playback should start
     /// - returns: `Self`
+    @discardableResult
     public func sessionShift(enabledAt offset: Int64) -> Self {
         tech.sessionShift(enabledAt: offset)
         return self
