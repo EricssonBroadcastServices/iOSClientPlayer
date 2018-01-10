@@ -98,4 +98,10 @@ public protocol EventResponder {
     /// - parameter tech: `Tech` broadcasting the event
     /// - parameter source: `MediaSource` causing the event
     func onDurationChanged<Tech, Source>(tech: Tech, source: Source) where Tech: PlaybackTech, Source: MediaSource
+    
+//    /// Triggered if the current `MediaSource` was reloaded
+//    ///
+//    /// - parameter tech: `Tech` broadcasting the event
+//    /// - parameter source: `MediaSource` causing the even
+//    func onReloaded<Tech, Source>(tech: Tech, source: Source) where Tech: PlaybackTech, Source: MediaSource
 }
