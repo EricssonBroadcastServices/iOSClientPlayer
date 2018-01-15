@@ -36,6 +36,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public typealias TechError = HLSNativeError
     public var eventDispatcher: EventDispatcher<Context, HLSNative<Context>> = EventDispatcher()
     
+    /// Returns the currently active `MediaSource` if available.
     public var currentSource: Context.Source? {
         return currentAsset?.source
     }
