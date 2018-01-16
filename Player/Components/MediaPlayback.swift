@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 public protocol MediaPlayback: class {
     /// Starts playback
@@ -23,13 +24,27 @@ public protocol MediaPlayback: class {
     /// - note: This should not return `false` if playback has stopped due to *buffering* or similair events.
     var isPlaying: Bool { get }
     
-    /// Should seek the current playback to timestamp
+    /// Should perform seeking to the specified `position` in the player's buffer.
     ///
-    /// - Parameter timeInterval: target timestamp
-    func seek(to timeInterval: Int64)
+    /// - parameter position: target buffer position in milliseconds
+    func seek(toPosition position: Int64)
+    
+    /// Should return time ranges within which it is possible to seek.
+    var seekableRange: [CMTimeRange] { get }
     
     /// Should return the playhead position timestamp using the internal buffer time reference in milliseconds
     var playheadPosition: Int64 { get }
+    
+    /// Should returns the playhead position mapped current time in unix epoch (milliseconds) or `nil` if playback is not mapped to any date.
+    var playheadTime: Int64? { get }
+    
+    /// For streams where playback is associated with a series of dates, should perform seeking to `timeInterval` as specified in relation to the current `wallclock` time.
+    ///
+    /// - Parameter timeInterval: target timestamp in unix epoch time (milliseconds)
+    func seek(toTime timeInterval: Int64)
+    
+    /// Should return the time ranges of the item that have been loaded.
+    var bufferedRange: [CMTimeRange] { get }
     
     /// Playback duration.
     ///
@@ -66,11 +81,16 @@ extension Player where Tech: MediaPlayback {
         return tech.isPlaying
     }
     
-    /// Should seek the current playback to timestamp
+    /// Should return time ranges within which it is possible to seek.
+    public var seekableRange: [CMTimeRange] {
+        return tech.seekableRange
+    }
+    
+    /// Should seek the specified `position` in the player's buffer.
     ///
     /// - Parameter timeInterval: target timestamp
-    public func seek(to timeInterval: Int64) {
-        tech.seek(to: timeInterval)
+    public func seek(toPosition position: Int64) {
+        tech.seek(toPosition: position)
     }
     
     /// Should return the playhead position timestamp using the internal buffer time reference in milliseconds
@@ -78,11 +98,28 @@ extension Player where Tech: MediaPlayback {
         return tech.playheadPosition
     }
     
+    /// Should returns the playhead position mapped current time in unix epoch (milliseconds) or `nil` if playback is not mapped to any date.
+    public var playheadTime: Int64? {
+        return tech.playheadTime
+    }
+    
+    /// For streams where playback is associated with a series of dates, should perform seeking to `timeInterval` as specified in relation to the current `wallclock` time.
+    ///
+    /// - Parameter timeInterval: target timestamp in unix epoch time (milliseconds)
+    public func seek(toTime timeInterval: Int64) {
+        tech.seek(toTime: timeInterval)
+    }
+    
     /// Playback duration.
     ///
     /// - note: If this is a live stream, duration should be `nil`
     public var duration: Int64? {
         return tech.duration
+    }
+    
+    /// Should return the time ranges of the item that have been loaded.
+    public var bufferedRange: [CMTimeRange] {
+        return tech.bufferedRange
     }
     
     /// The throughput required to play the stream, as advertised by the server, in *bits per second*. Should return nil if no bitrate can be reported.

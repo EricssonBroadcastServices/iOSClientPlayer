@@ -9,6 +9,26 @@
 import Foundation
 import AVFoundation
 
+extension Date {
+    /// Date formatter for utc.
+    public static func utcFormatter() -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        return formatter
+    }
+    
+    /// Unix epoch time in milliseconds
+    public var millisecondsSince1970: Int64 {
+        return Int64((timeIntervalSince1970 * 1000.0).rounded())
+    }
+    
+    /// Create a Date from unix epoch time in milliseconds
+    public init(milliseconds: Int64) {
+        self = Date(timeIntervalSince1970: TimeInterval(milliseconds / 1000))
+    }
+}
+
+
 /// `HLSNative` adoption of `MediaPlayback`
 extension HLSNative: MediaPlayback {
     /// Starts or resumes playback.
@@ -70,11 +90,11 @@ extension HLSNative: MediaPlayback {
         }
     }
     
-    /// Use this method to seek to a specified time in the media timeline. The seek request will fail if interrupted by another seek request or by any other operation.
+    /// Use this method to seek to a specified buffer timestamp for the active media. The seek request will fail if interrupted by another seek request or by any other operation.
     ///
-    /// - Parameter timeInterval: in milliseconds
-    public func seek(to timeInterval: Int64) {
-        let seekTime = timeInterval > 0 ? timeInterval : 0
+    /// - parameter position: in milliseconds
+    public func seek(toPosition position: Int64) {
+        let seekTime = position > 0 ? position : 0
         let cmTime = CMTime(value: seekTime, timescale: 1000)
         currentAsset?.playerItem.seek(to: cmTime) { [weak self] success in
             guard let `self` = self else { return }
@@ -86,10 +106,44 @@ extension HLSNative: MediaPlayback {
         }
     }
     
+    /// Returns the time ranges within which it is possible to seek.
+    public var seekableRange: [CMTimeRange] {
+        return currentAsset?.playerItem.seekableTimeRanges.flatMap{ $0 as? CMTimeRange } ?? []
+    }
+    
     /// Return the playhead position timestamp using the internal buffer time reference in milliseconds
     public var playheadPosition: Int64 {
         guard let cmTime = currentAsset?.playerItem.currentTime() else { return 0 }
         return Int64(cmTime.seconds*1000)
+    }
+    
+    /// Returns the playhead position mapped current time, in unix epoch (milliseconds)
+    ///
+    /// Will return `nil` if playback is not mapped to any date.
+    public var playheadTime: Int64? {
+        // NOTE: Requires a stream expressing `EXT-X-PROGRAM-DATE-TIME` tags
+        return currentAsset?.playerItem.currentDate()?.millisecondsSince1970
+    }
+    
+    /// For playback content that is associated with a range of dates, move the playhead to point within that range.
+    /// Will fail if the supplied date is outside the range or if the content is not associated with a range of dates.
+    ///
+    /// - Parameter timeInterval: target timestamp in unix epoch time (milliseconds)
+    public func seek(toTime timeInterval: Int64) {
+        let date = Date(milliseconds: timeInterval)
+        currentAsset?.playerItem.seek(to: date) { [weak self] success in
+            guard let `self` = self else { return }
+            if success {
+                if let source = self.currentAsset?.source {
+                    self.eventDispatcher.onPlaybackScrubbed(self, source, timeInterval)
+                    source.analyticsConnector.onScrubbedTo(tech: self, source: source, offset: timeInterval) }
+            }
+        }
+    }
+    
+    /// Returns the time ranges of the item that have been loaded.
+    public var bufferedRange: [CMTimeRange] {
+        return currentAsset?.playerItem.loadedTimeRanges.flatMap{ $0 as? CMTimeRange } ?? []
     }
     
     /// Returns the current playback position of the player in *milliseconds*, or `nil` if duration is infinite (live streams for example).
