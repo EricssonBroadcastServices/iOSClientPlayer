@@ -119,13 +119,29 @@ extension HLSNative: MediaPlayback {
     
     /// Returns the playhead position mapped current time, in unix epoch (milliseconds)
     ///
+    /// Requires a stream expressing the `EXT-X-PROGRAM-DATE-TIME` tag.
+    ///
     /// Will return `nil` if playback is not mapped to any date.
     public var playheadTime: Int64? {
-        // NOTE: Requires a stream expressing `EXT-X-PROGRAM-DATE-TIME` tags
         return currentAsset?.playerItem.currentDate()?.millisecondsSince1970
     }
     
+//    private func dateString(date: Date?, format: String) -> String? {
+//        guard let date = date else { return nil }
+//        let timeFormatter = DateFormatter()
+//        timeFormatter.dateFormat = format
+//        return timeFormatter.string(from: date)
+//    }
+//    
+//    public func logStuff() {
+//        
+//        currentAsset?.playerItem.accessLog()?.events.forEach{
+//            print($0.playbackType,$0.uri,dateString(date: $0.playbackStartDate, format: "HH:mm:ss"),$0.playbackStartOffset)
+//        }
+//    }
+    
     /// For playback content that is associated with a range of dates, move the playhead to point within that range.
+    ///
     /// Will fail if the supplied date is outside the range or if the content is not associated with a range of dates.
     ///
     /// - Parameter timeInterval: target timestamp in unix epoch time (milliseconds)
