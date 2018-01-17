@@ -36,6 +36,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public typealias TechError = HLSNativeError
     public var eventDispatcher: EventDispatcher<Context, HLSNative<Context>> = EventDispatcher()
     
+    /// Returns the currently active `MediaSource` if available.
     public var currentSource: Context.Source? {
         return currentAsset?.source
     }
@@ -204,6 +205,33 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
 extension HLSNative where Context.Source: HLSNativeConfigurable {
     
     public func load(source: Context.Source) {
+        loadAndPrepare(source: source, onTransitionReady: { mediaAsset in
+            if let oldSource = currentAsset?.source {
+                eventDispatcher.onPlaybackAborted(self, oldSource)
+                oldSource.analyticsConnector.onAborted(tech: self, source: oldSource)
+            }
+            
+            // Start notifications on new session
+            // At this point the `AVURLAsset` has yet to perform async loading of values (such as `duration`, `tracks` or `playable`) through `loadValuesAsynchronously`.
+            eventDispatcher.onPlaybackCreated(self, mediaAsset.source)
+            mediaAsset.source.analyticsConnector.onCreated(tech: self, source: mediaAsset.source)
+            
+        }) { mediaAsset in
+            self.eventDispatcher.onPlaybackPrepared(self, mediaAsset.source)
+            mediaAsset.source.analyticsConnector.onPrepared(tech: self, source: mediaAsset.source)
+        }
+    }
+    
+    /// Reloads the currently active `MediaSource` using the
+    public func reloadSource() {
+        guard let source = currentSource else { return }
+        
+        loadAndPrepare(source: source)
+    }
+    
+    private func loadAndPrepare(source: Context.Source,
+                                onTransitionReady: ((MediaAsset<Context.Source>) -> Void) = { _ in },
+                                onAssetPrepared: @escaping((MediaAsset<Context.Source>) -> Void) = { _ in }) {
         let configuration = source.hlsNativeConfiguration
         
         let mediaAsset = MediaAsset<Context.Source>(source: source, configuration: configuration)
@@ -215,15 +243,8 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         playbackState = .stopped
         avPlayer.pause()
         
-        if let oldSource = currentAsset?.source {
-            eventDispatcher.onPlaybackAborted(self, oldSource)
-            oldSource.analyticsConnector.onAborted(tech: self, source: oldSource)
-        }
-        
-        // Start notifications on new session
-        // At this point the `AVURLAsset` has yet to perform async loading of values (such as `duration`, `tracks` or `playable`) through `loadValuesAsynchronously`.
-        eventDispatcher.onPlaybackCreated(self, mediaAsset.source)
-        mediaAsset.source.analyticsConnector.onCreated(tech: self, source: mediaAsset.source)
+        // Fire the transition callback
+        onTransitionReady(mediaAsset)
         
         // Reset playbackState
         playbackState = .notStarted
@@ -237,8 +258,7 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
                 return
             }
             // At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
-            self.eventDispatcher.onPlaybackPrepared(self, mediaAsset.source)
-            mediaAsset.source.analyticsConnector.onPrepared(tech: self, source: mediaAsset.source)
+            onAssetPrepared(mediaAsset)
             
             self.readyPlayback(with: mediaAsset)
         }
