@@ -111,13 +111,18 @@ extension HLSNative: MediaPlayback {
         return currentAsset?.playerItem.seekableTimeRanges.flatMap{ $0 as? CMTimeRange } ?? []
     }
     
+    /// Returns time ranges in unix epoch time within which it is possible to seek.
+    public var seekableTimeRange: [(Int64, Int64)] {
+        return seekableRange.flatMap{ convert(timeRange: $0) }
+    }
+    
     /// Return the playhead position timestamp using the internal buffer time reference in milliseconds
     public var playheadPosition: Int64 {
         guard let cmTime = currentAsset?.playerItem.currentTime() else { return 0 }
         return Int64(cmTime.seconds*1000)
     }
     
-    /// Returns the playhead position mapped current time, in unix epoch (milliseconds)
+    /// Returns the playhead position mapped to wallclock time, in unix epoch (milliseconds)
     ///
     /// Requires a stream expressing the `EXT-X-PROGRAM-DATE-TIME` tag.
     ///
@@ -162,6 +167,11 @@ extension HLSNative: MediaPlayback {
         return currentAsset?.playerItem.loadedTimeRanges.flatMap{ $0 as? CMTimeRange } ?? []
     }
     
+    /// Returns time ranges in unix epoch time of the loaded item
+    public var bufferedTimeRange: [(Int64, Int64)] {
+        return bufferedRange.flatMap{ convert(timeRange: $0) }
+    }
+    
     /// Returns the current playback position of the player in *milliseconds*, or `nil` if duration is infinite (live streams for example).
     public var duration: Int64? {
         guard let cmTime = currentAsset?.playerItem.duration else { return nil }
@@ -178,5 +188,18 @@ extension HLSNative: MediaPlayback {
             .last?
             .indicatedBitrate
         
+    }
+}
+
+extension HLSNative {
+    fileprivate func convert(timeRange: CMTimeRange) -> (Int64, Int64)? {
+        guard let start = relate(time: timeRange.start), let end = relate(time: timeRange.end) else { return nil }
+        return (start, end)
+    }
+    
+    fileprivate func relate(time: CMTime) -> Int64? {
+        guard let currentTime = playheadTime else { return nil }
+        let milliseconds = Int64(time.seconds*1000)
+        return currentTime - playheadPosition + milliseconds
     }
 }

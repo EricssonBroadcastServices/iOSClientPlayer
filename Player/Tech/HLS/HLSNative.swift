@@ -222,12 +222,14 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         }
     }
     
+    #if DEBUG
     /// Reloads the currently active `MediaSource`
-    internal func reloadSource() {
+    public func reloadSource() {
         guard let source = currentSource else { return }
         
         loadAndPrepare(source: source)
     }
+    #endif
     
     private func loadAndPrepare(source: Context.Source,
                                 onTransitionReady: ((MediaAsset<Context.Source>) -> Void) = { _ in },
