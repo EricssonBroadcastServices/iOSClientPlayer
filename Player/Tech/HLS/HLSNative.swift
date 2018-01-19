@@ -189,7 +189,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         print("HLSNative.deinit")
         playerObserver.stopObservingAll()
         playerObserver.unsubscribeAll()
-        
+        stop()
         NotificationCenter.default.removeObserver(self)
     }
     
