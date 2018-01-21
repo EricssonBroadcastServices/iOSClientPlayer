@@ -202,7 +202,7 @@ The *MRR-MC* based library throws `MRR` errors catchable through `IMCDidFail:wit
 
 Each module in the new architecture defines their own typed `Error` struct. Error codes are local to the `.framework`.
 
-## DRM
+### DRM
 Removing the dependency on *MRR* also means the only supported `DRM` solution right now is *FairPlay*.
 
 Streaming `DRM` protected media assets will require *client applications* to implement their own platform specific `DrmAgent`s. In the case of *FairPlay*, this most likely involves interaction with the *Apple* supplied `AVAssetResourceLoaderDelegate` protocol.
