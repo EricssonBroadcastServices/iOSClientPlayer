@@ -127,6 +127,12 @@ let request = Entitlement(environment: environment
     }
 ```
 
+Even better, when using `ExposureContext` playback can be started with just an *assetId*.
+
+```Swift
+player.startPlayback(assetId: "someEMPAssetId")
+```
+
 ### Playback Configuration
 Since playback in the *MRR-MC* based library is tightly coupled with the request proceedure through a similar *semi opaque* scheme linking authentication and entitlements, client developers risk a a host of configuration issues when atempting to prepare and manage *playback*.
 
