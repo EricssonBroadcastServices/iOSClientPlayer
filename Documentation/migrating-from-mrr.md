@@ -6,13 +6,21 @@ The entire project is available as *open source* under the `Apache 2.0` license.
 ## Modular Architecture
 A main goal with the new architecture has been to promote a modular approach. Customers will be able to select components fitting their requirements.
 
-Each module center around a *core* use case, such as playback or analytics. The initial release will contain [`Player`](https://github.com/EricssonBroadcastServices/iOSClientPlayer), [`Exposure`](https://github.com/EricssonBroadcastServices/iOSClientExposure), [`Utilities`](https://github.com/EricssonBroadcastServices/iOSClientUtilities), [`Analytics`](https://github.com/EricssonBroadcastServices/iOSClientAnalytics) and a [reference app](https://github.com/EricssonBroadcastServices/iOSClientRefApp) implementing and demonstrating the system together.
+Each module center around a *core* use case, such as playback or analytics.
+
+* [`Player`](https://github.com/EricssonBroadcastServices/iOSClientPlayer)
+* [`Exposure`](https://github.com/EricssonBroadcastServices/iOSClientExposure)
+* [`Analytics`](https://github.com/EricssonBroadcastServices/iOSClientAnalytics)
+* [`Download`](https://github.com/EricssonBroadcastServices/iOSClientDownload)
+* [`Cast`](https://github.com/EricssonBroadcastServices/iOSClientCast)
+* [`Utilities`](https://github.com/EricssonBroadcastServices/iOSClientUtilities)
+* [Reference app](https://github.com/EricssonBroadcastServices/iOSClientRefApp)
 
 #### Player
 `Player` contains a fully fledged media player, based on the native `AVPlayer`. It exposes key functionality such as *Playback Control*, *Fairplay* `DRM` protection, *Event publishing*, *Pluggable analytics provider* and *Airplay*. Designed and built with stability, resilience and usability in mind.
 
 #### Exposure
-`Exposure` conveys seamless integration with the *EMP Exposure Layer* and enables client applications quick access to functionality such as *authentication*, *entitlement requests* and *EPG*.
+`Exposure` extends `Player` with functionality enabling seamless integration with the *EMP Platform*. It provides client applications quick access to functionality such as *authentication*, *entitlement requests* and *Epg*.
 
 #### Analytics
 `Analytics` module provides an out of the box *Analytics Dispatcher* which seamlessly integrates with the EMP platform. It delivers the full *EMP* analytics specification while at the same time offering customization where needed.
@@ -22,7 +30,7 @@ Dispatch is done in real time in self contained batches. In the event of network
 ## Key Differences
 A major difference between the legacy *MRR-MC* based architecture and the new, modern client lies in the modular approach. Client application developers can now choose components required specifically for their solution.
 
-Compartmentalization of functionality through specialized concepts has been another cornerstone. Authentication is done through the `Authenticate` endpoint, entitlement requested through the `Entitlement` endpoint and so on. Large, unwieldy constructs have been avoided whenever possible. This will allow both client application developers and contributors a greater insight into the workflow and lifecycle of the system in action.
+Compartmentalization of functionality through specializations has been another cornerstone. Authentication is done through the `Authenticate` endpoint, entitlement requested through the `Entitlement` endpoint and so on. Large, unwieldy constructs have been avoided whenever possible. This will allow both client application developers and contributors a greater insight into the workflow and lifecycle of the system in action.
 
 Small, focused concepts respecting the single responsbility principle also leads to increased testability which in turn promotes product quality. 
 
@@ -55,7 +63,6 @@ let environment = Environment(baseUrl: "https://path.to.host", customer: "CUSTOM
 Authenticate(environment: environment)
     .login(username: "username", password: "password")
     .request()
-    .validate()
     .response{
         if let error = $0.error {
             // Handle typed ExposureError
@@ -92,7 +99,6 @@ let request = Entitlement(environment: environment
                          sessionToken: sessionToken)
     .vod(assetId: "qwerty")
     .request()
-    .validate()
     .response{
         if let error = $0.error {
             // Handle typed ExposureError
@@ -144,7 +150,7 @@ At this moment, the underlying `AzukiIMC` instance has been configured with a `C
 The new architecture changes this approach by having out of the box integration between entitlement requests through the `Exposure` module and playback using `Player`. *Context sensitive* playback architecture allows for constrained extensions with functionality specific for certain `PlaybackTech` or `MediaContext`s. For example, starting playback using `ExposureContext` with `HLSNative` as the playback technology is as simple as:
 
 ```Swift
-player.stream(vod: "someEMPAssetId")
+player.startPlayback(assetId: "someEMPAssetId")
 ```
 
 Configuration, rights, `DRM` and everything related to creating and managing a playback session is included in the `PlaybackEntitlement` retrieved through *Exposure*.
@@ -171,6 +177,9 @@ Streaming media is an interently asynchronous process. Listening and responding 
 | Ads stopped  | `IMCPlaybackState_AdsCompleted` | n/a |
 | Bitrate Change | `IMCBitrateDidChange` | `onBitrateChanged` |
 | Duration Change | n/a | `onDurationChanged` |
+| Program Change | `IMC_INFO_TYPE_PROGRAM_CHANGED` | `onProgramChanged`
+| Duration Change | n/a | `onDurationChanged` |
+| Duration Change | n/a | `onDurationChanged` |
 | Error | `IMCDidFail:withMessage` | `onError` |
 
 ### Error Handling
@@ -178,7 +187,5 @@ The *MRR-MC* based library throws `MRR` errors catchable through `IMCDidFail:wit
 
 Each module in the new architecture defines their own typed `Error` struct. Error codes are local to the `.framework`.
 
-## Contract Restrictions and `DRM`
+## `DRM`
 Removing the dependency on *MRR* also means the only supported `DRM` solution right now is *FairPlay*.
-
-Contract restrictions is not yet implemented but exists as a roadmap item.
