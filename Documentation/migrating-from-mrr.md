@@ -28,13 +28,30 @@ Each module center around a *core* use case, such as playback or analytics.
 Dispatch is done in real time in self contained batches. In the event of network disturbances or other errors, *payload* is encrypted and stored on device for later delivery.
 
 ## Key Differences
-A major difference between the legacy *MRR-MC* based architecture and the new, modern client lies in the modular approach. Client application developers can now choose components required specifically for their solution.
+A major difference between the legacy *MRR-MC* based architecture and the new, modern client lies in the modular approach. Application developers can now choose components required specifically for their solution.
 
-Compartmentalization of functionality through specializations has been another cornerstone. Authentication is done through the `Authenticate` endpoint, entitlement requested through the `Entitlement` endpoint and so on. Large, unwieldy constructs have been avoided whenever possible. This will allow both client application developers and contributors a greater insight into the workflow and lifecycle of the system in action.
-
-Small, focused concepts respecting the single responsbility principle also leads to increased testability which in turn promotes product quality. 
+Small, focused concepts respecting the single responsbility principle also leads to increased testability which in turn promotes product quality. Authentication is done through the `Authenticate` endpoint, entitlement requested through the `Entitlement` endpoint and so on. Large, unwieldy constructs have been avoided whenever possible. This will allow both client application developers and contributors a greater insight into the workflow and lifecycle of the system in action.
 
 Finally, the new modular frameworks have been written primarily in `Swift` with the expressed intention employ the language's safety and resilience advantages. Whenever possible, immutable `structs` has been used instead of mutable `classes`. Error handling has also been greatly expanded with expressive and rich subtypes.
+
+### Modular Playback Technology
+One major goal has been to decouple the playback *api* from the underlying playback technology. A tech independent architecture allows *client applications* to select their playback environment of choice or develop their own.
+
+Restrictions on `PlaybackTech` has been kept vague by design. The contract between `Player`, the `PlaybackTech`, the `MediaContext` and associated features should largely be defined by their interaction as a complete package. As such, *tech developers* are free to make choices that feel relevant to their platform.
+
+The `PlaybackTech` protocol should be considered a *container* for features related to rendering the media on screen. `HLSNative` provides a baseline implementation which may serve as a guide for this approach.
+
+### Context Sensitive Playback
+A second cornerstone is a *Context Sensitive* playback. `MediaContext` should encapsulate everything related to the playback context in question, such as source url, content restrictions, `Drm Agent`s and related meta data. This kind of information is often very platform dependant and specialized.
+
+Contexts should define a `MediaSource`, usually fetched from some content managed remote source. It typically includes a media locator, content restrictions and possibly meta data regarding the source in question.
+
+### Features as Components
+The final cornerstone is *Features as Components*. `PlaybackTech` and `MediaContext` tied together in a constrained fashion delivers a focused *api* definition in which certain functionality may only be available in a specific context using a specific tech.
+
+Features may be anything the platform defines. For example, convenience methods for starting playback of specific assets by identifiers or contract restrictions by module injection.
+
+`ExposureContext`, as defined in the [Exposure module](https://github.com/EricssonBroadcastServices/iOSClientExposure), has a rich set of *Features* specific for the *EMP Platform*. 
 
 ### Authentication
 `SessionToken` management in the old *MRR-MC* based client is tightly coupled with `EmpClient` through a semi-opaque internal reference. This token, once either aquired through *login* or explicitly set, then permeates throughout the system.
@@ -176,9 +193,7 @@ Streaming media is an interently asynchronous process. Listening and responding 
 | Ads started | `IMCPlaybackState_AdsStarted` | n/a |
 | Ads stopped  | `IMCPlaybackState_AdsCompleted` | n/a |
 | Bitrate Change | `IMCBitrateDidChange` | `onBitrateChanged` |
-| Duration Change | n/a | `onDurationChanged` |
 | Program Change | `IMC_INFO_TYPE_PROGRAM_CHANGED` | `onProgramChanged`
-| Duration Change | n/a | `onDurationChanged` |
 | Duration Change | n/a | `onDurationChanged` |
 | Error | `IMCDidFail:withMessage` | `onError` |
 
@@ -189,3 +204,7 @@ Each module in the new architecture defines their own typed `Error` struct. Erro
 
 ## `DRM`
 Removing the dependency on *MRR* also means the only supported `DRM` solution right now is *FairPlay*.
+
+Streaming `DRM` protected media assets will require *client applications* to implement their own platform specific `DrmAgent`s. In the case of *FairPlay*, this most likely involves interaction with the *Apple* supplied `AVAssetResourceLoaderDelegate` protocol.
+
+**EMP** provides an out of the box implementation for *FairPlay* protection through the [Exposure module](https://github.com/EricssonBroadcastServices/iOSClientExposure) which integrates seamlessly with the rest of the platform.
