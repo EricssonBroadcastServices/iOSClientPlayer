@@ -261,32 +261,51 @@ class NativeHLSSpec: QuickSpec {
             }
         }
         
-        describe("Session Shift") {
-            it("Should adhere to default ettings") {
-                let currentOffset = self.player.sessionShiftOffset
-                expect(currentOffset).to(beNil())
+        describe("StartTime") {
+            it("Should adhere to default settings") {
+                let startTime = self.player.startTime
+                expect(startTime).to(beNil())
                 
-                let sessionShiftDefault = self.player.sessionShiftEnabled
-                expect(sessionShiftDefault).to(beFalse())
+                let startPosition = self.player.startPosition
+                expect(startPosition).to(beNil())
             }
             
-            it("Should set sessionShift") {
+            it("Should set startTime") {
                 let specifiedOffset:Int64 = 10
-                let _ = self.player.sessionShift(enabledAt: specifiedOffset)
-                expect(self.player.sessionShiftEnabled).to(beTrue())
-                expect(self.player.sessionShiftOffset).to(equal(specifiedOffset))
+                self.player.startOffset(atTime: specifiedOffset)
+                expect(self.player.startTime).to(equal(specifiedOffset))
+                expect(self.player.startPosition).to(beNil())
             }
             
-            it("Should remove specified offset when disabling") {
-                let _ = self.player.sessionShift(enabled: false)
-                expect(self.player.sessionShiftEnabled).to(beFalse())
-                expect(self.player.sessionShiftOffset).to(beNil())
+            it("Should remove startTime") {
+                let specifiedOffset:Int64 = 10
+                self.player.startOffset(atTime: specifiedOffset)
+                expect(self.player.startTime).to(equal(specifiedOffset))
+                expect(self.player.startPosition).to(beNil())
+                
+                self.player.startOffset(atTime: nil)
+                
+                expect(self.player.startPosition).to(beNil())
+                expect(self.player.startTime).to(beNil())
             }
             
-            it("Should enable session shift without an offset if instructed") {
-                let _ = self.player.sessionShift(enabled: true)
-                expect(self.player.sessionShiftEnabled).to(beTrue())
-                expect(self.player.sessionShiftOffset).to(beNil())
+            it("Should set startPosition") {
+                let specifiedOffset:Int64 = 10
+                self.player.startOffset(atPosition: specifiedOffset)
+                expect(self.player.startPosition).to(equal(specifiedOffset))
+                expect(self.player.startTime).to(beNil())
+            }
+            
+            it("Should remove startPosition") {
+                let specifiedOffset:Int64 = 10
+                self.player.startOffset(atPosition: specifiedOffset)
+                expect(self.player.startPosition).to(equal(specifiedOffset))
+                expect(self.player.startTime).to(beNil())
+                
+                self.player.startOffset(atPosition: nil)
+                
+                expect(self.player.startPosition).to(beNil())
+                expect(self.player.startTime).to(beNil())
             }
         }
     }
