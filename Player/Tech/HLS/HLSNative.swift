@@ -79,9 +79,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Storage for autoplay toggle
     public var autoplay: Bool = false
     
-    // MARK: SessionShift
-    /// `Bookmark` is a private state tracking `SessionShift` status. It should not be exposed externally.
-    internal var bookmark: Bookmark = .notEnabled
+    // MARK: StartTime
+    /// Private state tracking `StartTime` status. It should not be exposed externally.
+    internal var startOffset: StartOffset = .defaultStartTime
     
     // Background notifier
     internal let backgroundWatcher = BackgroundWatcher()
@@ -311,7 +311,7 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
 extension HLSNative {
     /// Subscribes to and handles changes in `AVPlayerItem.status`
     ///
-    /// This is the final step in the initialization process. Either the playback is ready to start at the specified *start time* or an error has occured. The specified start time may be at the start of the stream if `SessionShift` is not used.
+    /// This is the final step in the initialization process. Either the playback is ready to start at the specified *start time* or an error has occured. The specified start time may be at the start of the stream if `StartTime` is not used.
     ///
     /// If `autoplay` has been specified as `true`, playback will commence right after `.readyToPlay`.
     ///
@@ -331,9 +331,18 @@ extension HLSNative {
                     //  - after seeking
                     // Only send onPlaybackReady if the stream has not been started yet.
                     if self.playbackState == .notStarted {
-                        if case let .enabled(value) = self.bookmark, let offset = value {
-                            let cmTime = CMTime(value: offset, timescale: 1000)
+                        if case let .startPosition(value) = self.startOffset {
+                            let cmTime = CMTime(value: value, timescale: 1000)
                             self.avPlayer.seek(to: cmTime, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero) { [weak self] success in
+                                guard let `self` = self else { return }
+                                self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
+                                mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
+                                if self.autoplay { self.play() }
+                            }
+                        }
+                        else if case let .startTime(value) = self.startOffset {
+                            let date = Date(milliseconds: value)
+                            self.avPlayer.seek(to: date) { [weak self] success in
                                 guard let `self` = self else { return }
                                 self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
                                 mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)

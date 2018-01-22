@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7602E8891F38341A00601CD4 /* SessionShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7602E8881F38341A00601CD4 /* SessionShift.swift */; };
+		7602E8891F38341A00601CD4 /* StartTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7602E8881F38341A00601CD4 /* StartTime.swift */; };
 		76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
 		7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619E54D1FCC05D600ACACAE /* PlayerError.swift */; };
 		7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */; };
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
 		766039101FC6D08800E79091 /* HLSNative+MediaPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */; };
-		766039131FC6D1DC00E79091 /* HLSNative+SessionShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039121FC6D1DC00E79091 /* HLSNative+SessionShift.swift */; };
+		766039131FC6D1DC00E79091 /* HLSNative+StartTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */; };
 		766039151FC6DF4500E79091 /* EventResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039141FC6DF4500E79091 /* EventResponder.swift */; };
 		766039171FC6DFA200E79091 /* AnalyticsConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039161FC6DFA200E79091 /* AnalyticsConnector.swift */; };
 		7660391B1FC6E07500E79091 /* PassThroughConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660391A1FC6E07500E79091 /* PassThroughConnector.swift */; };
@@ -68,13 +68,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7602E8881F38341A00601CD4 /* SessionShift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionShift.swift; sourceTree = "<group>"; };
+		7602E8881F38341A00601CD4 /* StartTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartTime.swift; sourceTree = "<group>"; };
 		76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
 		7619E54D1FCC05D600ACACAE /* PlayerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerError.swift; sourceTree = "<group>"; };
 		7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaRendering.swift"; sourceTree = "<group>"; };
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
 		7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaPlayback.swift"; sourceTree = "<group>"; };
-		766039121FC6D1DC00E79091 /* HLSNative+SessionShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+SessionShift.swift"; sourceTree = "<group>"; };
+		766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+StartTime.swift"; sourceTree = "<group>"; };
 		766039141FC6DF4500E79091 /* EventResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventResponder.swift; sourceTree = "<group>"; };
 		766039161FC6DFA200E79091 /* AnalyticsConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsConnector.swift; sourceTree = "<group>"; };
 		7660391A1FC6E07500E79091 /* PassThroughConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughConnector.swift; sourceTree = "<group>"; };
@@ -173,7 +173,7 @@
 			children = (
 				7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */,
 				7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */,
-				766039121FC6D1DC00E79091 /* HLSNative+SessionShift.swift */,
+				766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -367,7 +367,7 @@
 			children = (
 				76A843871EA7819D00BDAF2C /* MediaPlayback.swift */,
 				76A843881EA7819D00BDAF2C /* MediaRendering.swift */,
-				7602E8881F38341A00601CD4 /* SessionShift.swift */,
+				7602E8881F38341A00601CD4 /* StartTime.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -530,9 +530,9 @@
 				7660391E1FC6E0BB00E79091 /* AnalyticsLogger.swift in Sources */,
 				766AC2151FC2F6B700843FEF /* AVPlayer+KeyValueObservable.swift in Sources */,
 				7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */,
-				766039131FC6D1DC00E79091 /* HLSNative+SessionShift.swift in Sources */,
+				766039131FC6D1DC00E79091 /* HLSNative+StartTime.swift in Sources */,
 				766AC21B1FC2F6B700843FEF /* KeyValueObserver.swift in Sources */,
-				7602E8891F38341A00601CD4 /* SessionShift.swift in Sources */,
+				7602E8891F38341A00601CD4 /* StartTime.swift in Sources */,
 				766039271FC6E25800E79091 /* Manifest.swift in Sources */,
 				766AC21A1FC2F6B700843FEF /* KeyValueObservable.swift in Sources */,
 				76A8439D1EA7819D00BDAF2C /* PlayerView.swift in Sources */,

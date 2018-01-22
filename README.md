@@ -142,7 +142,7 @@ The following features are supported out of the box. Please keep in mind that pl
 - [x] Customizable playback overlay
 - [x] Multi-device session shift
 
-Under the hood, `HLSNative` is a wrapper around `KVO`, `notifications` and state management. It implements `MediaRendering`, `MediaPlayback` and `SessionShift`.
+Under the hood, `HLSNative` is a wrapper around `KVO`, `notifications` and state management. It implements `MediaRendering`, `MediaPlayback` and `StartTime`.
 
 #### Loading and Preparation
 Loading and preparation of playback using `HLSNative` is n asynchronous process.
