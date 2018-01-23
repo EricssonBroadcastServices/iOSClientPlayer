@@ -14,6 +14,7 @@
 #### Changes
 * `EMP-10852` API changes to `MediaPlayback.currentTime`. Property renamed to `MediaPlayback.playheadPosition` which better reflects the actual position of the playback.
 * `SessionShift` protocol has been reamed to `StartTime` as that better reflects its purpose on `Tech` level.
+* Improvements in how `HLSNative` handles `StartTime`.
 
 ## 0.73.0
 
