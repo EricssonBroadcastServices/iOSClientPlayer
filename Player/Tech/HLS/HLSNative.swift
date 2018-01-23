@@ -333,7 +333,7 @@ extension HLSNative {
                     if self.playbackState == .notStarted {
                         if case let .startPosition(value) = self.startOffset {
                             let cmTime = CMTime(value: value, timescale: 1000)
-                            self.avPlayer.seek(to: cmTime, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero) { [weak self] success in
+                            self.avPlayer.seek(to: cmTime) {  [weak self] success in
                                 guard let `self` = self else { return }
                                 self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
                                 mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
