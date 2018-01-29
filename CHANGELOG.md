@@ -16,7 +16,7 @@
 * `SessionShift` protocol has been reamed to `StartTime` as that better reflects its purpose on `Tech` level.
 * Improvements in how `HLSNative` handles `StartTime`.
 * Event callbacks now return `Player` instead of `Tech` directly.
-* Seekable and Bbuffered timeranges now return `[CMTimeRange]`
+* Seekable and buffered timeranges now return `[CMTimeRange]`
 
 ## 0.73.0
 
