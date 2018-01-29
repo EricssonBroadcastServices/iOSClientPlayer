@@ -37,7 +37,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onPlaybackCreated(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackCreated = { tech, source in
+        tech.eventDispatcher.onPlaybackCreated = { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self, source)
         }
         return self
@@ -49,7 +50,8 @@ extension Player {
     /// - returns: `Self
     @discardableResult
     public func onPlaybackPrepared(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackPrepared = { tech, source in
+        tech.eventDispatcher.onPlaybackPrepared = { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
@@ -61,7 +63,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onPlaybackReady(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackReady =  { tech, source in
+        tech.eventDispatcher.onPlaybackReady =  { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
@@ -73,7 +76,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onPlaybackStarted(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackStarted =  { tech, source in
+        tech.eventDispatcher.onPlaybackStarted =  { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
@@ -85,7 +89,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onPlaybackPaused(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackPaused =  { tech, source in
+        tech.eventDispatcher.onPlaybackPaused =  { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
@@ -99,7 +104,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onPlaybackResumed(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackResumed =  { tech, source in
+        tech.eventDispatcher.onPlaybackResumed =  { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
@@ -111,7 +117,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onPlaybackAborted(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackAborted =  { tech, source in
+        tech.eventDispatcher.onPlaybackAborted =  { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
@@ -123,7 +130,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onPlaybackCompleted(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackCompleted =  { tech, source in
+        tech.eventDispatcher.onPlaybackCompleted =  { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
@@ -135,7 +143,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onError(callback: @escaping (Player<Tech>, Tech.Context.Source?, PlayerError<Tech, Tech.Context>) -> Void) -> Self {
-        tech.eventDispatcher.onError =  { tech, source, error in
+        tech.eventDispatcher.onError =  { [weak self] tech, source, error in
+            guard let `self` = self else { return }
             callback(self,source,error)
         }
         return self
@@ -147,7 +156,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onBitrateChanged(callback: @escaping (Player<Tech>, Tech.Context.Source, Double) -> Void) -> Self {
-        tech.eventDispatcher.onBitrateChanged =  { tech, source, bitrate in
+        tech.eventDispatcher.onBitrateChanged =  { [weak self] tech, source, bitrate in
+            guard let `self` = self else { return }
             callback(self,source,bitrate)
         }
         return self
@@ -159,7 +169,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onBufferingStarted(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onBufferingStarted =  { tech, source in
+        tech.eventDispatcher.onBufferingStarted =  { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
@@ -171,7 +182,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onBufferingStopped(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onBufferingStopped =  { tech, source in
+        tech.eventDispatcher.onBufferingStopped =  { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
@@ -183,7 +195,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onPlaybackScrubbed(callback: @escaping (Player<Tech>, Tech.Context.Source, Int64) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackScrubbed = { tech, source, timestamp in
+        tech.eventDispatcher.onPlaybackScrubbed = { [weak self] tech, source, timestamp in
+            guard let `self` = self else { return }
             callback(self,source,timestamp)
         }
         return self
@@ -195,7 +208,8 @@ extension Player {
     /// - returns: `Self`
     @discardableResult
     public func onDurationChanged(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onDurationChanged =  { tech, source in
+        tech.eventDispatcher.onDurationChanged =  { [weak self] tech, source in
+            guard let `self` = self else { return }
             callback(self,source)
         }
         return self
