@@ -30,10 +30,10 @@ public protocol MediaPlayback: class {
     func seek(toPosition position: Int64)
     
     /// Should return time ranges within which it is possible to seek.
-    var seekableRange: [CMTimeRange] { get }
+    var seekableRanges: [CMTimeRange] { get }
     
     /// Should return time ranges in unix epoch time within which it is possible to seek.
-    var seekableTimeRange: [(Int64, Int64)] { get }
+    var seekableTimeRanges: [CMTimeRange] { get }
     
     /// Should return the playhead position timestamp using the internal buffer time reference in milliseconds
     var playheadPosition: Int64 { get }
@@ -47,10 +47,10 @@ public protocol MediaPlayback: class {
     func seek(toTime timeInterval: Int64)
     
     /// Should return time ranges of the loaded item.
-    var bufferedRange: [CMTimeRange] { get }
+    var bufferedRanges: [CMTimeRange] { get }
     
     /// Should return time ranges in unix epoch time of the loaded item
-    var bufferedTimeRange: [(Int64, Int64)] { get }
+    var bufferedTimeRanges: [CMTimeRange] { get }
     
     /// Playback duration.
     ///
@@ -88,13 +88,13 @@ extension Player where Tech: MediaPlayback {
     }
     
     /// Should return time ranges within which it is possible to seek.
-    public var seekableRange: [CMTimeRange] {
-        return tech.seekableRange
+    public var seekableRanges: [CMTimeRange] {
+        return tech.seekableRanges
     }
     
     /// Should return time ranges in unix epoch time within which it is possible to seek.
-    public var seekableTimeRange: [(Int64, Int64)] {
-        return tech.seekableTimeRange
+    public var seekableTimeRanges: [CMTimeRange] {
+        return tech.seekableTimeRanges
     }
     
     /// Should seek the specified `position` in the player's buffer.
@@ -129,13 +129,13 @@ extension Player where Tech: MediaPlayback {
     }
     
     /// Should return the time ranges of the item that have been loaded.
-    public var bufferedRange: [CMTimeRange] {
-        return tech.bufferedRange
+    public var bufferedRanges: [CMTimeRange] {
+        return tech.bufferedRanges
     }
     
     /// Should return time ranges in unix epoch time of the loaded item
-    public var bufferedTimeRange: [(Int64, Int64)] {
-        return tech.bufferedTimeRange
+    public var bufferedTimeRanges: [CMTimeRange] {
+        return tech.bufferedTimeRanges
     }
     
     /// The throughput required to play the stream, as advertised by the server, in *bits per second*. Should return nil if no bitrate can be reported.
