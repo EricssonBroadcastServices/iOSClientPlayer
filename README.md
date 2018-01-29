@@ -78,7 +78,7 @@ class PlayerViewController: UIViewController {
     fileprivate var player: Player<HLSNative<ManifestContext>>!
     
     override func viewDidLoad() {
-        player = Player(tech: tech, context: context)
+        player = Player(tech: player, context: context)
     }
 }
 ```
@@ -172,17 +172,17 @@ During the preparation, loading and finalization of a `MediaContext`, the associ
 
 ```Swift
 myPlayer
-    .onPlaybackCreated{ tech, source in
+    .onPlaybackCreated{ player, source in
         // Fires once the associated MediaSource has been created.
         // Playback is not ready to start at this point.
     }
-    .onPlaybackPrepared{ tech, source in
+    .onPlaybackPrepared{ player, source in
         // Published when the associated MediaSource completed asynchronous loading of relevant properties.
         // Playback is not ready to start at this point.
     }
-    .onPlaybackReady{ tech, source in
+    .onPlaybackReady{ player, source in
         // When this event fires starting playback is possible
-        tech.play()
+        player.play()
     }
 ```
 
@@ -191,23 +191,23 @@ Once playback is in progress the `Player` continuously publishes *events* relate
 
 ```Swift
 myPlayer
-    .onPlaybackStarted{ tech, source in
+    .onPlaybackStarted{ player, source in
         // Published once the playback starts for the first time.
         // This is a one-time event.
     }
-    .onPlaybackPaused{ [weak self] tech, source in
+    .onPlaybackPaused{ [weak self] player, source in
         // Fires when the playback pauses for some reason
         self?.pausePlayButton.toggle(paused: true)
     }
-    .onPlaybackResumed{ [weak self] tech, source in
+    .onPlaybackResumed{ [weak self] player, source in
         // Fires when the playback resumes from a paused state
         self?.pausePlayButton.toggle(paused: false)
     }
-    .onPlaybackAborted{ tech, source in
+    .onPlaybackAborted{ player, source in
         // Published once the player.stop() method is called.
         // This is considered a user action
     }
-    .onPlaybackCompleted{ tech, source in
+    .onPlaybackCompleted{ player, source in
         // Published when playback reached the end of the current media.
     }
 ```
@@ -215,17 +215,17 @@ Besides playback control events `Player` also publishes several status related e
 
 ```Swift
 myPlayer
-    .onBitrateChanged{ [weak self] tech, source, bitrate in
+    .onBitrateChanged{ [weak self] player, source, bitrate in
         // Published whenever the current bitrate changes
         self?.updateQualityIndicator(with: bitrate)
     }
-    .onBufferingStarted{ tech, source in
+    .onBufferingStarted{ player, source in
         // Fires whenever the buffer is unable to keep up with playback
     }
-    .onBufferingStopped{ tech, source in
+    .onBufferingStopped{ player, source in
         // Fires when buffering is no longer needed
     }
-    .onDurationChanged{ tech, source in
+    .onDurationChanged{ player, source in
         // Published when the active media received an update to its duration property
     }
 ```
@@ -287,7 +287,7 @@ This means effective error handling thus requires a deeper undestanding of the o
 *Client applications* should register to receive errors through the `Player` method `onError(callback:)`
 
 ```Swift
-myPlayer.onError{ tech, source, error in
+myPlayer.onError{ player, source, error in
     // Handle the error
 }
 ```

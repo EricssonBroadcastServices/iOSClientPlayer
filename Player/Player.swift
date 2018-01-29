@@ -36,8 +36,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackCreated(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackCreated = callback
+    public func onPlaybackCreated(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackCreated = { tech, source in
+            callback(self, source)
+        }
         return self
     }
 
@@ -46,8 +48,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self
     @discardableResult
-    public func onPlaybackPrepared(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackPrepared = callback
+    public func onPlaybackPrepared(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackPrepared = { tech, source in
+            callback(self,source)
+        }
         return self
     }
 
@@ -56,8 +60,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackReady(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackReady = callback
+    public func onPlaybackReady(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackReady =  { tech, source in
+            callback(self,source)
+        }
         return self
     }
 
@@ -66,8 +72,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackStarted(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackStarted = callback
+    public func onPlaybackStarted(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackStarted =  { tech, source in
+            callback(self,source)
+        }
         return self
     }
 
@@ -76,8 +84,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackPaused(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackPaused = callback
+    public func onPlaybackPaused(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackPaused =  { tech, source in
+            callback(self,source)
+        }
         return self
     }
 
@@ -88,8 +98,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackResumed(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackResumed = callback
+    public func onPlaybackResumed(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackResumed =  { tech, source in
+            callback(self,source)
+        }
         return self
     }
 
@@ -98,8 +110,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackAborted(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackAborted = callback
+    public func onPlaybackAborted(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackAborted =  { tech, source in
+            callback(self,source)
+        }
         return self
     }
 
@@ -108,8 +122,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackCompleted(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackCompleted = callback
+    public func onPlaybackCompleted(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackCompleted =  { tech, source in
+            callback(self,source)
+        }
         return self
     }
 
@@ -118,8 +134,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onError(callback: @escaping (Tech?, Tech.Context.Source?, PlayerError<Tech, Tech.Context>) -> Void) -> Self {
-        tech.eventDispatcher.onError = callback
+    public func onError(callback: @escaping (Player<Tech>, Tech.Context.Source?, PlayerError<Tech, Tech.Context>) -> Void) -> Self {
+        tech.eventDispatcher.onError =  { tech, source, error in
+            callback(self,source,error)
+        }
         return self
     }
 
@@ -128,8 +146,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onBitrateChanged(callback: @escaping (Tech, Tech.Context.Source, Double) -> Void) -> Self {
-        tech.eventDispatcher.onBitrateChanged = callback
+    public func onBitrateChanged(callback: @escaping (Player<Tech>, Tech.Context.Source, Double) -> Void) -> Self {
+        tech.eventDispatcher.onBitrateChanged =  { tech, source, bitrate in
+            callback(self,source,bitrate)
+        }
         return self
     }
 
@@ -138,8 +158,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onBufferingStarted(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onBufferingStarted = callback
+    public func onBufferingStarted(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onBufferingStarted =  { tech, source in
+            callback(self,source)
+        }
         return self
     }
 
@@ -148,8 +170,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onBufferingStopped(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onBufferingStopped = callback
+    public func onBufferingStopped(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onBufferingStopped =  { tech, source in
+            callback(self,source)
+        }
         return self
     }
 
@@ -158,8 +182,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onPlaybackScrubbed(callback: @escaping (Tech, Tech.Context.Source, Int64) -> Void) -> Self {
-        tech.eventDispatcher.onPlaybackScrubbed = callback
+    public func onPlaybackScrubbed(callback: @escaping (Player<Tech>, Tech.Context.Source, Int64) -> Void) -> Self {
+        tech.eventDispatcher.onPlaybackScrubbed = { tech, source, timestamp in
+            callback(self,source,timestamp)
+        }
         return self
     }
 
@@ -168,8 +194,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onDurationChanged(callback: @escaping (Tech, Tech.Context.Source) -> Void) -> Self {
-        tech.eventDispatcher.onDurationChanged = callback
+    public func onDurationChanged(callback: @escaping (Player<Tech>, Tech.Context.Source) -> Void) -> Self {
+        tech.eventDispatcher.onDurationChanged =  { tech, source in
+            callback(self,source)
+        }
         return self
     }
 }

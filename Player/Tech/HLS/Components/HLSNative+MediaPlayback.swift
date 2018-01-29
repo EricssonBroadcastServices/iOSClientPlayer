@@ -107,13 +107,13 @@ extension HLSNative: MediaPlayback {
     }
     
     /// Returns the time ranges within which it is possible to seek.
-    public var seekableRange: [CMTimeRange] {
+    public var seekableRanges: [CMTimeRange] {
         return currentAsset?.playerItem.seekableTimeRanges.flatMap{ $0 as? CMTimeRange } ?? []
     }
     
     /// Returns time ranges in unix epoch time within which it is possible to seek.
-    public var seekableTimeRange: [(Int64, Int64)] {
-        return seekableRange.flatMap{ convert(timeRange: $0) }
+    public var seekableTimeRanges: [CMTimeRange] {
+        return seekableRanges.flatMap{ convert(timeRange: $0) }
     }
     
     /// Return the playhead position timestamp using the internal buffer time reference in milliseconds
@@ -164,13 +164,13 @@ extension HLSNative: MediaPlayback {
     }
     
     /// Returns the time ranges of the item that have been loaded.
-    public var bufferedRange: [CMTimeRange] {
+    public var bufferedRanges: [CMTimeRange] {
         return currentAsset?.playerItem.loadedTimeRanges.flatMap{ $0 as? CMTimeRange } ?? []
     }
     
     /// Returns time ranges in unix epoch time of the loaded item
-    public var bufferedTimeRange: [(Int64, Int64)] {
-        return bufferedRange.flatMap{ convert(timeRange: $0) }
+    public var bufferedTimeRanges: [CMTimeRange] {
+        return bufferedRanges.flatMap{ convert(timeRange: $0) }
     }
     
     /// Returns the current playback position of the player in *milliseconds*, or `nil` if duration is infinite (live streams for example).
@@ -193,14 +193,14 @@ extension HLSNative: MediaPlayback {
 }
 
 extension HLSNative {
-    fileprivate func convert(timeRange: CMTimeRange) -> (Int64, Int64)? {
+    fileprivate func convert(timeRange: CMTimeRange) -> CMTimeRange? {
         guard let start = relate(time: timeRange.start), let end = relate(time: timeRange.end) else { return nil }
-        return (start, end)
+        return CMTimeRange(start: start, end: end)
     }
     
-    fileprivate func relate(time: CMTime) -> Int64? {
+    fileprivate func relate(time: CMTime) -> CMTime? {
         guard let currentTime = playheadTime else { return nil }
         let milliseconds = Int64(time.seconds*1000)
-        return currentTime - playheadPosition + milliseconds
+        return CMTime(value: currentTime - playheadPosition + milliseconds, timescale: 1000)
     }
 }
