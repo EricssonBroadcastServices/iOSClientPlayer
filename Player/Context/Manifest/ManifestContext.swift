@@ -13,6 +13,9 @@ public final class ManifestContext: MediaContext {
     /// Simple error
     public typealias ContextError = Error
     
+    /// Simple warning message
+    public typealias ContextWarning = Warning
+    
     /// Source is defined as a `Manifest`
     public typealias Source = Manifest
     
@@ -32,5 +35,9 @@ public final class ManifestContext: MediaContext {
     public enum Error: ExpandedError {
         public var message: String { return "ManifestError" }
         public var code: Int { return 1 }
+    }
+    
+    public enum Warning: WarningMessage {
+        public var message: String { return "ManifestWarning" }
     }
 }

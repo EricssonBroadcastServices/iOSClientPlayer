@@ -108,7 +108,11 @@ extension HLSNative: MediaPlayback {
     
     /// Returns the time ranges within which it is possible to seek.
     public var seekableRanges: [CMTimeRange] {
-        return currentAsset?.playerItem.seekableTimeRanges.flatMap{ $0 as? CMTimeRange } ?? []
+        guard let ranges = currentAsset?.playerItem.seekableTimeRanges, !ranges.isEmpty else {
+            process(warning: HLSNativeWarning.seekableRangesEmpty(source: currentSource))
+            return []
+        }
+        return ranges.flatMap{ $0 as? CMTimeRange }
     }
     
     /// Returns time ranges in unix epoch time within which it is possible to seek.
@@ -153,6 +157,7 @@ extension HLSNative: MediaPlayback {
     /// - Parameter timeInterval: target timestamp in unix epoch time (milliseconds)
     public func seek(toTime timeInterval: Int64) {
         let date = Date(milliseconds: timeInterval)
+        print("seeking to",timeInterval)
         currentAsset?.playerItem.seek(to: date) { [weak self] success in
             guard let `self` = self else { return }
             if success {

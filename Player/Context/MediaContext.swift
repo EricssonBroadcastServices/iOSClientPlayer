@@ -15,6 +15,9 @@ public protocol MediaContext: class {
     /// Context related error
     associatedtype ContextError: ExpandedError
     
+    /// Warning message associated with the `Context`
+    associatedtype ContextWarning: WarningMessage
+    
     /// Defines the individual source object used to initate a distinct playback session.
     associatedtype Source: MediaSource
     

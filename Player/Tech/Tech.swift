@@ -13,6 +13,9 @@ public protocol PlaybackTech: class {
     /// Error specific to the `Tech`
     associatedtype TechError: ExpandedError
     
+    /// Warning message associated with the `Tech`
+    associatedtype TechWarning: WarningMessage
+    
     /// Specifies the required data to configure the `Tech`.
     ///
     /// This could include `DRM` agents, `url`, app tokens or `Tech` specific environment variables
