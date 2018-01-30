@@ -99,4 +99,11 @@ public class EventDispatcher<Context: MediaContext, Tech: PlaybackTech> {
     /// - parameter tech: `Tech` broadcasting the event
     /// - parameter source: `MediaSource` causing the event
     internal(set) public var onDurationChanged: (Tech, Context.Source) -> Void = { _,_ in }
+    
+    /// Should be triggered when a *warning* for either the `Tech` or the `Context` occurs.
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    /// - parameter warning: `Warning` encountered
+    internal(set) public var onWarning: (Tech, Context.Source?, PlayerWarning<Tech, Context>) -> Void = { _,_,_ in }
 }

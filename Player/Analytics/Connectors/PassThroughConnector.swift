@@ -76,4 +76,7 @@ public class PassThroughConnector: AnalyticsConnector {
         providers.forEach{ $0.onDurationChanged(tech: tech, source: source)}
     }
     
+    public func onWarning<Tech, Source, Context>(tech: Tech, source: Source?, warning: PlayerWarning<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
+        providers.forEach{ $0.onWarning(tech: tech, source: source, warning: warning) }
+    }
 }

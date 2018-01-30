@@ -44,7 +44,7 @@ public struct AnalyticsLogger: AnalyticsProvider {
     }
     
     public func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
-        print("🏷 AnalyticsLogger",type(of: tech),"🚨 onError",source?.playSessionId ?? "")
+        print("🏷 AnalyticsLogger",type(of: tech),"🚨 onError",error.message,error.message,source?.playSessionId ?? "")
     }
     
     public func onBitrateChanged<Tech, Source>(tech: Tech, source: Source, bitrate: Double) where Tech : PlaybackTech, Source : MediaSource {
@@ -65,5 +65,9 @@ public struct AnalyticsLogger: AnalyticsProvider {
     
     public func onDurationChanged<Tech, Source>(tech: Tech, source: Source) where Tech : PlaybackTech, Source : MediaSource {
         print("🏷 AnalyticsLogger",type(of: tech),"📅 onDurationChanged",source.playSessionId)
+    }
+    
+    public func onWarning<Tech, Source, Context>(tech: Tech, source: Source?, warning: PlayerWarning<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
+        print("🏷 AnalyticsLogger",type(of: tech),"⚠️ onWarning",warning.message,source?.playSessionId ?? "")
     }
 }

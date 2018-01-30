@@ -58,8 +58,6 @@ public protocol EventResponder {
     /// - parameter source: `MediaSource` causing the event
     func onCompleted<Tech, Source>(tech: Tech, source: Source) where Tech: PlaybackTech, Source: MediaSource
     
-    
-    
     /// Triggered if the player encounters an error during its lifetime
     ///
     /// - parameter tech: `Tech` broadcasting the event
@@ -98,4 +96,11 @@ public protocol EventResponder {
     /// - parameter tech: `Tech` broadcasting the event
     /// - parameter source: `MediaSource` causing the event
     func onDurationChanged<Tech, Source>(tech: Tech, source: Source) where Tech: PlaybackTech, Source: MediaSource
+    
+    /// Triggered when a *warning* for either the `Tech` or the `Context` occurs.
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    /// - parameter warning: `Warning` encountered
+    func onWarning<Tech, Source, Context>(tech: Tech, source: Source?, warning: PlayerWarning<Tech, Context>) where Tech: PlaybackTech, Source: MediaSource, Context: MediaContext
 }

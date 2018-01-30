@@ -34,6 +34,8 @@ public struct HLSNativeConfiguration {
 public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public typealias Configuration = HLSNativeConfiguration
     public typealias TechError = HLSNativeError
+    public typealias TechWarning = HLSNativeWarning
+    
     public var eventDispatcher: EventDispatcher<Context, HLSNative<Context>> = EventDispatcher()
     
     /// Returns the currently active `MediaSource` if available.
@@ -288,7 +290,10 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             // Trigger on-ready callbacks and autoplay if available
             self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
-            if self.autoplay { self.play() }
+            if self.autoplay {
+                self.play()
+                
+            }
         }
         
         // Observe BitRate changes
@@ -306,6 +311,14 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
     }
 }
 
+// MARK: - Warnings
+extension HLSNative {
+    public func process(warning: HLSNativeWarning) {
+//        if logWarnings {
+        eventDispatcher.onWarning(self, currentSource, .tech(warning: warning))
+//        }
+    }
+}
 
 // MARK: - Events
 /// Player Item Status Change Events
@@ -332,6 +345,9 @@ extension HLSNative {
                             if success {
                                 onReady()
                             }
+                            else {
+                                onReady()
+                            }
                         }
                     }
                     else if case let .startTime(value) = self.startOffset {
@@ -341,13 +357,19 @@ extension HLSNative {
                             if success {
                                 onReady()
                             }
+                            else {
+                                onReady()
+                            }
                         }
                     }
                     else {
                         onReady()
                     }
                 case .readyToPlay:
-                    onReady()
+                    switch self.playbackState {
+                    case .notStarted: onReady()
+                    default: return
+                    }
                 case .failed:
                     let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
                     self.eventDispatcher.onError(self, mediaAsset.source, techError)
