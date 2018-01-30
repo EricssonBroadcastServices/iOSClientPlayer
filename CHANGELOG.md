@@ -10,6 +10,7 @@
 
 #### Features
 * `EMP-10646` `ExposureContext` exposes cached server time
+* Added support for `onWarning` events
 
 #### Changes
 * `EMP-10852` API changes to `MediaPlayback.currentTime`. Property renamed to `MediaPlayback.playheadPosition` which better reflects the actual position of the playback.
