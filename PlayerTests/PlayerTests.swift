@@ -12,6 +12,7 @@ import Nimble
 @testable import Player
 
 class TestAnalyticsProvider: AnalyticsProvider {
+    
     var created = false
     var prepared = false
     var ready = false
@@ -26,6 +27,7 @@ class TestAnalyticsProvider: AnalyticsProvider {
     var bufferingStopped = false
     var scrubbedTo: Int64? = nil
     var durationChanged = false
+    var warningReceived = false
     
     public init() { }
     
@@ -83,6 +85,10 @@ class TestAnalyticsProvider: AnalyticsProvider {
     
     public func onDurationChanged<Tech, Source>(tech: Tech, source: Source) where Tech : PlaybackTech, Source : MediaSource {
         durationChanged = true
+    }
+    
+    func onWarning<Tech, Source, Context>(tech: Tech, source: Source?, warning: PlayerWarning<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
+        warningReceived = true
     }
 }
 
@@ -147,6 +153,7 @@ class NativeHLSSpec: QuickSpec {
                 var bufferingStopped = false
                 var scrubbedTo: Int64? = nil
                 var durationChanged = false
+                var warningReceived = false
                 
                 self.player
                     .onPlaybackPrepared { tech, source in
@@ -184,7 +191,12 @@ class NativeHLSSpec: QuickSpec {
                     }
                     .onDurationChanged { tech, source in
                         durationChanged = true
+                    }
+                    .onWarning { player, source, warning in
+                        warningReceived = true
                 }
+                
+                
                 
                 let mockedManifest = Manifest(url: self.invalidUrl)
                 
@@ -200,6 +212,7 @@ class NativeHLSSpec: QuickSpec {
                 self.player.tech.eventDispatcher.onBufferingStopped(self.player.tech, mockedManifest)
                 self.player.tech.eventDispatcher.onPlaybackScrubbed(self.player.tech, mockedManifest,100)
                 self.player.tech.eventDispatcher.onDurationChanged(self.player.tech, mockedManifest)
+                self.player.tech.eventDispatcher.onWarning(self.player.tech, mockedManifest, PlayerWarning<HLSNative<ManifestContext>,ManifestContext>.context(warning: ManifestContext.ContextWarning(message: "warning")))
                 
                 expect(prepared).toEventually(beTrue())
                 expect(ready).toEventually(beTrue())
@@ -213,6 +226,7 @@ class NativeHLSSpec: QuickSpec {
                 expect(bufferingStopped).toEventually(beTrue())
                 expect(scrubbedTo).toEventuallyNot(beNil())
                 expect(durationChanged).toEventually(beTrue())
+                expect(warningReceived).toEventually(beTrue())
             }
         }
         

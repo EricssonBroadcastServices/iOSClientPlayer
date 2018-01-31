@@ -214,4 +214,16 @@ extension Player {
         }
         return self
     }
+    /// Sets the callback to fire once the current playback `duration` changes.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onWarning(callback: @escaping (Player<Tech>, Tech.Context.Source?, PlayerWarning<Tech, Tech.Context>) -> Void) -> Self {
+        tech.eventDispatcher.onWarning = { [weak self] tech, source, warning in
+            guard let `self` = self else { return }
+            callback(self,source,warning)
+        }
+        return self
+    }
 }

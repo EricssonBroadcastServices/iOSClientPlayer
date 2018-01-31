@@ -32,12 +32,21 @@ public final class ManifestContext: MediaContext {
     /// Default analytics contains an `AnalyticsLogger`
     public var analyticsGenerators: [(Source?) -> AnalyticsProvider] = [{ _ in return AnalyticsLogger() }]
     
-    public enum Error: ExpandedError {
-        public var message: String { return "ManifestError" }
-        public var code: Int { return 1 }
+    public struct Error: ExpandedError {
+        public let message: String
+        public let code: Int
+        
+        public init(message: String, code: Int) {
+            self.message = message
+            self.code = code
+        }
     }
     
-    public enum Warning: WarningMessage {
-        public var message: String { return "ManifestWarning" }
+    public struct Warning: WarningMessage {
+        public let message: String
+        
+        public init(message: String) {
+            self.message = message
+        }
     }
 }
