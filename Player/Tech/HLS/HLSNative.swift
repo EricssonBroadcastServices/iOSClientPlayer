@@ -292,7 +292,6 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
             if self.autoplay {
                 self.play()
-                
             }
         }
         
