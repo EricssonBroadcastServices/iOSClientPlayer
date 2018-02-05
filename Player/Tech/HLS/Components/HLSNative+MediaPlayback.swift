@@ -175,6 +175,27 @@ extension HLSNative: MediaPlayback {
             .indicatedBitrate
         
     }
+    
+    
+    /// Playback volume
+    public var volume: Float {
+        get {
+            return avPlayer.volume
+        }
+        set {
+            avPlayer.volume = newValue
+        }
+    }
+    
+    /// If the playback is muted or not
+    public var isMuted: Bool {
+        get {
+            return avPlayer.isMuted
+        }
+        set {
+            avPlayer.isMuted = newValue
+        }
+    }
 }
 
 extension HLSNative {

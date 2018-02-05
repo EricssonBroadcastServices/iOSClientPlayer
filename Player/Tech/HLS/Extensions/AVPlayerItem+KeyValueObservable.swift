@@ -39,9 +39,13 @@ extension AVPlayerItem: KeyValueObservable {
         /// `avPlayerItem.playbackBufferEmpty`
         case isPlaybackBufferEmpty = "playbackBufferEmpty"
         
+        case seekableTimeRanges = "seekableTimeRanges"
+        
+        case loadedTimeRanges = "loadedTimeRanges"
+        
         /// Returns all *Observable Keys*.
         var all: [ObservableKey] {
-            return [.status, .tracks, .duration, .presentationSize, .timedMetadata, .isPlaybackLikelyToKeepUp, .isPlaybackBufferFull, .isPlaybackBufferEmpty]
+            return [.status, .tracks, .duration, .presentationSize, .timedMetadata, .isPlaybackLikelyToKeepUp, .isPlaybackBufferFull, .isPlaybackBufferEmpty, .seekableTimeRanges, .loadedTimeRanges]
         }
     }
 }

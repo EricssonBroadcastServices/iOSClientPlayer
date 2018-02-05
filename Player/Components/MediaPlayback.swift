@@ -62,6 +62,12 @@ public protocol MediaPlayback: class {
     
     /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
     var autoplay: Bool { get set }
+    
+    /// Playback volume
+    var volume: Float { get set }
+    
+    /// If the playback is muted or not
+    var isMuted: Bool { get set }
 }
 
 extension Player where Tech: MediaPlayback {
@@ -156,5 +162,26 @@ extension Player where Tech: MediaPlayback {
     public func autoplay(enabled: Bool) -> Self {
         tech.autoplay = enabled
         return self
+    }
+    
+    
+    /// Playback volume
+    public var volume: Float {
+        get {
+            return tech.volume
+        }
+        set {
+            tech.volume = newValue
+        }
+    }
+    
+    /// If the playback is muted or not
+    public var isMuted: Bool {
+        get {
+            return tech.isMuted
+        }
+        set {
+            tech.isMuted = newValue
+        }
     }
 }

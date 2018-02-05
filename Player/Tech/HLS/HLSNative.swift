@@ -73,6 +73,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Internal state for tracking playback.
     internal enum PlaybackState {
         case notStarted
+//        case prepared
         case playing
         case paused
         case stopped
@@ -276,17 +277,19 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         
         // Observe changes to .status for new playerItem
         // We will perform "pre-load" seek of the `AVPlayerItem` to the requested *Start Time*
-        handleStatusChange(mediaAsset: mediaAsset) { [weak self] in
+        handleStatusChange(mediaAsset: mediaAsset, onActive: { [weak self] in
             guard let `self` = self else { return }
             
             // `mediaAsset` is now prepared.
             self.currentAsset = mediaAsset
             
+            print("REPLACING CURRENT ITEM")
             // Replace the player item with a new player item. The item replacement occurs
             // asynchronously; observe the currentItem property to find out when the
             // replacement will/did occur
             self.avPlayer.replaceCurrentItem(with: mediaAsset.playerItem)
-            
+        }) { [weak self] in
+            guard let `self` = self else { return }
             // Trigger on-ready callbacks and autoplay if available
             self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
@@ -329,44 +332,57 @@ extension HLSNative {
     /// If `autoplay` has been specified as `true`, playback will commence right after `.readyToPlay`.
     ///
     /// - parameter mediaAsset: asset to observe and manage event for
-    fileprivate func handleStatusChange(mediaAsset: MediaAsset<Context.Source>, onReady: @escaping () -> Void) {
+    fileprivate func handleStatusChange(mediaAsset: MediaAsset<Context.Source>, onActive: @escaping () -> Void, onReady: @escaping () -> Void) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [weak self] item, change in
             guard let `self` = self else { return }
             if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
                 switch status {
                 case .unknown:
+                    switch self.playbackState {
+                    case .notStarted:
+                        print("====> unknown + notStarted")
                     // Prepare the `AVPlayerItem` by seeking to the required startTime before we perform any loading or networking
-                    if case let .startPosition(value) = self.startOffset {
-                        let cmTime = CMTime(value: value, timescale: 1000)
-                        mediaAsset.playerItem.seek(to: cmTime) { success in
-                            // TODO: What if the seek was not successful?
-                            if success {
+                        if case let .startPosition(value) = self.startOffset {
+                            let cmTime = CMTime(value: value, timescale: 1000)
+                            mediaAsset.playerItem.seek(to: cmTime) { success in
+                                // TODO: What if the seek was not successful?
+                                onActive()
                                 onReady()
-                            }
-                            else {
-                                onReady()
-                            }
-                        }
-                    }
-                    else if case let .startTime(value) = self.startOffset {
-                        let date = Date(milliseconds: value)
-                        mediaAsset.playerItem.seek(to: date) { success in
-                            // TODO: What if the seek was not successful?
-                            if success {
-                                onReady()
-                            }
-                            else {
-                                onReady()
+//                                if success {
+//                                    onReady()
+//                                }
+//                                else {
+//                                    onReady()
+//                                }
                             }
                         }
-                    }
-                    else {
-                        onReady()
+                        else {
+                            onActive()
+                        }
+                    default: return
                     }
                 case .readyToPlay:
+                    print("====> readyToPlay")
                     switch self.playbackState {
-                    case .notStarted: onReady()
+                    case .notStarted:
+                        print("====> readyToPlay + notStarted")
+                        if case let .startTime(value) = self.startOffset {
+                            let date = Date(milliseconds: value)
+                            mediaAsset.playerItem.seek(to: date) { success in
+                                onReady()
+                                // TODO: What if the seek was not successful?
+//                                if success {
+//                                    onReady()
+//                                }
+//                                else {
+//                                    onReady()
+//                                }
+                            }
+                        }
+//                        else {
+//                            onReady()
+//                        }
                     default: return
                     }
                 case .failed:
