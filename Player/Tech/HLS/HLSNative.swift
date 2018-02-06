@@ -353,7 +353,6 @@ extension HLSNative {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [weak self] item, change in
             guard let `self` = self else { return }
-            self.logStuff(item: playerItem)
             if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
                 switch status {
                 case .unknown:
