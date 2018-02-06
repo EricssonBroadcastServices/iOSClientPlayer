@@ -16,6 +16,8 @@ extension HLSNative: MediaPlayback {
         switch playbackState {
         case .notStarted:
             avPlayer.play()
+        case .preparing:
+            avPlayer.play()
         case .paused:
             avPlayer.play()
         default:
@@ -31,7 +33,6 @@ extension HLSNative: MediaPlayback {
     
     /// Stops playback and unloads the currently active `Source`. This will trigger `PlaybackAborted` callbacks and analytics publication.
     public func stop() {
-        // TODO: End playback? Unload resources? Leave that to user?
         switch playbackState {
         case .stopped:
             return
@@ -88,11 +89,7 @@ extension HLSNative: MediaPlayback {
     
     /// Returns the time ranges within which it is possible to seek.
     public var seekableRanges: [CMTimeRange] {
-        guard let ranges = currentAsset?.playerItem.seekableTimeRanges, !ranges.isEmpty else {
-            process(warning: HLSNativeWarning.seekableRangesEmpty(source: currentSource))
-            return []
-        }
-        return ranges.flatMap{ $0 as? CMTimeRange }
+        return currentAsset?.playerItem.seekableTimeRanges.flatMap{ $0 as? CMTimeRange } ?? []
     }
     
     /// Returns time ranges in unix epoch time within which it is possible to seek.
@@ -123,9 +120,10 @@ extension HLSNative: MediaPlayback {
         return timeFormatter.string(from: date)
     }
     
-    public func logStuff() {
-        currentAsset?.playerItem.accessLog()?.events.forEach{
-            print($0.playbackType,$0.uri,dateString(date: $0.playbackStartDate, format: "HH:mm:ss"),$0.playbackStartOffset)
+    public func logStuff(item: AVPlayerItem? = nil) {
+        let item = item ?? currentAsset?.playerItem
+        item?.accessLog()?.events.forEach{
+            print(">>> LOG",$0.playbackType,$0.uri,dateString(date: $0.playbackStartDate, format: "HH:mm:ss"),$0.playbackStartOffset, $0.startupTime)
         }
     }
     #endif
@@ -137,7 +135,6 @@ extension HLSNative: MediaPlayback {
     /// - Parameter timeInterval: target timestamp in unix epoch time (milliseconds)
     public func seek(toTime timeInterval: Int64) {
         let date = Date(milliseconds: timeInterval)
-        print("seeking to",timeInterval)
         currentAsset?.playerItem.seek(to: date) { [weak self] success in
             guard let `self` = self else { return }
             if success {
