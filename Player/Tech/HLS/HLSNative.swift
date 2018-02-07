@@ -280,6 +280,7 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         handleStatusChange(mediaAsset: mediaAsset, onActive: { [weak self] in
             guard let `self` = self else { return }
             
+            
             // `mediaAsset` is now prepared.
             self.currentAsset = mediaAsset
             
@@ -289,6 +290,7 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             self.avPlayer.replaceCurrentItem(with: mediaAsset.playerItem)
         }) { [weak self] in
             guard let `self` = self else { return }
+            self.playbackState = .preparing
             // Trigger on-ready callbacks and autoplay if available
             self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
@@ -367,7 +369,7 @@ extension HLSNative {
                             let cmTime = CMTime(value: value, timescale: 1000)
                             mediaAsset.playerItem.seek(to: cmTime) { [weak self] success in
                                 // TODO: What if the seek was not successful?
-                                self?.playbackState = .preparing
+                                print("<< .notStarted startPosition Seek",success)
                                 onActive()
                             }
                         }
@@ -379,11 +381,15 @@ extension HLSNative {
                 case .readyToPlay:
                     switch self.playbackState {
                     case .notStarted:
-                        self.playbackState = .preparing
                         // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
-                        if case let .startTime(value) = self.startOffset {
+                        if case let .startPosition(_) = self.startOffset {
+                            // This has been handled before
+                            onReady()
+                        }
+                        else if case let .startTime(value) = self.startOffset {
                             let time = CMTime(value: value, timescale: 1000)
                             let inRange = self.seekableTimeRanges.reduce(false) { $0 || $1.containsTime(time) }
+                            
                             guard inRange else {
                                 self.process(warning: .invalidStartTime(startTime: value, seekableRanges: self.seekableTimeRanges))
                                 onReady()
@@ -392,13 +398,15 @@ extension HLSNative {
                             let date = Date(milliseconds: value)
                             mediaAsset.playerItem.seek(to: date) { success in
                                 // TODO: What if the seek was not successful?
+                                print("<< .readyToPlay startTime Seek",success)
                                 onReady()
                             }
                         }
                         else {
                             onReady()
                         }
-                    default: return
+                    default:
+                        return
                     }
                 case .failed:
                     let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
@@ -419,7 +427,6 @@ extension HLSNative {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [weak self] notification in
             guard let `self` = self else { return }
-            print(" ====== handleBitrateChangedEvent ",mediaAsset.playerItem.currentDate())
             if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
                 if let currentEvent = accessLog.events.last {
                     let newBitrate = currentEvent.indicatedBitrate
