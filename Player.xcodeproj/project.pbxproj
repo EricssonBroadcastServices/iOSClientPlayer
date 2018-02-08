@@ -56,6 +56,8 @@
 		76BBFBB31EA8D7CD001DBDDB /* Cartfile.private in Resources */ = {isa = PBXBuildFile; fileRef = 76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */; };
 		76BBFBB51EA8DE29001DBDDB /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB41EA8DE29001DBDDB /* Quick.framework */; };
 		76BBFBB71EA8DE34001DBDDB /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB61EA8DE34001DBDDB /* Nimble.framework */; };
+		76CD5AE6202B512B00941ABC /* MediaTracks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE5202B512B00941ABC /* MediaTracks.swift */; };
+		76CD5AE8202B55F200941ABC /* HLSNative+MediaTracks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE7202B55F200941ABC /* HLSNative+MediaTracks.swift */; };
 		76E7F0E4202056150071D8C9 /* Warning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E3202056150071D8C9 /* Warning.swift */; };
 		76E7F0E6202057E40071D8C9 /* HLSNativeWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */; };
 /* End PBXBuildFile section */
@@ -129,6 +131,8 @@
 		76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.private; sourceTree = SOURCE_ROOT; };
 		76BBFBB41EA8DE29001DBDDB /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "Carthage/Checkouts/Quick/build/Debug-iphoneos/Quick.framework"; sourceTree = "<group>"; };
 		76BBFBB61EA8DE34001DBDDB /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "Carthage/Checkouts/Nimble/build/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
+		76CD5AE5202B512B00941ABC /* MediaTracks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTracks.swift; sourceTree = "<group>"; };
+		76CD5AE7202B55F200941ABC /* HLSNative+MediaTracks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaTracks.swift"; sourceTree = "<group>"; };
 		76E7F0E3202056150071D8C9 /* Warning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Warning.swift; sourceTree = "<group>"; };
 		76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeWarning.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -180,6 +184,7 @@
 				7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */,
 				7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */,
 				766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */,
+				76CD5AE7202B55F200941ABC /* HLSNative+MediaTracks.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -377,6 +382,7 @@
 				76A843871EA7819D00BDAF2C /* MediaPlayback.swift */,
 				76A843881EA7819D00BDAF2C /* MediaRendering.swift */,
 				7602E8881F38341A00601CD4 /* StartTime.swift */,
+				76CD5AE5202B512B00941ABC /* MediaTracks.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -529,8 +535,10 @@
 				766AC2191FC2F6B700843FEF /* HLSNativeError.swift in Sources */,
 				76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */,
 				766AC2141FC2F6B700843FEF /* AVAsset+LoadableKeys.swift in Sources */,
+				76CD5AE6202B512B00941ABC /* MediaTracks.swift in Sources */,
 				76A8439B1EA7819D00BDAF2C /* MediaPlayback.swift in Sources */,
 				766AC2181FC2F6B700843FEF /* HLSNative.swift in Sources */,
+				76CD5AE8202B55F200941ABC /* HLSNative+MediaTracks.swift in Sources */,
 				766039291FC7069900E79091 /* Player+ManifestContext.swift in Sources */,
 				76E7F0E6202057E40071D8C9 /* HLSNativeWarning.swift in Sources */,
 				76E7F0E4202056150071D8C9 /* Warning.swift in Sources */,

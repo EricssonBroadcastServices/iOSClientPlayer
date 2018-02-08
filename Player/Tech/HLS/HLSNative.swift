@@ -355,6 +355,7 @@ extension HLSNative {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [weak self] item, change in
             guard let `self` = self else { return }
+            DispatchQueue.main.async {
             if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
                 switch status {
                 case .unknown:
@@ -413,6 +414,7 @@ extension HLSNative {
                     self.eventDispatcher.onError(self, mediaAsset.source, techError)
                     mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                 }
+            }
             }
         }
     }
@@ -508,9 +510,11 @@ extension HLSNative {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: playerItem) { [weak self] notification in
             guard let `self` = self else { return }
-            self.eventDispatcher.onPlaybackCompleted(self, mediaAsset.source)
-            mediaAsset.source.analyticsConnector.onCompleted(tech: self, source: mediaAsset.source)
-            self.unloadOnStop()
+            DispatchQueue.main.async {
+                self.eventDispatcher.onPlaybackCompleted(self, mediaAsset.source)
+                mediaAsset.source.analyticsConnector.onCompleted(tech: self, source: mediaAsset.source)
+                self.unloadOnStop()
+            }
         }
     }
 }
