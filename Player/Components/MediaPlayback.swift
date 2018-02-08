@@ -70,7 +70,7 @@ public protocol MediaPlayback: class {
     var isMuted: Bool { get set }
 }
 
-extension Player where Tech: MediaPlayback {
+extension Player {
     /// Starts playback
     public func play() {
         tech.play()
@@ -151,21 +151,17 @@ extension Player where Tech: MediaPlayback {
     
     /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
     public var autoplayEnabled: Bool {
+        get {
         return tech.autoplay
+        }
+        set {
+            tech.autoplay = newValue
+        }
     }
     
-    /// When autoplay is enabled, playback will resume as soon as the stream is loaded and prepared.
+    /// This property is used to control the player audio volume relative to the system volume.
     ///
-    /// - parameter enabled: `true` if enabled, `false` otherwise
-    /// - returns: `Self`
-    @discardableResult
-    public func autoplay(enabled: Bool) -> Self {
-        tech.autoplay = enabled
-        return self
-    }
-    
-    
-    /// Playback volume
+    /// There is no programmatic way to control the system volume in iOS, but you can use the MediaPlayer framework’s MPVolumeView class to present a standard user interface for controlling system volume.
     public var volume: Float {
         get {
             return tech.volume
