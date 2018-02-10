@@ -15,11 +15,11 @@ extension HLSNative: MediaPlayback {
     public func play() {
         switch playbackState {
         case .notStarted:
-            avPlayer.play()
+            srcPlayer.play()
         case .preparing:
-            avPlayer.play()
+            srcPlayer.play()
         case .paused:
-            avPlayer.play()
+            srcPlayer.play()
         default:
             return
         }
@@ -28,7 +28,7 @@ extension HLSNative: MediaPlayback {
     /// Pause playback if currently active
     public func pause() {
         guard isPlaying else { return }
-        avPlayer.pause()
+        srcPlayer.pause()
     }
     
     /// Stops playback and unloads the currently active `Source`. This will trigger `PlaybackAborted` callbacks and analytics publication.
@@ -37,7 +37,7 @@ extension HLSNative: MediaPlayback {
         case .stopped:
             return
         default:
-            avPlayer.pause()
+            srcPlayer.pause()
             if let source = currentAsset?.source {
                 self.eventDispatcher.onPlaybackAborted(self, source)
                 source.analyticsConnector.onAborted(tech: self, source: source)
@@ -48,7 +48,7 @@ extension HLSNative: MediaPlayback {
     
     internal func unloadOnStop() {
         playbackState = .stopped
-        avPlayer.replaceCurrentItem(with: nil)
+        srcPlayer.replaceCurrentItem(with: nil)
         
         currentAsset?.itemObserver.stopObservingAll()
         currentAsset?.itemObserver.unsubscribeAll()
@@ -59,7 +59,7 @@ extension HLSNative: MediaPlayback {
     public var isPlaying: Bool {
         guard isActive else { return false }
         // TODO: How does this relate to PlaybackState? NOT good practice with the currently uncoupled behavior.
-        return avPlayer.rate != 0
+        return srcPlayer.rate != 0
     }
     
     /// Returns true if playback has been started, but makes no assumtions regarding the playback rate.
@@ -177,20 +177,20 @@ extension HLSNative: MediaPlayback {
     /// Playback volume
     public var volume: Float {
         get {
-            return avPlayer.volume
+            return srcPlayer.volume
         }
         set {
-            avPlayer.volume = newValue
+            srcPlayer.volume = newValue
         }
     }
     
     /// If the playback is muted or not
     public var isMuted: Bool {
         get {
-            return avPlayer.isMuted
+            return srcPlayer.isMuted
         }
         set {
-            avPlayer.isMuted = newValue
+            srcPlayer.isMuted = newValue
         }
     }
 }
