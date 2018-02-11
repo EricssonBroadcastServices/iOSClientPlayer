@@ -51,8 +51,6 @@ extension HLSNative: MediaRendering {
     /// - parameter callback: closure detailing the custom rendering. Must return an `AVPlayerLayer` in which the rendering will take place
     public func configureRendering(closure: () -> AVPlayerLayer) {
         let layer = closure()
-        if let avPlayer = srcPlayer as? AVPlayer {
-            layer.player = avPlayer
-        }
+        layer.player = srcPlayer
     }
 }
