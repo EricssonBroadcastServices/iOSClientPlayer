@@ -378,7 +378,7 @@ extension HLSNative {
                             // BUGFIX: We cant trigger `onReady` here since that will trigger `onPlaybackStarted` before we have the manifest loaded. This will cause onPlaybackStarted for Date-Time associated streams to report playback position `nil/0` since the playheadTime cant associate bufferPosition with the manifest stream start.
                             if case let .startPosition(value) = self.startOffset {
                                 let cmTime = CMTime(value: value, timescale: 1000)
-                                mediaAsset.playerItem.seek(to: cmTime) { [weak self] success in
+                                mediaAsset.playerItem.seek(to: cmTime) { success in
                                     // TODO: What if the seek was not successful?
                                     print("<< .notStarted startPosition Seek",success)
                                     onActive()
@@ -393,7 +393,7 @@ extension HLSNative {
                         switch self.playbackState {
                         case .notStarted:
                             // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
-                            if case let .startPosition(_) = self.startOffset {
+                            if case .startPosition(_) = self.startOffset {
                                 // This has been handled before
                                 onReady()
                             }
@@ -592,7 +592,6 @@ extension HLSNative {
     /// Subscribes to and handles `AVPlayer.currentItem` changes.
     fileprivate func handleCurrentItemChanges() {
         playerObserver.observe(path: .currentItem, on: avPlayer) { player, change in
-            print("Player.currentItem changed",player, change.new, change.old)
         }
     }
 }
