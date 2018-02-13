@@ -44,8 +44,15 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     }
     
     /// *Native* `AVPlayer` used for playback purposes.
-    internal var avPlayer: AVPlayer
-    
+    internal var avPlayer: AVPlayer {
+        didSet {
+            playerObserver.stopObservingAll()
+            playerObserver.unsubscribeAll()
+            handleCurrentItemChanges()
+            handlePlaybackStateChanges()
+        }
+    }
+
     /// The currently active `MediaAsset` is stored here.
     ///
     /// This may be `nil` due to several reasons, for example before any media is loaded.
@@ -94,12 +101,10 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// *Fairplay* protected media is processed by the supplied FairplayRequester
     internal class MediaAsset<Source: MediaSource> {
         /// Specifies the asset which is about to be loaded.
-        fileprivate var urlAsset: AVURLAsset
+        internal var urlAsset: AVURLAsset
         
         /// AVPlayerItem models the timing and presentation state of an asset played by an AVPlayer object. It provides the interface to seek to various times in the media, determine its presentation size, identify its current time, and much more.
-        lazy internal var playerItem: AVPlayerItem = { [unowned self] in
-            return AVPlayerItem(asset: self.urlAsset)
-            }()
+        internal var playerItem: AVPlayerItem
         
         /// Loads, configures and validates *Fairplay* `DRM` protected assets.
         internal let fairplayRequester: FairplayRequester?
@@ -115,11 +120,13 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             self.source = source
             self.fairplayRequester = configuration.drm
             
-            urlAsset = AVURLAsset(url: configuration.url)
+            let asset = AVURLAsset(url: configuration.url)
             if fairplayRequester != nil {
-                urlAsset.resourceLoader.setDelegate(fairplayRequester,
+                asset.resourceLoader.setDelegate(fairplayRequester,
                                                     queue: DispatchQueue(label: configuration.playSessionId + "-fairplayLoader"))
             }
+            urlAsset = asset
+            playerItem = AVPlayerItem(asset: asset)
         }
         
         // MARK: Change Observation
@@ -170,6 +177,11 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         }
     }
     
+    /// Generates a fresh MediaAsset to use for loading and preparation of the specified `Source`.
+    internal var assetGenerator: (Context.Source, HLSNativeConfiguration) -> MediaAsset<Context.Source> = { source, configuration in
+        return MediaAsset<Context.Source>(source: source, configuration: configuration)
+    }
+    
     public required init() {
         avPlayer = AVPlayer()
         
@@ -199,9 +211,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     
     
     /// Wrapper observing changes to the underlying `AVPlayer`
-    lazy fileprivate var playerObserver: PlayerObserver = {
-        return PlayerObserver()
-    }()
+    fileprivate var playerObserver: PlayerObserver = PlayerObserver()
 }
 
 // MARK: - Load Source
@@ -239,7 +249,7 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
                                 onAssetPrepared: @escaping((MediaAsset<Context.Source>) -> Void) = { _ in }) {
         let configuration = source.hlsNativeConfiguration
         
-        let mediaAsset = MediaAsset<Context.Source>(source: source, configuration: configuration)
+        let mediaAsset = assetGenerator(source, configuration)
         
         // Unsubscribe any current item
         currentAsset?.itemObserver.stopObservingAll()
@@ -356,65 +366,63 @@ extension HLSNative {
         mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [weak self] item, change in
             guard let `self` = self else { return }
             DispatchQueue.main.async {
-            if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
-                switch status {
-                case .unknown:
-                    switch self.playbackState {
-                    case .notStarted:
-                        // Prepare the `AVPlayerItem` by seeking to the required startTime before we perform any loading or networking.
-                        // We cant set the start time as a unix timestamp at this point since the `playerItem` has not yet loaded the manifest and does
-                        // yet know the stream is *timestamp related*. Wait untill playback is ready to do that.
-                        //
-                        // BUGFIX: We cant trigger `onReady` here since that will trigger `onPlaybackStarted` before we have the manifest loaded. This will cause onPlaybackStarted for Date-Time associated streams to report playback position `nil/0` since the playheadTime cant associate bufferPosition with the manifest stream start.
-                        if case let .startPosition(value) = self.startOffset {
-                            let cmTime = CMTime(value: value, timescale: 1000)
-                            mediaAsset.playerItem.seek(to: cmTime) { [weak self] success in
-                                // TODO: What if the seek was not successful?
-                                print("<< .notStarted startPosition Seek",success)
+                if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
+                    switch status {
+                    case .unknown:
+                        switch self.playbackState {
+                        case .notStarted:
+                            // Prepare the `AVPlayerItem` by seeking to the required startTime before we perform any loading or networking.
+                            // We cant set the start time as a unix timestamp at this point since the `playerItem` has not yet loaded the manifest and does
+                            // yet know the stream is *timestamp related*. Wait untill playback is ready to do that.
+                            //
+                            // BUGFIX: We cant trigger `onReady` here since that will trigger `onPlaybackStarted` before we have the manifest loaded. This will cause onPlaybackStarted for Date-Time associated streams to report playback position `nil/0` since the playheadTime cant associate bufferPosition with the manifest stream start.
+                            if case let .startPosition(value) = self.startOffset {
+                                let cmTime = CMTime(value: value, timescale: 1000)
+                                mediaAsset.playerItem.seek(to: cmTime) { success in
+                                    // TODO: What if the seek was not successful?
+                                    onActive()
+                                }
+                            }
+                            else {
                                 onActive()
                             }
+                        default: return
                         }
-                        else {
-                            onActive()
-                        }
-                    default: return
-                    }
-                case .readyToPlay:
-                    switch self.playbackState {
-                    case .notStarted:
-                        // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
-                        if case let .startPosition(_) = self.startOffset {
-                            // This has been handled before
-                            onReady()
-                        }
-                        else if case let .startTime(value) = self.startOffset {
-                            let time = CMTime(value: value, timescale: 1000)
-                            let inRange = self.seekableTimeRanges.reduce(false) { $0 || $1.containsTime(time) }
-                            
-                            guard inRange else {
-                                self.process(warning: .invalidStartTime(startTime: value, seekableRanges: self.seekableTimeRanges))
-                                onReady()
-                                return
-                            }
-                            let date = Date(milliseconds: value)
-                            mediaAsset.playerItem.seek(to: date) { success in
-                                // TODO: What if the seek was not successful?
-                                print("<< .readyToPlay startTime Seek",success)
+                    case .readyToPlay:
+                        switch self.playbackState {
+                        case .notStarted:
+                            // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
+                            if case .startPosition(_) = self.startOffset {
+                                // This has been handled before
                                 onReady()
                             }
+                            else if case let .startTime(value) = self.startOffset {
+                                let time = CMTime(value: value, timescale: 1000)
+                                let inRange = self.seekableTimeRanges.reduce(false) { $0 || $1.containsTime(time) }
+                                
+                                guard inRange else {
+                                    self.process(warning: .invalidStartTime(startTime: value, seekableRanges: self.seekableTimeRanges))
+                                    onReady()
+                                    return
+                                }
+                                let date = Date(milliseconds: value)
+                                mediaAsset.playerItem.seek(to: date) { success in
+                                    // TODO: What if the seek was not successful?
+                                    onReady()
+                                }
+                            }
+                            else {
+                                onReady()
+                            }
+                        default:
+                            return
                         }
-                        else {
-                            onReady()
-                        }
-                    default:
-                        return
+                    case .failed:
+                        let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
+                        self.eventDispatcher.onError(self, mediaAsset.source, techError)
+                        mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                     }
-                case .failed:
-                    let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
-                    self.eventDispatcher.onError(self, mediaAsset.source, techError)
-                    mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                 }
-            }
             }
         }
     }
@@ -451,6 +459,8 @@ extension HLSNative {
     fileprivate func handleBufferingEvents(mediaAsset: MediaAsset<Context.Source>) {
         mediaAsset.itemObserver.observe(path: .isPlaybackLikelyToKeepUp, on: mediaAsset.playerItem) { [weak self] item, change in
             guard let `self` = self else { return }
+            // TODO: Revisit buffering events
+            // NOTE: Should we use item.isPlaybackLikelyToKeepUp ??
             DispatchQueue.main.async {
                 switch `self`.bufferState {
                 case .buffering:
@@ -580,7 +590,6 @@ extension HLSNative {
     /// Subscribes to and handles `AVPlayer.currentItem` changes.
     fileprivate func handleCurrentItemChanges() {
         playerObserver.observe(path: .currentItem, on: avPlayer) { player, change in
-            print("Player.currentItem changed",player, change.new, change.old)
         }
     }
 }
