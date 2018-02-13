@@ -380,7 +380,6 @@ extension HLSNative {
                                 let cmTime = CMTime(value: value, timescale: 1000)
                                 mediaAsset.playerItem.seek(to: cmTime) { success in
                                     // TODO: What if the seek was not successful?
-                                    print("<< .notStarted startPosition Seek",success)
                                     onActive()
                                 }
                             }
@@ -409,7 +408,6 @@ extension HLSNative {
                                 let date = Date(milliseconds: value)
                                 mediaAsset.playerItem.seek(to: date) { success in
                                     // TODO: What if the seek was not successful?
-                                    print("<< .readyToPlay startTime Seek",success)
                                     onReady()
                                 }
                             }
