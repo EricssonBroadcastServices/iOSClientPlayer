@@ -217,7 +217,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
 // MARK: - Load Source
 extension HLSNative where Context.Source: HLSNativeConfigurable {
     
-    public func load(source: Context.Source) {
+    public func load(source: Context.Source, callback: @escaping () -> Void = { }) {
         loadAndPrepare(source: source, onTransitionReady: { mediaAsset in
             if let oldSource = currentAsset?.source {
                 eventDispatcher.onPlaybackAborted(self, oldSource)
@@ -229,10 +229,10 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             eventDispatcher.onPlaybackCreated(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onCreated(tech: self, source: mediaAsset.source)
             
-        }) { mediaAsset in
+        }, onAssetPrepared: { mediaAsset in
             self.eventDispatcher.onPlaybackPrepared(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onPrepared(tech: self, source: mediaAsset.source)
-        }
+        }, finalized: callback)
     }
     
     #if DEBUG
@@ -240,13 +240,17 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
     public func reloadSource() {
         guard let source = currentSource else { return }
         
-        loadAndPrepare(source: source)
+        loadAndPrepare(source: source,
+                       onTransitionReady: { _ in },
+                       onAssetPrepared: { _ in },
+                       finalized: { })
     }
     #endif
     
     private func loadAndPrepare(source: Context.Source,
-                                onTransitionReady: ((MediaAsset<Context.Source>) -> Void) = { _ in },
-                                onAssetPrepared: @escaping((MediaAsset<Context.Source>) -> Void) = { _ in }) {
+                                onTransitionReady: ((MediaAsset<Context.Source>) -> Void),
+                                onAssetPrepared: @escaping ((MediaAsset<Context.Source>) -> Void),
+                                finalized: @escaping () -> Void) {
         let configuration = source.hlsNativeConfiguration
         
         let mediaAsset = assetGenerator(source, configuration)
@@ -275,14 +279,14 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             // At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
             onAssetPrepared(mediaAsset)
             
-            self.readyPlayback(with: mediaAsset)
+            self.readyPlayback(with: mediaAsset, callback: finalized)
         }
     }
     
     /// Once the `MediaAsset` has been *prepared* through `mediaAsset.prepare(loading: callback:)` the relevant `KVO` and `Notificaion`s are subscribed.
     ///
     /// Finally, once the `Player` is configured, the `currentMedia` is replaced with the newly created one. The system now awaits playback status to return `.readyToPlay`.
-    fileprivate func readyPlayback(with mediaAsset: MediaAsset<Context.Source>) {
+    fileprivate func readyPlayback(with mediaAsset: MediaAsset<Context.Source>, callback: @escaping () -> Void) {
         currentAsset = nil
         
         // Observe changes to .status for new playerItem
@@ -307,6 +311,7 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             if self.autoplay {
                 self.play()
             }
+            callback()
         }
         
         // Observe BitRate changes
