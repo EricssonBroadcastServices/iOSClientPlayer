@@ -369,6 +369,7 @@ extension HLSNative {
     fileprivate func handleStatusChange(mediaAsset: MediaAsset<Context.Source>, onActive: @escaping () -> Void, onReady: @escaping () -> Void) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.observe(path: .status, on: playerItem) { [weak self] item, change in
+            guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
                 if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
@@ -441,6 +442,7 @@ extension HLSNative {
     fileprivate func handleBitrateChangedEvent(mediaAsset: MediaAsset<Context.Source>) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [weak self] notification in
+            guard let `self` = self else { return }
             if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
                 if let currentEvent = accessLog.events.last {
                     let newBitrate = currentEvent.indicatedBitrate
@@ -463,6 +465,7 @@ extension HLSNative {
     /// - parameter mediaAsset: asset to observe and manage event for
     fileprivate func handleBufferingEvents(mediaAsset: MediaAsset<Context.Source>) {
         mediaAsset.itemObserver.observe(path: .isPlaybackLikelyToKeepUp, on: mediaAsset.playerItem) { [weak self] item, change in
+            guard let `self` = self else { return }
             // TODO: Revisit buffering events
             // NOTE: Should we use item.isPlaybackLikelyToKeepUp ??
             DispatchQueue.main.async { [weak self] in
@@ -479,11 +482,11 @@ extension HLSNative {
         
         
         mediaAsset.itemObserver.observe(path: .isPlaybackBufferFull, on: mediaAsset.playerItem) { item, change in
-            DispatchQueue.main.async { [weak self] in
-            }
+            
         }
         
         mediaAsset.itemObserver.observe(path: .isPlaybackBufferEmpty, on: mediaAsset.playerItem) { [weak self] item, change in
+            guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
                 switch self.bufferState {
@@ -506,6 +509,7 @@ extension HLSNative {
     fileprivate func handleDurationChangedEvent(mediaAsset: MediaAsset<Context.Source>) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.observe(path: .duration, on: playerItem) { [weak self] item, change in
+            guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
                 // NOTE: This currently sends onDurationChanged events for all triggers of the KVO. This means events might be sent once duration is "updated" with the same value as before, effectivley assigning self.duration = duration.
@@ -524,6 +528,7 @@ extension HLSNative {
     fileprivate func handlePlaybackCompletedEvent(mediaAsset: MediaAsset<Context.Source>) {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemDidPlayToEndTime, for: playerItem) { [weak self] notification in
+            guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
                 self.eventDispatcher.onPlaybackCompleted(self, mediaAsset.source)
@@ -539,6 +544,7 @@ extension HLSNative {
     /// Subscribes to and handles `AVPlayer.rate` changes.
     fileprivate func handlePlaybackStateChanges() {
         playerObserver.observe(path: .rate, on: avPlayer) { [weak self] player, change in
+            guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
                 guard let newRate = change.new as? Float else {
