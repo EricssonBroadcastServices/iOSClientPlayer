@@ -50,11 +50,8 @@ platform :ios do
             run_unit_tests
             
             add_git_tag(tag: version)
-            push_to_git_remote(
-                               remote: "origin",
-                               tags: true
-                               )
-            
+            Action.sh("git push origin --all")
+            Action.sh("git push --tags")
             
             current_time = Time.now.to_f
             project_name = ENV["PROJECT_TITLE"]
