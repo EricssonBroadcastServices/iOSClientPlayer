@@ -46,6 +46,7 @@ platform :ios do
             Action.sh("git branch '#{version}'")
             Action.sh("git checkout '#{version}'")
             
+            update_graph
             run_unit_tests
             
             #Action.sh("git commit -m 'Version: #{version}'")
@@ -92,6 +93,19 @@ platform :ios do
                             message: "Build number bumped: #{new_build_number}",
                             xcodeproj: ENV["XCODE_PROJECT"]
                             )
+    end
+    
+    desc "Checkout latest dependencies as declared in Cartfile.resolved"
+    private_lane :update_graph do
+        carthage(
+                 command: "update",
+                 platform: "iOS",
+                 use_submodules: true,
+                 use_ssh: true,
+                 use_binaries: false,
+                 no_build: true
+                 )
+        update_dependency_graph()
     end
     
     desc "Checkout latest dependencies as declared in Cartfile.resolved"

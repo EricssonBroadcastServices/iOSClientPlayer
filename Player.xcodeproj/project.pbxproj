@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		760200FD2035C98700EF495D /* update_dependency_graph.rb in Resources */ = {isa = PBXBuildFile; fileRef = 760200FC2035C98700EF495D /* update_dependency_graph.rb */; };
 		7602E8891F38341A00601CD4 /* StartTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7602E8881F38341A00601CD4 /* StartTime.swift */; };
 		76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
 		7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619E54D1FCC05D600ACACAE /* PlayerError.swift */; };
@@ -73,6 +74,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		760200FC2035C98700EF495D /* update_dependency_graph.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = update_dependency_graph.rb; sourceTree = "<group>"; };
 		7602E8881F38341A00601CD4 /* StartTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartTime.swift; sourceTree = "<group>"; };
 		76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
 		7619E54D1FCC05D600ACACAE /* PlayerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerError.swift; sourceTree = "<group>"; };
@@ -159,6 +161,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		760200FB2035C98700EF495D /* actions */ = {
+			isa = PBXGroup;
+			children = (
+				760200FC2035C98700EF495D /* update_dependency_graph.rb */,
+			);
+			path = actions;
+			sourceTree = "<group>";
+		};
 		76139F7D1F1CCFD600822023 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -208,6 +218,7 @@
 		7667AEC21EC5C0FE00C308FC /* fastlane */ = {
 			isa = PBXGroup;
 			children = (
+				760200FB2035C98700EF495D /* actions */,
 				7667AEC31EC5C0FE00C308FC /* Appfile */,
 				7667AEC41EC5C0FE00C308FC /* Fastfile */,
 				7667AEC71EC5C12100C308FC /* .env */,
@@ -494,6 +505,7 @@
 			files = (
 				7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */,
 				7667AEC51EC5C0FE00C308FC /* Appfile in Resources */,
+				760200FD2035C98700EF495D /* update_dependency_graph.rb in Resources */,
 				76A843691EA77EC300BDAF2C /* Cartfile in Resources */,
 				7667AEC81EC5C12100C308FC /* .env in Resources */,
 				76BBFBB31EA8D7CD001DBDDB /* Cartfile.private in Resources */,
