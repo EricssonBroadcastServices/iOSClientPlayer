@@ -49,10 +49,9 @@ platform :ios do
             update_graph
             run_unit_tests
             
-            #Action.sh("git commit -m 'Version: #{version}'")
-            Action.sh("git push -u origin '#{version}'")
+            #Action.sh("git push -u origin '#{version}'")
             Action.sh("git tag '#{version}'")
-            Action.sh("git push origin '#{version}'")
+            Action.sh("git push -u origin '#{version}'")
             
             
             current_time = Time.now.to_f
