@@ -383,15 +383,11 @@ extension HLSNative {
                             //
                             // BUGFIX: We cant trigger `onReady` here since that will trigger `onPlaybackStarted` before we have the manifest loaded. This will cause onPlaybackStarted for Date-Time associated streams to report playback position `nil/0` since the playheadTime cant associate bufferPosition with the manifest stream start.
                             if case let .startPosition(value) = self.startOffset {
+                                // BUGFIX: AVPlayerItem CANT service a seek with a completion handler untill state == .readyToPlay
                                 let cmTime = CMTime(value: value, timescale: 1000)
-                                mediaAsset.playerItem.seek(to: cmTime) { success in
-                                    // TODO: What if the seek was not successful?
-                                    onActive()
-                                }
+                                mediaAsset.playerItem.seek(to: cmTime)
                             }
-                            else {
-                                onActive()
-                            }
+                            onActive()
                         default: return
                         }
                     case .readyToPlay:
