@@ -38,6 +38,18 @@ platform :ios do
         notify_slack_dev_success
     end
     
+    lane :release do |options|
+        version = "r" + get_version_number(xcodeproj: ENV["XCODE_PROJECT"])
+        Action.sh('git branch #{version}')
+        Action.sh('git checkout #{version}')
+        Action.sh('git commit -m "Version: #{version}"')
+        Action.sh('git tag #{version}')
+        #git add -A
+        # git commit -m "v$LIBRARY_VERSION"
+        # git push -u origin $LIBRARY_VERSION
+        # git tag "r$LIBRARY_VERSION"
+        #git push origin "r$LIBRARY_VERSION"
+    end
     
     desc "Runs all the tests"
     lane :run_unit_tests do
