@@ -48,8 +48,12 @@ public struct MediaGroup {
         return MediaTrack(mediaOption: media)
     }
     
+    public var allowsEmptySelection: Bool {
+        return mediaGroup.allowsEmptySelection
+    }
+    
     internal func mediaSelection(forLanguage language: String) -> AVMediaSelectionOption? {
-        return mediaGroup.options.filter{ $0.displayName == language }.first
+        return mediaGroup.options.filter{ $0.extendedLanguageTag == language }.first
     }
 }
 // MARK: Track
@@ -95,6 +99,10 @@ extension HLSNative: MediaTracks {
         return audioGroup?.selectedTrack
     }
     
+    public var allowsEmptyAudioSelection: Bool {
+        return audioGroup?.mediaGroup.allowsEmptySelection ?? true
+    }
+    
     public func selectAudio(track: MediaTrack?) {
         select(track: track, inGroup: audioGroup?.mediaGroup)
     }
@@ -109,7 +117,7 @@ extension HLSNative: MediaTracks {
     }
     
     // MARK: Text
-    private var textGroup: MediaGroup? {
+    public var textGroup: MediaGroup? {
         return currentAsset?
             .playerItem
             .textGroup
@@ -125,6 +133,10 @@ extension HLSNative: MediaTracks {
     
     public var selectedTextTrack: MediaTrack? {
         return textGroup?.selectedTrack
+    }
+    
+    public var allowsEmptyTextSelection: Bool {
+        return textGroup?.mediaGroup.allowsEmptySelection ?? true
     }
     
     public func selectText(track: MediaTrack?) {
@@ -147,6 +159,6 @@ extension HLSNative: MediaTracks {
     }
     
     private func track(forLanguage language: String, inGroup group: AVMediaSelectionGroup?) -> AVMediaSelectionOption? {
-        return group?.options.filter{ $0.displayName == language }.first
+        return group?.options.filter{ $0.extendedLanguageTag == language }.first
     }
 }
