@@ -17,8 +17,6 @@ extension AVAsset {
         
         /// Tracks
         case tracks = "tracks"
-        //case trackGroups = "trackGroups"
-        
         
         /// Playable
         case playable = "playable"
