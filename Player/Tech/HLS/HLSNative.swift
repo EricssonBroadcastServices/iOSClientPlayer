@@ -439,9 +439,19 @@ extension HLSNative {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [weak self] notification in
             guard let `self` = self else { return }
-            if let item = notification.object as? AVPlayerItem, let accessLog = item.accessLog() {
-                if let currentEvent = accessLog.events.last {
-                    let newBitrate = currentEvent.indicatedBitrate
+            if let item = notification.object as? AVPlayerItem, let events = item.accessLog()?.events {
+                let newBitrateGenerator: () -> Double? = {
+                    if events.count == 1 {
+                        return events.last?.indicatedBitrate
+                    }
+                    else {
+                        let currentBitrate = events.last?.indicatedBitrate
+                        let previous = events[events.count-2].indicatedBitrate
+                        return currentBitrate != previous ? currentBitrate : nil
+                    }
+                }
+                
+                if let newBitrate = newBitrateGenerator() {
                     DispatchQueue.main.async { [weak self] in
                         guard let `self` = self else { return }
                         self.eventDispatcher.onBitrateChanged(self, mediaAsset.source, newBitrate)
@@ -462,16 +472,16 @@ extension HLSNative {
     fileprivate func handleBufferingEvents(mediaAsset: MediaAsset<Context.Source>) {
         mediaAsset.itemObserver.observe(path: .isPlaybackLikelyToKeepUp, on: mediaAsset.playerItem) { [weak self] item, change in
             guard let `self` = self else { return }
-            // TODO: Revisit buffering events
-            // NOTE: Should we use item.isPlaybackLikelyToKeepUp ??
-            DispatchQueue.main.async { [weak self] in
-                guard let `self` = self else { return }
-                switch self.bufferState {
-                case .buffering:
-                    self.bufferState = .onPace
-                    self.eventDispatcher.onBufferingStopped(self, mediaAsset.source)
-                    mediaAsset.source.analyticsConnector.onBufferingStopped(tech: self, source: mediaAsset.source)
-                default: return
+            if item.isPlaybackLikelyToKeepUp && !change.isPrior {
+                DispatchQueue.main.async { [weak self] in
+                    guard let `self` = self else { return }
+                    switch self.bufferState {
+                    case .buffering:
+                        self.bufferState = .onPace
+                        self.eventDispatcher.onBufferingStopped(self, mediaAsset.source)
+                        mediaAsset.source.analyticsConnector.onBufferingStopped(tech: self, source: mediaAsset.source)
+                    default: return
+                    }
                 }
             }
         }
@@ -483,14 +493,16 @@ extension HLSNative {
         
         mediaAsset.itemObserver.observe(path: .isPlaybackBufferEmpty, on: mediaAsset.playerItem) { [weak self] item, change in
             guard let `self` = self else { return }
-            DispatchQueue.main.async { [weak self] in
-                guard let `self` = self else { return }
-                switch self.bufferState {
-                case .onPace, .notInitialized:
-                    self.bufferState = .buffering
-                    self.eventDispatcher.onBufferingStarted(self, mediaAsset.source)
-                    mediaAsset.source.analyticsConnector.onBufferingStarted(tech: self, source: mediaAsset.source)
-                default: return
+            if item.isPlaybackBufferEmpty && !change.isPrior {
+                DispatchQueue.main.async { [weak self] in
+                    guard let `self` = self else { return }
+                    switch self.bufferState {
+                    case .onPace, .notInitialized:
+                        self.bufferState = .buffering
+                        self.eventDispatcher.onBufferingStarted(self, mediaAsset.source)
+                        mediaAsset.source.analyticsConnector.onBufferingStarted(tech: self, source: mediaAsset.source)
+                    default: return
+                    }
                 }
             }
         }

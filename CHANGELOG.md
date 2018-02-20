@@ -8,8 +8,13 @@
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
 ## 2.0.78
+
+#### Features
 * Track selection for subtitles and audio
 * Added seek methods taking a callback
+
+#### Changes
+* Improved handling of bitrate and buffering events
 
 ## 0.77.0
 
