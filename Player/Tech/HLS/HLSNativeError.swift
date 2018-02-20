@@ -37,12 +37,14 @@ extension HLSNativeError {
     
     public var message: String {
         switch self {
-        case .missingMediaUrl: return "HLSNative: Missing media url"
+        case .missingMediaUrl: return "Missing media url"
         case .failedToPrepare(errors: let errors):
-            let combined = errors.map{ $0.localizedDescription }.joined(separator: "\n")
-            return "HLSNative: Media failed to prepare:\n"+combined
-        case .loadedButNotPlayable: return "HLSNative: Asset loaded but not playable"
-        case .failedToReady(error: let error): return "HLSNative: Asset failed to ready: \(String(describing: error?.localizedDescription))"
+            let combined = errors.map{ $0.debugInfoString }.joined(separator: "\n")
+            return "Media failed to prepare: " + combined
+        case .loadedButNotPlayable: return "Asset loaded but not playable"
+        case .failedToReady(error: let error):
+            let errorMessage = error != nil ? error!.debugInfoString : "Unknown error"
+            return "Asset failed to ready: \(errorMessage)"
         }
     }
 }
