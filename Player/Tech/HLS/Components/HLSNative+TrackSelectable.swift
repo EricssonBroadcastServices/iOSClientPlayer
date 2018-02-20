@@ -10,6 +10,7 @@ import AVFoundation
 
 extension HLSNative: TrackSelectable {
     // MARK: Audio
+    /// Returns the audio related `MediaGroup`
     public var audioGroup: MediaGroup? {
         return currentAsset?
             .playerItem
@@ -56,7 +57,7 @@ extension HLSNative: TrackSelectable {
     }
     
     // MARK: Text
-    /// Returns the default text track, or `nil` if unavailable
+    /// Returns the text related `MediaGroup`
     public var textGroup: MediaGroup? {
         return currentAsset?
             .playerItem

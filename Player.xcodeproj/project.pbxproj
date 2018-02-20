@@ -47,6 +47,9 @@
 		7691BD38203C7A0E0038F754 /* MediaTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD37203C7A0E0038F754 /* MediaTrack.swift */; };
 		7691BD3B203C7A340038F754 /* MediaGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD3A203C7A340038F754 /* MediaGroup.swift */; };
 		7691BD3D203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD3C203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift */; };
+		7691BD41203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD40203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift */; };
+		7691BD43203CAC420038F754 /* TestEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD42203CAC420038F754 /* TestEnv.swift */; };
+		7691BD45203CAD210038F754 /* MockedAVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD44203CAD210038F754 /* MockedAVPlayer.swift */; };
 		76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8434E1EA77DF700BDAF2C /* Player.framework */; };
 		76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */; };
 		76A8435F1EA77DF700BDAF2C /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -123,6 +126,9 @@
 		7691BD37203C7A0E0038F754 /* MediaTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTrack.swift; sourceTree = "<group>"; };
 		7691BD3A203C7A340038F754 /* MediaGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaGroup.swift; sourceTree = "<group>"; };
 		7691BD3C203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVMediaSelectionGroup+Extensions.swift"; sourceTree = "<group>"; };
+		7691BD40203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeTrackSelectableSpec.swift; sourceTree = "<group>"; };
+		7691BD42203CAC420038F754 /* TestEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestEnv.swift; sourceTree = "<group>"; };
+		7691BD44203CAD210038F754 /* MockedAVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedAVPlayer.swift; sourceTree = "<group>"; };
 		76A8434E1EA77DF700BDAF2C /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A843511EA77DF700BDAF2C /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		76A843521EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -373,6 +379,9 @@
 			children = (
 				76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */,
 				76A8435E1EA77DF700BDAF2C /* Info.plist */,
+				7691BD40203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift */,
+				7691BD42203CAC420038F754 /* TestEnv.swift */,
+				7691BD44203CAD210038F754 /* MockedAVPlayer.swift */,
 			);
 			path = PlayerTests;
 			sourceTree = "<group>";
@@ -600,6 +609,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */,
+				7691BD41203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift in Sources */,
+				7691BD45203CAD210038F754 /* MockedAVPlayer.swift in Sources */,
+				7691BD43203CAC420038F754 /* TestEnv.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

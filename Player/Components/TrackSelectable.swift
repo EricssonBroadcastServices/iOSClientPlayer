@@ -20,7 +20,7 @@ public protocol Track {
 public protocol TrackSelectable {
     
     // MARK: Audio
-    /// The AudioTrack
+    /// Should fetch the default text track, or `nil` if unavailable
     associatedtype AudioTrack: Track
     
     /// Should fetch the default audio track, or `nil` if unavailable
