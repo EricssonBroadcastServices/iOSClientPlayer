@@ -34,6 +34,7 @@
 - [x] Playback event publishing
 - [x] Custom playback controls
 - [x] Airplay
+- [x] Track selection
 
 
 ## Requirements

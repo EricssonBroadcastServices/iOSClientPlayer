@@ -18,6 +18,7 @@ public protocol MediaTracks {
     var defaultAudioTrack: AudioTrack? { get }
     var audioTracks: [AudioTrack] { get }
     var selectedAudioTrack: AudioTrack? { get }
+    var allowsEmptyAudioSelection: Bool { get }
     func selectAudio(track: AudioTrack?)
     func selectAudio(language: String?)
     
@@ -25,6 +26,7 @@ public protocol MediaTracks {
     var defaultTextTrack: TextTrack? { get }
     var textTracks: [TextTrack] { get }
     var selectedTextTrack: TextTrack? { get }
+    var allowsEmptyTextSelection: Bool { get }
     func selectText(track: TextTrack?)
     func selectText(language: String?)
 }
