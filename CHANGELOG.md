@@ -9,6 +9,7 @@
 
 ## 2.0.78
 * Track selection for subtitles and audio
+* Added seek methods taking a callback
 
 ## 0.77.0
 

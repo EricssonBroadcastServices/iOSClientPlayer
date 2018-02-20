@@ -71,10 +71,19 @@ extension HLSNative: MediaPlayback {
         }
     }
     
+    
     /// Use this method to seek to a specified buffer timestamp for the active media. The seek request will fail if interrupted by another seek request or by any other operation.
     ///
     /// - parameter position: in milliseconds
     public func seek(toPosition position: Int64) {
+        seek(toPosition: position) { _ in }
+    }
+    
+    /// Use this method to seek to a specified buffer timestamp for the active media. The seek request will fail if interrupted by another seek request or by any other operation.
+    ///
+    /// - parameter position: in milliseconds
+    /// - parameter callback: `true` if seek was successful, `false` if it was cancelled
+    public func seek(toPosition position: Int64, callback: @escaping (Bool) -> Void = { _ in }) {
         let seekTime = position > 0 ? position : 0
         let cmTime = CMTime(value: seekTime, timescale: 1000)
         currentAsset?.playerItem.seek(to: cmTime) { [weak self] success in
@@ -84,6 +93,7 @@ extension HLSNative: MediaPlayback {
                     `self`.eventDispatcher.onPlaybackScrubbed(`self`, source, seekTime)
                     source.analyticsConnector.onScrubbedTo(tech: `self`, source: source, offset: seekTime) }
             }
+            callback(success)
         }
     }
     
@@ -128,12 +138,23 @@ extension HLSNative: MediaPlayback {
     }
     #endif
     
+    
     /// For playback content that is associated with a range of dates, move the playhead to point within that range.
     ///
     /// Will fail if the supplied date is outside the range or if the content is not associated with a range of dates.
     ///
-    /// - Parameter timeInterval: target timestamp in unix epoch time (milliseconds)
+    /// - parameter timeInterval: target timestamp in unix epoch time (milliseconds)
     public func seek(toTime timeInterval: Int64) {
+        seek(toTime: timeInterval) { _ in }
+    }
+    
+    /// For playback content that is associated with a range of dates, move the playhead to point within that range.
+    ///
+    /// Will fail if the supplied date is outside the range or if the content is not associated with a range of dates.
+    ///
+    /// - parameter timeInterval: target timestamp in unix epoch time (milliseconds)
+    /// - parameter callback: `true` if seek was successful, `false` if it was cancelled
+    public func seek(toTime timeInterval: Int64, callback: @escaping (Bool) -> Void) {
         let date = Date(milliseconds: timeInterval)
         currentAsset?.playerItem.seek(to: date) { [weak self] success in
             guard let `self` = self else { return }
@@ -142,6 +163,7 @@ extension HLSNative: MediaPlayback {
                     self.eventDispatcher.onPlaybackScrubbed(self, source, timeInterval)
                     source.analyticsConnector.onScrubbedTo(tech: self, source: source, offset: timeInterval) }
             }
+            callback(success)
         }
     }
     
