@@ -52,7 +52,7 @@ extension HLSNative: TrackSelectable {
             selectAudio(track: nil)
             return
         }
-        guard let option = audioGroup?.mediaSelection(forLanguage: language) else { return }
+        guard let option = audioGroup?.mediaSelectionOption(forLanguage: language) else { return }
         selectAudio(track: MediaTrack(mediaOption: option))
     }
     
@@ -99,7 +99,7 @@ extension HLSNative: TrackSelectable {
             selectText(track: nil)
             return
         }
-        guard let option = textGroup?.mediaSelection(forLanguage: language) else { return }
+        guard let option = textGroup?.mediaSelectionOption(forLanguage: language) else { return }
         selectText(track: MediaTrack(mediaOption: option))
     }
     

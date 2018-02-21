@@ -39,7 +39,7 @@ public struct MediaGroup {
     }
     
     /// Filters the associated `AVMediaSelectionOption`s on the `extendedLanguageTag`
-    internal func mediaSelection(forLanguage language: String) -> AVMediaSelectionOption? {
+    internal func mediaSelectionOption(forLanguage language: String) -> AVMediaSelectionOption? {
         return mediaGroup.track(forLanguage: language)
     }
 }
