@@ -11,6 +11,7 @@
 
 #### Features
 * Track selection for subtitles and audio
+* Preferred track option added to `TrackSelectable`. HLSNative now tries to set a prefered language on startup
 * Added seek methods taking a callback
 
 #### Changes
