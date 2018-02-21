@@ -347,8 +347,7 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
 extension HLSNative {
     fileprivate func applyLanguagePreferences(on mediaAsset: MediaAsset<Context.Source>) {
         // 1. Preferred
-        // 2. Default (stream based)
-        // 3. None
+        // 2. Default (stream based), if any
         handle(preference: preferredTextLanguage, in: mediaAsset.playerItem.textGroup, for: mediaAsset)
         handle(preference: preferredAudioLanguage, in: mediaAsset.playerItem.audioGroup, for: mediaAsset)
     }
@@ -357,9 +356,6 @@ extension HLSNative {
         guard let group = group else { return }
         if let preferedLanguage = preference, let preferedOption = group.mediaSelectionOption(forLanguage: preferedLanguage) {
             mediaAsset.playerItem.select(preferedOption, in: group.mediaGroup)
-        }
-        else if let defaultTrack = group.defaultTrack {
-            mediaAsset.playerItem.select(defaultTrack.mediaOption, in: group.mediaGroup)
         }
     }
 }

@@ -186,9 +186,33 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                     
                     env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
                     
-                    expect(env.player.tech.selectedTextTrack?.name).toEventually(beNil())
-                    expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(beNil())
-                    expect(env.player.tech.selectedTextTrack?.type).toEventually(beNil())
+                    expect(env.player.tech.selectedAudioTrack?.name).toEventually(beNil())
+                    expect(env.player.tech.selectedAudioTrack?.extendedLanguageTag).toEventually(beNil())
+                    expect(env.player.tech.selectedAudioTrack?.type).toEventually(beNil())
+                }
+                
+                it("should adhere to preferred language") {
+                    let env = TestEnv()
+
+                    env.mockAsset(callback: env.defaultAssetMock(currentDate: currentDate, bufferDuration: hour/2) { urlAsset, playerItem in
+                        let audibleGroup = MockedAVMediaSelectionGroup()
+                        let audibleOptions = options("audio")
+                        audibleGroup.mockedAllowsEmptySelection = false
+                        audibleGroup.mockedOptions = audibleOptions
+                        audibleGroup.mockedDefaultOption = audibleOptions.first
+
+                        urlAsset.mockedMediaSelectionGroup[AVMediaCharacteristic.audible] = audibleGroup
+
+                        playerItem.mockedSelectedMediaOption[audibleGroup] = audibleOptions.first
+                    })
+
+                    env.player.tech.preferredAudioLanguage = "sv"
+
+                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+
+                    expect(env.player.tech.selectedAudioTrack?.name).toEventually(equal("Swedish"))
+                    expect(env.player.tech.selectedAudioTrack?.extendedLanguageTag).toEventually(equal("sv"))
+                    expect(env.player.tech.selectedAudioTrack?.type).toEventually(equal("audio"))
                 }
             }
             
@@ -348,6 +372,30 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                     expect(env.player.tech.selectedTextTrack?.name).toEventually(beNil())
                     expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(beNil())
                     expect(env.player.tech.selectedTextTrack?.type).toEventually(beNil())
+                }
+                
+                it("should adhere to preferred language") {
+                    let env = TestEnv()
+                    
+                    env.mockAsset(callback: env.defaultAssetMock(currentDate: currentDate, bufferDuration: hour/2) { urlAsset, playerItem in
+                        let audibleGroup = MockedAVMediaSelectionGroup()
+                        let audibleOptions = options("audio")
+                        audibleGroup.mockedAllowsEmptySelection = false
+                        audibleGroup.mockedOptions = audibleOptions
+                        audibleGroup.mockedDefaultOption = audibleOptions.first
+                        
+                        urlAsset.mockedMediaSelectionGroup[AVMediaCharacteristic.legible] = audibleGroup
+                        
+                        playerItem.mockedSelectedMediaOption[audibleGroup] = audibleOptions.first
+                    })
+                    
+                    env.player.tech.preferredTextLanguage = "sv"
+                    
+                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    
+                    expect(env.player.tech.selectedTextTrack?.name).toEventually(equal("Swedish"))
+                    expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(equal("sv"))
+                    expect(env.player.tech.selectedTextTrack?.type).toEventually(equal("audio"))
                 }
             }
         }
