@@ -45,6 +45,9 @@ public protocol TrackSelectable {
     /// - parameter language: The RFC 4646 language tag identifying the track
     func selectAudio(language: String?)
     
+    /// Should set the preferred audio language tag as defined by RFC 4646 standards
+    var preferredAudioLanguage: String? { get set }
+    
     
     // MARK: Text
     /// Should fetch the default text track, or `nil` if unavailable
@@ -71,4 +74,7 @@ public protocol TrackSelectable {
     ///
     /// - parameter language: The RFC 4646 language tag identifying the track
     func selectText(language: String?)
+    
+    /// Should set the preferred text language tag as defined by RFC 4646 standards
+    var preferredTextLanguage: String? { get set }
 }

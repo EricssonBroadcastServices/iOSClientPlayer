@@ -96,6 +96,15 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     // Background notifier
     internal let backgroundWatcher = BackgroundWatcher()
     
+    // MARK: TrackSelectable
+    /// Sets the preferred audio language tag as defined by RFC 4646 standards
+    public var preferredAudioLanguage: String?
+    
+    /// Should set the preferred text language tag as defined by RFC 4646 standards
+    public var preferredTextLanguage: String?
+    
+    
+    // MARK: MediaAsset
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
     ///
     /// *Fairplay* protected media is processed by the supplied FairplayRequester
@@ -229,7 +238,9 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             eventDispatcher.onPlaybackCreated(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onCreated(tech: self, source: mediaAsset.source)
             
-        }, onAssetPrepared: { mediaAsset in
+        }, onAssetPrepared: { [weak self] mediaAsset in
+            guard let `self` = self else { return }
+            
             self.eventDispatcher.onPlaybackPrepared(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onPrepared(tech: self, source: mediaAsset.source)
         }, finalized: callback)
@@ -294,7 +305,6 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         handleStatusChange(mediaAsset: mediaAsset, onActive: { [weak self] in
             guard let `self` = self else { return }
             
-            
             // `mediaAsset` is now prepared.
             self.currentAsset = mediaAsset
             
@@ -302,6 +312,10 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             // asynchronously; observe the currentItem property to find out when the
             // replacement will/did occur
             self.avPlayer.replaceCurrentItem(with: mediaAsset.playerItem)
+            
+            // Apply preferred audio and subtitles
+            /// NOTE: It seems we cant reliably select subs and audio until after `replaceCurrentItem(with:)` is called
+            self.applyLanguagePreferences(on: mediaAsset)
         }) { [weak self] in
             guard let `self` = self else { return }
             self.playbackState = .preparing
@@ -326,6 +340,27 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
         
         // Observe when currentItem has played to the end
         handlePlaybackCompletedEvent(mediaAsset: mediaAsset)
+    }
+}
+
+// MARK: - Preferred Language
+extension HLSNative {
+    fileprivate func applyLanguagePreferences(on mediaAsset: MediaAsset<Context.Source>) {
+        // 1. Preferred
+        // 2. Default (stream based)
+        // 3. None
+        handle(preference: preferredTextLanguage, in: mediaAsset.playerItem.textGroup, for: mediaAsset)
+        handle(preference: preferredAudioLanguage, in: mediaAsset.playerItem.audioGroup, for: mediaAsset)
+    }
+    
+    private func handle(preference: String?,  in group: MediaGroup?, for mediaAsset: MediaAsset<Context.Source>) {
+        guard let group = group else { return }
+        if let preferedLanguage = preference, let preferedOption = group.mediaSelectionOption(forLanguage: preferedLanguage) {
+            mediaAsset.playerItem.select(preferedOption, in: group.mediaGroup)
+        }
+        else if let defaultTrack = group.defaultTrack {
+            mediaAsset.playerItem.select(defaultTrack.mediaOption, in: group.mediaGroup)
+        }
     }
 }
 
