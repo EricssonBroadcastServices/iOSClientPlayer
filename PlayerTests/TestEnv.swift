@@ -26,10 +26,12 @@ class TestEnv {
         let mockedPlayer = MockedAVPlayer()
         mockedPlayer.mockedReplaceCurrentItem = { [weak mockedPlayer] item in
             if let mockedItem = item as? MockedAVPlayerItem {
-                // We try to fake the loading scheme by dispatching KVO notifications when replace is called. This should trigger .readyToPlay
-                mockedItem.associatedWithPlayer = mockedPlayer
-                mockedItem.willChangeValue(for: \MockedAVPlayerItem.status)
-                mockedItem.didChangeValue(for: \MockedAVPlayerItem.status)
+                DispatchQueue.main.async {
+                    // We try to fake the loading scheme by dispatching KVO notifications when replace is called. This should trigger .readyToPlay
+                    mockedItem.associatedWithPlayer = mockedPlayer
+                    mockedItem.willChangeValue(for: \MockedAVPlayerItem.status)
+                    mockedItem.didChangeValue(for: \MockedAVPlayerItem.status)
+                }
             }
         }
         player.tech.avPlayer = mockedPlayer

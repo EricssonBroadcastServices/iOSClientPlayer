@@ -112,10 +112,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             urlAsset = asset
             playerItem = AVPlayerItem(asset: asset)
             
-            if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation)
-                print("SETTING MAX BITRATE",bitrateLimitation)
-                print(playerItem)
-            }
+            if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
         }
         
         // MARK: Change Observation
