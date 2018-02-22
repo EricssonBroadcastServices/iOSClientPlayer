@@ -85,14 +85,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     ///
     /// Setting a non-zero value will indicate the player should attempt to limit playback to that bitrate. If network bandwidth consumption cannot be lowered to meet the preferredPeakBitRate, it will be reduced as much as possible while continuing to play the item.
     ///
-    /// `nil` will indicate no restrictions should be applied.
+    /// `nil` indicates no restrictions should be applied.
     public var preferredMaxBitrate: Int64?
-    
-    /// Indicates whether network requests on behalf of the asset are allowed when connected to a cellular network.
-    ///
-    /// The default behavior of is to allow requests over cellular networks. You can set this value to false if you would like to restrict the default behavior.
-    public var allowCellularAccess: Bool = true
-    
     
     // MARK: MediaAsset
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
@@ -119,14 +113,16 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             self.source = source
             self.fairplayRequester = configuration.drm
             
-            let asset = AVURLAsset(url: source.url, options: AVURLAsset.options(from: configuration))
+            let asset = AVURLAsset(url: source.url, options: nil)
             if fairplayRequester != nil {
                 asset.resourceLoader.setDelegate(fairplayRequester, queue: DispatchQueue(label: source.playSessionId + "-fairplayLoader"))
             }
             urlAsset = asset
             playerItem = AVPlayerItem(asset: asset)
             
-            if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
+            if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation)
+                print("SETTING MAX BITRATE",bitrateLimitation)
+            }
         }
         
         // MARK: Change Observation
