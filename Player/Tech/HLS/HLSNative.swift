@@ -80,14 +80,6 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Should set the preferred text language tag as defined by RFC 4646 standards
     public var preferredTextLanguage: String?
     
-    // MARK: NetworkLimitation
-    /// The desired limit, in bits per second, of network bandwidth consumption for this item.
-    ///
-    /// Setting a non-zero value will indicate the player should attempt to limit playback to that bitrate. If network bandwidth consumption cannot be lowered to meet the preferredPeakBitRate, it will be reduced as much as possible while continuing to play the item.
-    ///
-    /// `nil` indicates no restrictions should be applied.
-    public var preferredMaxBitrate: Int64?
-    
     // MARK: MediaAsset
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
     ///
@@ -122,6 +114,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             
             if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation)
                 print("SETTING MAX BITRATE",bitrateLimitation)
+                print(playerItem)
             }
         }
         

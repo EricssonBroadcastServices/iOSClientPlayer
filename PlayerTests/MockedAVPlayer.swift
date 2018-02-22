@@ -92,6 +92,7 @@ class MockedAVPlayerItem: AVPlayerItem {
     override func select(_ mediaSelectionOption: AVMediaSelectionOption?, in mediaSelectionGroup: AVMediaSelectionGroup) {
         mockedSelectedMediaOption[mediaSelectionGroup] = mediaSelectionOption
     }
+    
 }
 
 class MockedAVURLAsset: AVURLAsset {

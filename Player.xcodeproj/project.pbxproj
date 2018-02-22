@@ -68,9 +68,10 @@
 		76CD5AE8202B55F200941ABC /* HLSNative+TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */; };
 		76E7F0E4202056150071D8C9 /* Warning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E3202056150071D8C9 /* Warning.swift */; };
 		76E7F0E6202057E40071D8C9 /* HLSNativeWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */; };
-		76EA01D6203DEA4C00B32345 /* NetworkLimitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01D5203DEA4C00B32345 /* NetworkLimitation.swift */; };
-		76EA01D8203DEC0E00B32345 /* HLSNative+NetworkLimitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01D7203DEC0E00B32345 /* HLSNative+NetworkLimitation.swift */; };
+		76EA01D6203DEA4C00B32345 /* NetworkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01D5203DEA4C00B32345 /* NetworkBehavior.swift */; };
 		76EA01DC203EB20700B32345 /* HLSNativeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01DB203EB20700B32345 /* HLSNativeConfiguration.swift */; };
+		76EA01DE203EE72200B32345 /* HLSNativeNetworkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01DD203EE72200B32345 /* HLSNativeNetworkBehavior.swift */; };
+		76EA01E0203EEC0E00B32345 /* HLSNative+NetworkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01DF203EEC0E00B32345 /* HLSNative+NetworkBehavior.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -154,9 +155,10 @@
 		76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+TrackSelectable.swift"; sourceTree = "<group>"; };
 		76E7F0E3202056150071D8C9 /* Warning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Warning.swift; sourceTree = "<group>"; };
 		76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeWarning.swift; sourceTree = "<group>"; };
-		76EA01D5203DEA4C00B32345 /* NetworkLimitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLimitation.swift; sourceTree = "<group>"; };
-		76EA01D7203DEC0E00B32345 /* HLSNative+NetworkLimitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+NetworkLimitation.swift"; sourceTree = "<group>"; };
+		76EA01D5203DEA4C00B32345 /* NetworkBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBehavior.swift; sourceTree = "<group>"; };
 		76EA01DB203EB20700B32345 /* HLSNativeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeConfiguration.swift; sourceTree = "<group>"; };
+		76EA01DD203EE72200B32345 /* HLSNativeNetworkBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeNetworkBehavior.swift; sourceTree = "<group>"; };
+		76EA01DF203EEC0E00B32345 /* HLSNative+NetworkBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+NetworkBehavior.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,7 +217,7 @@
 				7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */,
 				766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */,
 				76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */,
-				76EA01D7203DEC0E00B32345 /* HLSNative+NetworkLimitation.swift */,
+				76EA01DF203EEC0E00B32345 /* HLSNative+NetworkBehavior.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -390,6 +392,7 @@
 				7691BD40203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift */,
 				7691BD42203CAC420038F754 /* TestEnv.swift */,
 				7691BD44203CAD210038F754 /* MockedAVPlayer.swift */,
+				76EA01DD203EE72200B32345 /* HLSNativeNetworkBehavior.swift */,
 			);
 			path = PlayerTests;
 			sourceTree = "<group>";
@@ -431,7 +434,7 @@
 				76A843881EA7819D00BDAF2C /* MediaRendering.swift */,
 				7602E8881F38341A00601CD4 /* StartTime.swift */,
 				76CD5AE5202B512B00941ABC /* TrackSelectable.swift */,
-				76EA01D5203DEA4C00B32345 /* NetworkLimitation.swift */,
+				76EA01D5203DEA4C00B32345 /* NetworkBehavior.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -578,6 +581,7 @@
 				7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */,
 				766AC21C1FC2F6B700843FEF /* KVOChange.swift in Sources */,
 				766039151FC6DF4500E79091 /* EventResponder.swift in Sources */,
+				76EA01E0203EEC0E00B32345 /* HLSNative+NetworkBehavior.swift in Sources */,
 				766AC21D1FC2F6B700843FEF /* NotificationObserver.swift in Sources */,
 				76EA01DC203EB20700B32345 /* HLSNativeConfiguration.swift in Sources */,
 				766039251FC6E24500E79091 /* ManifestContext.swift in Sources */,
@@ -589,7 +593,6 @@
 				766AC2141FC2F6B700843FEF /* AVAsset+LoadableKeys.swift in Sources */,
 				76CD5AE6202B512B00941ABC /* TrackSelectable.swift in Sources */,
 				76A8439B1EA7819D00BDAF2C /* MediaPlayback.swift in Sources */,
-				76EA01D8203DEC0E00B32345 /* HLSNative+NetworkLimitation.swift in Sources */,
 				766AC2181FC2F6B700843FEF /* HLSNative.swift in Sources */,
 				76CD5AE8202B55F200941ABC /* HLSNative+TrackSelectable.swift in Sources */,
 				766039291FC7069900E79091 /* Player+ManifestContext.swift in Sources */,
@@ -600,7 +603,7 @@
 				766AC21F1FC2F6B700843FEF /* Observer.swift in Sources */,
 				766AC1E01FC2E5DE00843FEF /* MediaContext.swift in Sources */,
 				76A89CEC2020915700C23579 /* Date+Extensions.swift in Sources */,
-				76EA01D6203DEA4C00B32345 /* NetworkLimitation.swift in Sources */,
+				76EA01D6203DEA4C00B32345 /* NetworkBehavior.swift in Sources */,
 				7691BD3B203C7A340038F754 /* MediaGroup.swift in Sources */,
 				7660391E1FC6E0BB00E79091 /* AnalyticsLogger.swift in Sources */,
 				766AC2151FC2F6B700843FEF /* AVPlayer+KeyValueObservable.swift in Sources */,
@@ -621,6 +624,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */,
+				76EA01DE203EE72200B32345 /* HLSNativeNetworkBehavior.swift in Sources */,
 				7691BD41203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift in Sources */,
 				7691BD45203CAD210038F754 /* MockedAVPlayer.swift in Sources */,
 				7691BD43203CAC420038F754 /* TestEnv.swift in Sources */,
