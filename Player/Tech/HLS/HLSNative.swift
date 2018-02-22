@@ -9,8 +9,8 @@
 import AVFoundation
 
 /// Defines a protocol enabling adopters to create the configuration source for a `HLSNative` *tech*.
-public protocol HLSNativeConfigurable {
-    var hlsNativeConfiguration: HLSNativeConfiguration { get }
+public protocol REMOVE_THIS_HLSNativeConfigurable {
+    var REMOVE_THIS_hlsNativeConfiguration: HLSNativeConfiguration { get }
 }
 
 /// Playback configuration specific for the `HLSNative` *tech*.
@@ -103,6 +103,19 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Should set the preferred text language tag as defined by RFC 4646 standards
     public var preferredTextLanguage: String?
     
+    // MARK: NetworkLimitation
+    /// The desired limit, in bits per second, of network bandwidth consumption for this item.
+    ///
+    /// Setting a non-zero value will indicate the player should attempt to limit playback to that bitrate. If network bandwidth consumption cannot be lowered to meet the preferredPeakBitRate, it will be reduced as much as possible while continuing to play the item.
+    ///
+    /// `nil` will indicate no restrictions should be applied.
+    public var preferredMaxBitrate: Int64?
+    
+    /// Indicates whether network requests on behalf of the asset are allowed when connected to a cellular network.
+    ///
+    /// The default behavior of is to allow requests over cellular networks. You can set this value to false if you would like to restrict the default behavior.
+    public var allowCellularAccess: Bool = true
+    
     
     // MARK: MediaAsset
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
@@ -125,11 +138,11 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         ///
         /// - parameter source: `MediaSource` defining the playback
         /// - parameter configuration: HLS specific configuration
-        internal init(source: Source, configuration: HLSNativeConfiguration) {
+        internal init(source: Source, configuration: HLSNativeConfiguration, allowCellularAccess: Bool) {
             self.source = source
             self.fairplayRequester = configuration.drm
             
-            let asset = AVURLAsset(url: configuration.url)
+            let asset = AVURLAsset(url: configuration.url, options: [AVURLAssetAllowsCellularAccessKey: allowCellularAccess])
             if fairplayRequester != nil {
                 asset.resourceLoader.setDelegate(fairplayRequester,
                                                     queue: DispatchQueue(label: configuration.playSessionId + "-fairplayLoader"))
@@ -224,10 +237,17 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
 }
 
 // MARK: - Load Source
-extension HLSNative where Context.Source: HLSNativeConfigurable {
+extension HLSNative {
     
-    public func load(source: Context.Source, callback: @escaping () -> Void = { }) {
-        loadAndPrepare(source: source, onTransitionReady: { mediaAsset in
+    /// Initializing the loading procedure for the  specified `Source` object
+    ///
+    /// Will cause any current playback to stop and unload.
+    ///
+    /// - parameter source: MediaSource to load
+    /// - parameter configuration: Specifies the configuration options
+    /// - parameter onLoaded: Callback that fires when the loading proceedure has completed
+    public func load(source: Context.Source, configuration: HLSNativeConfiguration, onLoaded: @escaping () -> Void = { }) {
+        loadAndPrepare(source: source, configuration: configuration, onTransitionReady: { mediaAsset in
             if let oldSource = currentAsset?.source {
                 eventDispatcher.onPlaybackAborted(self, oldSource)
                 oldSource.analyticsConnector.onAborted(tech: self, source: oldSource)
@@ -243,27 +263,14 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             
             self.eventDispatcher.onPlaybackPrepared(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onPrepared(tech: self, source: mediaAsset.source)
-        }, finalized: callback)
+        }, finalized: onLoaded)
     }
-    
-    #if DEBUG
-    /// Reloads the currently active `MediaSource`
-    public func reloadSource() {
-        guard let source = currentSource else { return }
-        
-        loadAndPrepare(source: source,
-                       onTransitionReady: { _ in },
-                       onAssetPrepared: { _ in },
-                       finalized: { })
-    }
-    #endif
     
     private func loadAndPrepare(source: Context.Source,
+                                configuration: HLSNativeConfiguration,
                                 onTransitionReady: ((MediaAsset<Context.Source>) -> Void),
                                 onAssetPrepared: @escaping ((MediaAsset<Context.Source>) -> Void),
                                 finalized: @escaping () -> Void) {
-        let configuration = source.hlsNativeConfiguration
-        
         let mediaAsset = assetGenerator(source, configuration)
         
         // Unsubscribe any current item
