@@ -35,6 +35,7 @@
 - [x] Custom playback controls
 - [x] Airplay
 - [x] Track selection
+- [x] Preferred bitrate limitation
 
 
 ## Requirements
@@ -307,9 +308,6 @@ Updating your dependencies is done by running  `carthage update` with the releva
 ## Roadmap
 No formalised roadmap has yet been established but an extensive backlog of possible items exist. The following represent an unordered *wish list* and is subject to change.
 
-- [ ] Contract Restrictions
-- [ ] Expanded Event Publishing
 - [ ] tvOS Support
-- [ ] Comprehensive Unit testing
 
 ## Contributing

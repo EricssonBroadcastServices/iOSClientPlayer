@@ -14,6 +14,7 @@ extension Player where Tech == HLSNative<ManifestContext> {
     /// - parameter url: the location of the media to play
     func stream(url: URL) {
         let manifest = context.manifest(from: url)
-        tech.load(source: manifest)
+        let configuration = HLSNativeConfiguration(drm: manifest.fairplayRequester)
+        tech.load(source: manifest, configuration: configuration)
     }
 }

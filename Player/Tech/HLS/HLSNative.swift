@@ -8,29 +8,6 @@
 
 import AVFoundation
 
-/// Defines a protocol enabling adopters to create the configuration source for a `HLSNative` *tech*.
-public protocol HLSNativeConfigurable {
-    var hlsNativeConfiguration: HLSNativeConfiguration { get }
-}
-
-/// Playback configuration specific for the `HLSNative` *tech*.
-public struct HLSNativeConfiguration {
-    /// Media locator for the media source
-    public let url: URL
-    
-    /// Unique playsession id
-    public let playSessionId: String
-    
-    /// DRM agent used to validate the context source
-    public let drm: FairplayRequester?
-    
-    public init(url: URL, playSessionId: String, drm: FairplayRequester?) {
-        self.url = url
-        self.playSessionId = playSessionId
-        self.drm = drm
-    }
-}
-
 public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public typealias Configuration = HLSNativeConfiguration
     public typealias TechError = HLSNativeError
@@ -103,7 +80,6 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Should set the preferred text language tag as defined by RFC 4646 standards
     public var preferredTextLanguage: String?
     
-    
     // MARK: MediaAsset
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
     ///
@@ -129,13 +105,17 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             self.source = source
             self.fairplayRequester = configuration.drm
             
-            let asset = AVURLAsset(url: configuration.url)
+            let asset = AVURLAsset(url: source.url, options: nil)
             if fairplayRequester != nil {
-                asset.resourceLoader.setDelegate(fairplayRequester,
-                                                    queue: DispatchQueue(label: configuration.playSessionId + "-fairplayLoader"))
+                asset.resourceLoader.setDelegate(fairplayRequester, queue: DispatchQueue(label: source.playSessionId + "-fairplayLoader"))
             }
             urlAsset = asset
             playerItem = AVPlayerItem(asset: asset)
+            
+            if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation)
+                print("SETTING MAX BITRATE",bitrateLimitation)
+                print(playerItem)
+            }
         }
         
         // MARK: Change Observation
@@ -224,10 +204,17 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
 }
 
 // MARK: - Load Source
-extension HLSNative where Context.Source: HLSNativeConfigurable {
+extension HLSNative {
     
-    public func load(source: Context.Source, callback: @escaping () -> Void = { }) {
-        loadAndPrepare(source: source, onTransitionReady: { mediaAsset in
+    /// Initializing the loading procedure for the  specified `Source` object
+    ///
+    /// Will cause any current playback to stop and unload.
+    ///
+    /// - parameter source: MediaSource to load
+    /// - parameter configuration: Specifies the configuration options
+    /// - parameter onLoaded: Callback that fires when the loading proceedure has completed
+    public func load(source: Context.Source, configuration: HLSNativeConfiguration, onLoaded: @escaping () -> Void = { }) {
+        loadAndPrepare(source: source, configuration: configuration, onTransitionReady: { mediaAsset in
             if let oldSource = currentAsset?.source {
                 eventDispatcher.onPlaybackAborted(self, oldSource)
                 oldSource.analyticsConnector.onAborted(tech: self, source: oldSource)
@@ -243,27 +230,14 @@ extension HLSNative where Context.Source: HLSNativeConfigurable {
             
             self.eventDispatcher.onPlaybackPrepared(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onPrepared(tech: self, source: mediaAsset.source)
-        }, finalized: callback)
+        }, finalized: onLoaded)
     }
-    
-    #if DEBUG
-    /// Reloads the currently active `MediaSource`
-    public func reloadSource() {
-        guard let source = currentSource else { return }
-        
-        loadAndPrepare(source: source,
-                       onTransitionReady: { _ in },
-                       onAssetPrepared: { _ in },
-                       finalized: { })
-    }
-    #endif
     
     private func loadAndPrepare(source: Context.Source,
+                                configuration: HLSNativeConfiguration,
                                 onTransitionReady: ((MediaAsset<Context.Source>) -> Void),
                                 onAssetPrepared: @escaping ((MediaAsset<Context.Source>) -> Void),
                                 finalized: @escaping () -> Void) {
-        let configuration = source.hlsNativeConfiguration
-        
         let mediaAsset = assetGenerator(source, configuration)
         
         // Unsubscribe any current item

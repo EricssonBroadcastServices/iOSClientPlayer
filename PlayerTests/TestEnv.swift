@@ -43,7 +43,7 @@ class TestEnv {
         return { source, configuration in
             // MediaAsset
             let media = HLSNative<ManifestContext>.MediaAsset<Manifest>(source: source, configuration: configuration)
-
+            
             // AVURLAsset
             let urlAsset = MockedAVURLAsset(url: source.url)
             urlAsset.mockedLoadValuesAsynchronously = { keys, handler in
@@ -88,7 +88,44 @@ class TestEnv {
             media.playerItem = item
             
             callback(urlAsset, item)
-
+            
+            return media
+        }
+    }
+    func maxBitrateMock(callback: @escaping (MockedAVURLAsset, MockedAVPlayerItem) -> Void) -> (Manifest, HLSNativeConfiguration) -> HLSNative<ManifestContext>.MediaAsset<Manifest> {
+        return { source, configuration in
+            // MediaAsset
+            let media = HLSNative<ManifestContext>.MediaAsset<Manifest>(source: source, configuration: configuration)
+            
+            // AVURLAsset
+            let urlAsset = MockedAVURLAsset(url: source.url)
+            urlAsset.mockedLoadValuesAsynchronously = { keys, handler in
+                handler?()
+            }
+            urlAsset.mockedStatusOfValue = { key, outError in
+                return .loaded
+            }
+            media.urlAsset = urlAsset
+            
+            // AVPlayerItem
+            let item = MockedAVPlayerItem(mockedAVAsset: urlAsset)
+            item.mockedStatus = { [unowned item] in
+                if item.associatedWithPlayer == nil {
+                    return .unknown
+                }
+                else {
+                    return .readyToPlay
+                }
+            }
+            
+            // Transfer the bitrate settings from the real object to the mocked object
+            let realPlayerItem = media.playerItem
+            item.preferredPeakBitRate = realPlayerItem.preferredPeakBitRate
+            
+            media.playerItem = item
+            
+            callback(urlAsset, item)
+            
             return media
         }
     }
