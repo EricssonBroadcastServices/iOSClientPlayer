@@ -30,13 +30,3 @@ public class Manifest: MediaSource {
         self.fairplayRequester = fairplayRequester
     }
 }
-
-extension Manifest: HLSNativeConfigurable {
-    /// Integration for playback using `HLSNative` out of the box.
-    public var hlsNativeConfiguration: HLSNativeConfiguration {
-        return HLSNativeConfiguration(url: url,
-                                      playSessionId: playSessionId,
-                                      drm: fairplayRequester)
-    }
-}
-

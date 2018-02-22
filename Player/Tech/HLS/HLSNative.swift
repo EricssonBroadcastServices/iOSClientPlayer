@@ -8,29 +8,6 @@
 
 import AVFoundation
 
-/// Defines a protocol enabling adopters to create the configuration source for a `HLSNative` *tech*.
-public protocol REMOVE_THIS_HLSNativeConfigurable {
-    var REMOVE_THIS_hlsNativeConfiguration: HLSNativeConfiguration { get }
-}
-
-/// Playback configuration specific for the `HLSNative` *tech*.
-public struct HLSNativeConfiguration {
-    /// Media locator for the media source
-    public let url: URL
-    
-    /// Unique playsession id
-    public let playSessionId: String
-    
-    /// DRM agent used to validate the context source
-    public let drm: FairplayRequester?
-    
-    public init(url: URL, playSessionId: String, drm: FairplayRequester?) {
-        self.url = url
-        self.playSessionId = playSessionId
-        self.drm = drm
-    }
-}
-
 public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public typealias Configuration = HLSNativeConfiguration
     public typealias TechError = HLSNativeError
@@ -138,17 +115,18 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         ///
         /// - parameter source: `MediaSource` defining the playback
         /// - parameter configuration: HLS specific configuration
-        internal init(source: Source, configuration: HLSNativeConfiguration, allowCellularAccess: Bool) {
+        internal init(source: Source, configuration: HLSNativeConfiguration) {
             self.source = source
             self.fairplayRequester = configuration.drm
             
-            let asset = AVURLAsset(url: configuration.url, options: [AVURLAssetAllowsCellularAccessKey: allowCellularAccess])
+            let asset = AVURLAsset(url: source.url, options: AVURLAsset.options(from: configuration))
             if fairplayRequester != nil {
-                asset.resourceLoader.setDelegate(fairplayRequester,
-                                                    queue: DispatchQueue(label: configuration.playSessionId + "-fairplayLoader"))
+                asset.resourceLoader.setDelegate(fairplayRequester, queue: DispatchQueue(label: source.playSessionId + "-fairplayLoader"))
             }
             urlAsset = asset
             playerItem = AVPlayerItem(asset: asset)
+            
+            if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
         }
         
         // MARK: Change Observation

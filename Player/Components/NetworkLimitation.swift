@@ -9,6 +9,6 @@
 import Foundation
 
 public protocol NetworkLimitation {
-    var preferredMaxBitrate: Int64 { get set }
+    var preferredMaxBitrate: Int64? { get set }
     var allowCellularAccess: Bool { get set }
 }

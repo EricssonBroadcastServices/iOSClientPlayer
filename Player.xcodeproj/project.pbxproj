@@ -70,6 +70,8 @@
 		76E7F0E6202057E40071D8C9 /* HLSNativeWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */; };
 		76EA01D6203DEA4C00B32345 /* NetworkLimitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01D5203DEA4C00B32345 /* NetworkLimitation.swift */; };
 		76EA01D8203DEC0E00B32345 /* HLSNative+NetworkLimitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01D7203DEC0E00B32345 /* HLSNative+NetworkLimitation.swift */; };
+		76EA01DA203EB1CF00B32345 /* AVURLAsset+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01D9203EB1CF00B32345 /* AVURLAsset+Extensions.swift */; };
+		76EA01DC203EB20700B32345 /* HLSNativeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01DB203EB20700B32345 /* HLSNativeConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -155,6 +157,8 @@
 		76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeWarning.swift; sourceTree = "<group>"; };
 		76EA01D5203DEA4C00B32345 /* NetworkLimitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLimitation.swift; sourceTree = "<group>"; };
 		76EA01D7203DEC0E00B32345 /* HLSNative+NetworkLimitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+NetworkLimitation.swift"; sourceTree = "<group>"; };
+		76EA01D9203EB1CF00B32345 /* AVURLAsset+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVURLAsset+Extensions.swift"; sourceTree = "<group>"; };
+		76EA01DB203EB20700B32345 /* HLSNativeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,6 +265,7 @@
 				766AC20D1FC2F6B700843FEF /* HLSNativeError.swift */,
 				76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */,
 				766AC20B1FC2F6B700843FEF /* FairplayRequester.swift */,
+				76EA01DB203EB20700B32345 /* HLSNativeConfiguration.swift */,
 				766039111FC6D08E00E79091 /* Components */,
 				766AC2211FC2F6D400843FEF /* Extensions */,
 				766AC2221FC2F6E200843FEF /* Observation */,
@@ -276,6 +281,7 @@
 				766AC2091FC2F6B700843FEF /* AVPlayer+KeyValueObservable.swift */,
 				766AC20A1FC2F6B700843FEF /* AVPlayerItem+Extensions.swift */,
 				7691BD3C203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift */,
+				76EA01D9203EB1CF00B32345 /* AVURLAsset+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -567,6 +573,7 @@
 				7660391B1FC6E07500E79091 /* PassThroughConnector.swift in Sources */,
 				766AC21E1FC2F6B700843FEF /* NotificationToken.swift in Sources */,
 				766AC1E21FC2E61100843FEF /* MediaSource.swift in Sources */,
+				76EA01DA203EB1CF00B32345 /* AVURLAsset+Extensions.swift in Sources */,
 				76A843901EA7819D00BDAF2C /* Sequence+Extensions.swift in Sources */,
 				76A8439C1EA7819D00BDAF2C /* MediaRendering.swift in Sources */,
 				766AC2161FC2F6B700843FEF /* AVPlayerItem+Extensions.swift in Sources */,
@@ -576,6 +583,7 @@
 				766AC21C1FC2F6B700843FEF /* KVOChange.swift in Sources */,
 				766039151FC6DF4500E79091 /* EventResponder.swift in Sources */,
 				766AC21D1FC2F6B700843FEF /* NotificationObserver.swift in Sources */,
+				76EA01DC203EB20700B32345 /* HLSNativeConfiguration.swift in Sources */,
 				766039251FC6E24500E79091 /* ManifestContext.swift in Sources */,
 				766039231FC6E17900E79091 /* EventDispatcher.swift in Sources */,
 				7691BD3D203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift in Sources */,

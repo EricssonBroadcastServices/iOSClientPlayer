@@ -8,6 +8,4 @@
 
 import Foundation
 
-extension HLSNative: NetworkLimitation {
-    
-}
+extension HLSNative: NetworkLimitation { }
