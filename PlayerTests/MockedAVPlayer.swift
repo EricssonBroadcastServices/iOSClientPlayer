@@ -79,9 +79,16 @@ class MockedAVPlayerItem: AVPlayerItem {
         return mockedDuration
     }
     
-    var mockedStatus: () -> AVPlayerItemStatus = { return AVPlayerItemStatus.unknown }
+    var mockedStatus: AVPlayerItemStatus = .unknown {
+        willSet {
+            self.willChangeValue(forKey: "status")
+        }
+        didSet {
+            self.didChangeValue(forKey: "status")
+        }
+    }
     override var status: AVPlayerItemStatus {
-        return mockedStatus()
+        return mockedStatus
     }
     
     var mockedSelectedMediaOption: [AVMediaSelectionGroup: AVMediaSelectionOption] = [:]
@@ -98,7 +105,9 @@ class MockedAVPlayerItem: AVPlayerItem {
 class MockedAVURLAsset: AVURLAsset {
     var mockedLoadValuesAsynchronously: ([String], (() -> Void)?) -> Void = { _,_ in }
     override func loadValuesAsynchronously(forKeys keys: [String], completionHandler handler: (() -> Void)? = nil) {
-        mockedLoadValuesAsynchronously(keys, handler)
+        DispatchQueue(label: "mockedLoadValuesAsynchronously", qos: DispatchQoS.utility, attributes: DispatchQueue.Attributes.concurrent).async { [weak self] in
+            self?.mockedLoadValuesAsynchronously(keys, handler)
+        }
     }
     
     var mockedStatusOfValue: (String, NSErrorPointer) -> AVKeyValueStatus = { _,_ in return AVKeyValueStatus.unknown }
@@ -125,7 +134,6 @@ class MockedAVMediaSelectionGroup: AVMediaSelectionGroup {
     
     var mockedDefaultOption: AVMediaSelectionOption? = nil
     override var defaultOption: AVMediaSelectionOption? {
-        print("mockedDefaultOption",mockedDefaultOption?.displayName)
         return mockedDefaultOption
     }
     

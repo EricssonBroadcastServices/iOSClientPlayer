@@ -26,12 +26,9 @@ class TestEnv {
         let mockedPlayer = MockedAVPlayer()
         mockedPlayer.mockedReplaceCurrentItem = { [weak mockedPlayer] item in
             if let mockedItem = item as? MockedAVPlayerItem {
-                DispatchQueue.main.async {
-                    // We try to fake the loading scheme by dispatching KVO notifications when replace is called. This should trigger .readyToPlay
-                    mockedItem.associatedWithPlayer = mockedPlayer
-                    mockedItem.willChangeValue(for: \MockedAVPlayerItem.status)
-                    mockedItem.didChangeValue(for: \MockedAVPlayerItem.status)
-                }
+                // We try to fake the loading scheme by dispatching KVO notifications when replace is called. This should trigger .readyToPlay
+                mockedItem.associatedWithPlayer = mockedPlayer
+                mockedItem.mockedStatus = .readyToPlay
             }
         }
         player.tech.avPlayer = mockedPlayer
@@ -46,26 +43,8 @@ class TestEnv {
             // MediaAsset
             let media = HLSNative<ManifestContext>.MediaAsset<Manifest>(source: source, configuration: configuration)
             
-            // AVURLAsset
-            let urlAsset = MockedAVURLAsset(url: source.url)
-            urlAsset.mockedLoadValuesAsynchronously = { keys, handler in
-                handler?()
-            }
-            urlAsset.mockedStatusOfValue = { key, outError in
-                return .loaded
-            }
-            media.urlAsset = urlAsset
-            
             // AVPlayerItem
             let item = MockedAVPlayerItem(mockedAVAsset: urlAsset)
-            item.mockedStatus = { [unowned item] in
-                if item.associatedWithPlayer == nil {
-                    return .unknown
-                }
-                else {
-                    return .readyToPlay
-                }
-            }
             item.mockedCurrentTime = CMTime(value: 0, timescale: 1000)
             item.mockedCurrentDate = Date(milliseconds: currentDate)
             let start = CMTime(value: 0, timescale: 1000)
@@ -87,7 +66,20 @@ class TestEnv {
             item.mockedSeekToTime = { _, callback in
                 callback?(true)
             }
+            // Transfer the bitrate settings from the real object to the mocked object
+            let realPlayerItem = media.playerItem
+            item.preferredPeakBitRate = realPlayerItem.preferredPeakBitRate
             media.playerItem = item
+            
+            // AVURLAsset
+            let urlAsset = MockedAVURLAsset(url: source.url)
+            urlAsset.mockedLoadValuesAsynchronously = { keys, handler in
+                handler?()
+            }
+            urlAsset.mockedStatusOfValue = { key, outError in
+                return .loaded
+            }
+            media.urlAsset = urlAsset
             
             callback(urlAsset, item)
             
@@ -123,7 +115,6 @@ class TestEnv {
             // Transfer the bitrate settings from the real object to the mocked object
             let realPlayerItem = media.playerItem
             item.preferredPeakBitRate = realPlayerItem.preferredPeakBitRate
-            
             media.playerItem = item
             
             callback(urlAsset, item)
