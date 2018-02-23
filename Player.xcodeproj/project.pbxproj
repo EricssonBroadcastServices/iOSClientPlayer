@@ -44,6 +44,7 @@
 		766AC2241FC2F75800843FEF /* ItemObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2231FC2F75800843FEF /* ItemObserver.swift */; };
 		766AC2261FC2F77000843FEF /* PlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2251FC2F77000843FEF /* PlayerObserver.swift */; };
 		766FE46D203AF484003B9B90 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766FE46C203AF484003B9B90 /* Error+Extensions.swift */; };
+		7690E7C320404BB7003A6485 /* InvalidStartTimeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7690E7C220404BB7003A6485 /* InvalidStartTimeSpec.swift */; };
 		7691BD38203C7A0E0038F754 /* MediaTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD37203C7A0E0038F754 /* MediaTrack.swift */; };
 		7691BD3B203C7A340038F754 /* MediaGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD3A203C7A340038F754 /* MediaGroup.swift */; };
 		7691BD3D203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD3C203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift */; };
@@ -127,6 +128,7 @@
 		768162B91F584EDF003C654E /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = SOURCE_ROOT; };
 		768162BB1F585577003C654E /* UPGRADE_GUIDE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = UPGRADE_GUIDE.md; sourceTree = SOURCE_ROOT; };
 		7688D9641F596C0800206402 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
+		7690E7C220404BB7003A6485 /* InvalidStartTimeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvalidStartTimeSpec.swift; sourceTree = "<group>"; };
 		7691BD37203C7A0E0038F754 /* MediaTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTrack.swift; sourceTree = "<group>"; };
 		7691BD3A203C7A340038F754 /* MediaGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaGroup.swift; sourceTree = "<group>"; };
 		7691BD3C203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVMediaSelectionGroup+Extensions.swift"; sourceTree = "<group>"; };
@@ -393,6 +395,7 @@
 				7691BD42203CAC420038F754 /* TestEnv.swift */,
 				7691BD44203CAD210038F754 /* MockedAVPlayer.swift */,
 				76EA01DD203EE72200B32345 /* HLSNativeNetworkBehavior.swift */,
+				7690E7C220404BB7003A6485 /* InvalidStartTimeSpec.swift */,
 			);
 			path = PlayerTests;
 			sourceTree = "<group>";
@@ -625,6 +628,7 @@
 			files = (
 				76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */,
 				76EA01DE203EE72200B32345 /* HLSNativeNetworkBehavior.swift in Sources */,
+				7690E7C320404BB7003A6485 /* InvalidStartTimeSpec.swift in Sources */,
 				7691BD41203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift in Sources */,
 				7691BD45203CAD210038F754 /* MockedAVPlayer.swift in Sources */,
 				7691BD43203CAC420038F754 /* TestEnv.swift in Sources */,

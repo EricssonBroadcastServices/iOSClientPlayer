@@ -38,7 +38,7 @@ class TestEnv {
         player.tech.assetGenerator = callback
     }
 
-    func defaultAssetMock(currentDate: Int64, bufferDuration: Int64, callback: @escaping (MockedAVURLAsset, MockedAVPlayerItem) -> Void) -> (Manifest, HLSNativeConfiguration) -> HLSNative<ManifestContext>.MediaAsset<Manifest> {
+    func defaultAssetMock(currentDate: Int64, bufferDuration: Int64, callback: @escaping (MockedAVURLAsset, MockedAVPlayerItem) -> Void = { _,_ in }) -> (Manifest, HLSNativeConfiguration) -> HLSNative<ManifestContext>.MediaAsset<Manifest> {
         return { source, configuration in
             // MediaAsset
             let media = HLSNative<ManifestContext>.MediaAsset<Manifest>(source: source, configuration: configuration)
