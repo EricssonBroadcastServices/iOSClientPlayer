@@ -43,6 +43,16 @@ class TestEnv {
             // MediaAsset
             let media = HLSNative<ManifestContext>.MediaAsset<Manifest>(source: source, configuration: configuration)
             
+            // AVURLAsset
+            let urlAsset = MockedAVURLAsset(url: source.url)
+            urlAsset.mockedLoadValuesAsynchronously = { keys, handler in
+                handler?()
+            }
+            urlAsset.mockedStatusOfValue = { key, outError in
+                return .loaded
+            }
+            media.urlAsset = urlAsset
+            
             // AVPlayerItem
             let item = MockedAVPlayerItem(mockedAVAsset: urlAsset)
             item.mockedCurrentTime = CMTime(value: 0, timescale: 1000)
@@ -71,15 +81,6 @@ class TestEnv {
             item.preferredPeakBitRate = realPlayerItem.preferredPeakBitRate
             media.playerItem = item
             
-            // AVURLAsset
-            let urlAsset = MockedAVURLAsset(url: source.url)
-            urlAsset.mockedLoadValuesAsynchronously = { keys, handler in
-                handler?()
-            }
-            urlAsset.mockedStatusOfValue = { key, outError in
-                return .loaded
-            }
-            media.urlAsset = urlAsset
             
             callback(urlAsset, item)
             
@@ -103,14 +104,6 @@ class TestEnv {
             
             // AVPlayerItem
             let item = MockedAVPlayerItem(mockedAVAsset: urlAsset)
-            item.mockedStatus = { [unowned item] in
-                if item.associatedWithPlayer == nil {
-                    return .unknown
-                }
-                else {
-                    return .readyToPlay
-                }
-            }
             
             // Transfer the bitrate settings from the real object to the mocked object
             let realPlayerItem = media.playerItem
