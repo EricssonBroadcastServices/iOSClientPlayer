@@ -18,6 +18,9 @@
 #### Changes
 * Improved handling of bitrate and buffering events
 
+#### Bug Fixes
+* `EMP-11029` Forced locale to en_GB for framework dependant date calculations
+
 ## 0.77.0
 
 #### Features
