@@ -122,23 +122,6 @@ extension HLSNative: MediaPlayback {
         return currentAsset?.playerItem.currentDate()?.millisecondsSince1970
     }
     
-    #if DEBUG
-    private func dateString(date: Date?, format: String) -> String? {
-        guard let date = date else { return nil }
-        let timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = format
-        return timeFormatter.string(from: date)
-    }
-    
-    public func logStuff(item: AVPlayerItem? = nil) {
-        let item = item ?? currentAsset?.playerItem
-        item?.accessLog()?.events.forEach{
-            print(">>> LOG",$0.playbackType,$0.uri,dateString(date: $0.playbackStartDate, format: "HH:mm:ss"),$0.playbackStartOffset, $0.startupTime)
-        }
-    }
-    #endif
-    
-    
     /// For playback content that is associated with a range of dates, move the playhead to point within that range.
     ///
     /// Will fail if the supplied date is outside the range or if the content is not associated with a range of dates.
