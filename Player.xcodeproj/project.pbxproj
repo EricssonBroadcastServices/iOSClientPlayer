@@ -67,6 +67,7 @@
 		76BBFBB71EA8DE34001DBDDB /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB61EA8DE34001DBDDB /* Nimble.framework */; };
 		76CD5AE6202B512B00941ABC /* TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE5202B512B00941ABC /* TrackSelectable.swift */; };
 		76CD5AE8202B55F200941ABC /* HLSNative+TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */; };
+		76D4969020455CE9008EF3C7 /* RateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D4968F20455CE9008EF3C7 /* RateObserver.swift */; };
 		76E7F0E4202056150071D8C9 /* Warning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E3202056150071D8C9 /* Warning.swift */; };
 		76E7F0E6202057E40071D8C9 /* HLSNativeWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */; };
 		76EA01D6203DEA4C00B32345 /* NetworkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01D5203DEA4C00B32345 /* NetworkBehavior.swift */; };
@@ -155,6 +156,7 @@
 		76BBFBB61EA8DE34001DBDDB /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "Carthage/Checkouts/Nimble/build/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
 		76CD5AE5202B512B00941ABC /* TrackSelectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSelectable.swift; sourceTree = "<group>"; };
 		76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+TrackSelectable.swift"; sourceTree = "<group>"; };
+		76D4968F20455CE9008EF3C7 /* RateObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateObserver.swift; sourceTree = "<group>"; };
 		76E7F0E3202056150071D8C9 /* Warning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Warning.swift; sourceTree = "<group>"; };
 		76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeWarning.swift; sourceTree = "<group>"; };
 		76EA01D5203DEA4C00B32345 /* NetworkBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBehavior.swift; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 		766AC2221FC2F6E200843FEF /* Observation */ = {
 			isa = PBXGroup;
 			children = (
+				76D4968F20455CE9008EF3C7 /* RateObserver.swift */,
 				766AC20E1FC2F6B700843FEF /* KeyValueObservable.swift */,
 				766AC20F1FC2F6B700843FEF /* KeyValueObserver.swift */,
 				766AC2101FC2F6B700843FEF /* KVOChange.swift */,
@@ -602,6 +605,7 @@
 				76E7F0E6202057E40071D8C9 /* HLSNativeWarning.swift in Sources */,
 				76E7F0E4202056150071D8C9 /* Warning.swift in Sources */,
 				766AC1E51FC2E73B00843FEF /* Tech.swift in Sources */,
+				76D4969020455CE9008EF3C7 /* RateObserver.swift in Sources */,
 				766039171FC6DFA200E79091 /* AnalyticsConnector.swift in Sources */,
 				766AC21F1FC2F6B700843FEF /* Observer.swift in Sources */,
 				766AC1E01FC2E5DE00843FEF /* MediaContext.swift in Sources */,

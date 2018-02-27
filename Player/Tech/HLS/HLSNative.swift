@@ -27,6 +27,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             playerObserver.unsubscribeAll()
             handleCurrentItemChanges()
             handlePlaybackStateChanges()
+            handleStatusChange()
         }
     }
 
@@ -173,6 +174,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         
         handleCurrentItemChanges()
         handlePlaybackStateChanges()
+        handleStatusChange()
         
         backgroundWatcher.handleWillTerminate { [weak self] in self?.stop() }
         backgroundWatcher.handleWillBackgrounding { }
@@ -549,6 +551,27 @@ extension HLSNative {
     }
 }
 
+extension HLSNative {
+    /// Returns an *unmaintained* KVO token which needs to be cancelled before deallocation. Responsbility for managing this rests entierly on the caller/creator.
+    ///
+    /// - parameter callback: responsible tech | associated source | new rate for this playback
+    /// - returns: RateObserver
+    public func observeRateChanges(callback: @escaping (HLSNative<Context>, Context.Source?, Float) -> Void) -> RateObserver {
+        var observer = PlayerObserver()
+        observer.observe(path: .rate, on: avPlayer) { [weak self] player, change in
+            guard let `self` = self else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                guard let newRate = change.new as? Float else {
+                    return
+                }
+                callback(self, self.currentAsset?.source, newRate)
+            }
+        }
+        return RateObserver(playerObserver: observer)
+    }
+}
+
 /// Playback State Changes
 extension HLSNative {
     /// Subscribes to and handles `AVPlayer.rate` changes.
@@ -599,6 +622,34 @@ extension HLSNative {
                         }
                     case .stopped:
                         return
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Playback Status Changes
+extension HLSNative {
+    /// Subscribes to and handles `AVPlayer.status` changes.
+    fileprivate func handleStatusChange() {
+        playerObserver.observe(path: .status, on: avPlayer) { [weak self] player, change in
+            guard let `self` = self else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                if let newValue = change.new as? Int, let status = AVPlayerStatus(rawValue: newValue) {
+                    switch status {
+                    case .unknown:
+                        return
+                    case .readyToPlay:
+                        return
+                    case .failed:
+                        let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: self.avPlayer.error))
+                        print(techError.message, techError.code)
+                        self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
+                        if let mediaAsset = self.currentAsset {
+                            mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
+                        }
                     }
                 }
             }
