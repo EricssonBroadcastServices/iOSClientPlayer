@@ -11,13 +11,13 @@ import Foundation
 /// `Observer`s represent the *observable* used to track a registered `KVO` subscriber
 internal class Observer<T: NSObject>: NSObject {
     /// Target to observe
-    internal unowned var object: T
+    internal let object: T
     
     /// *KeyPath* on `object` to observe
     internal let path: String
     
     /// Fires when the `KVO` fires.
-    internal var callback: (T, KVOChange) -> Void = { _,_  in }
+    internal let callback: (T, KVOChange) -> Void
     
     internal init(of object: T, at path: String, with options: NSKeyValueObservingOptions, callback: @escaping (T, KVOChange) -> Void) {
         self.object = object
