@@ -208,6 +208,7 @@ extension HLSNative {
     
     fileprivate func relate(time: CMTime) -> CMTime? {
         guard let currentTime = playheadTime else { return nil }
+        guard time.isValid && !time.isIndefinite && !time.isNegativeInfinity && !time.isPositiveInfinity else { return nil }
         let milliseconds = Int64(time.seconds*1000)
         return CMTime(value: currentTime - playheadPosition + milliseconds, timescale: 1000)
     }
