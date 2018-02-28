@@ -112,7 +112,6 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             }
             urlAsset = asset
             playerItem = AVPlayerItem(asset: asset)
-            
             if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
         }
         
@@ -313,6 +312,10 @@ extension HLSNative {
         
         // Observe when currentItem has played to the end
         handlePlaybackCompletedEvent(mediaAsset: mediaAsset)
+        
+        handleFailedToCompletePlayback(mediaAsset: mediaAsset)
+        
+        handleNewErrorLogEntry(mediaAsset: mediaAsset)
     }
 }
 
@@ -424,6 +427,22 @@ extension HLSNative {
                             return
                         }
                     case .failed:
+                        item.errorLog()?.events.forEach{
+                            print("errorLog",$0.errorDomain,$0.errorStatusCode,$0.errorComment)
+                        }
+                        item.accessLog()?.events.forEach{
+                            print("accessLog",$0)
+                        }
+                        if let error = item.error as? NSError {
+                            print(error.userInfo)
+                            print(error.domain)
+                            print(error.code)
+                            if let wrappedError = error.userInfo[NSUnderlyingErrorKey] as? NSError {
+                                print(wrappedError.userInfo)
+                                print(wrappedError.domain)
+                                print(wrappedError.code)
+                            }
+                        }
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
                         self.eventDispatcher.onError(self, mediaAsset.source, techError)
                         mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
@@ -546,6 +565,58 @@ extension HLSNative {
                 self.eventDispatcher.onPlaybackCompleted(self, mediaAsset.source)
                 mediaAsset.source.analyticsConnector.onCompleted(tech: self, source: mediaAsset.source)
                 self.unloadOnStop()
+            }
+        }
+    }
+}
+
+/// Playback Failed to Complete Events
+extension HLSNative {
+    /// Listens to errors occuring when playback fails to complete
+    ///
+    /// - parameter mediaAsset: asset to observe and manage event for
+    fileprivate func handleFailedToCompletePlayback(mediaAsset: MediaAsset<Context.Source>) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemFailedToPlayToEndTime, for: playerItem) { [weak self] notification in
+            guard let `self` = self else { return }
+            if let error = notification.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? Error {
+                DispatchQueue.main.async { [weak self] in
+                    guard let `self` = self else { return }
+                    let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToCompletePlayback(error: error))
+                    print(techError.message, techError.code)
+                    self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
+                    if let mediaAsset = self.currentAsset {
+                        mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
+                    }
+                }
+            }
+            
+        }
+    }
+}
+
+/// Error Log Events
+extension HLSNative {
+    /// Monitors `AVPlayerItem`s *error log* and handles specific cases.
+    ///
+    /// - parameter mediaAsset: asset to observe and manage event for
+    fileprivate func handleNewErrorLogEntry(mediaAsset: MediaAsset<Context.Source>) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewErrorLogEntry, for: playerItem) { [weak self] notification in
+            guard let `self` = self else { return }
+            if let event: AVPlayerItemErrorLogEvent = self.currentAsset?.playerItem.errorLog()?.events.last {
+                if event.errorDomain == "CoreMediaErrorDomain" && event.errorStatusCode == -12885 {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let `self` = self else { return }
+                        let fairplayError = self.currentAsset?.fairplayRequester?.keyValidationError
+                        let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToValdiateContentKey(error: fairplayError))
+                        self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
+                        if let mediaAsset = self.currentAsset {
+                            mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
+                        }
+                        self.stop()
+                    }
+                }
             }
         }
     }

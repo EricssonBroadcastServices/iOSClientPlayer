@@ -12,25 +12,31 @@ import Foundation
 /// Effective error handling thus requires a deeper undestanding of the overall architecture.
 public enum HLSNativeError: ExpandedError {
     /// Media is missing a valid `URL` to load data from.
-        case missingMediaUrl
-        
-        /// `Player` failed to prepare the media for playback.
-        ///
-        /// This occurs when trying to asynchronously load values (eg `properties`) on `AVURLAsset` in preparation for playback. Examples include:
-        /// * `duration`
-        /// * `tracks`
-        /// * `playable`
-        ///
-        /// Internally, `Player` calls `loadValuesAsynchronously(forKeys:)` and then checks the status of each *key* through `statusOfValue(forKey: error:)`. Any key-value pair which returns a `.failed` status will cause the preparation to fail, forwarding the assocaited error.
-        ///
-        /// For more information regarding the *async loading process* of `properties` on `AVAsset`s, please consult Apple's documentation regarding `AVAsynchronousKeyValueLoading`
-        case failedToPrepare(errors: [Error])
-        
-        /// The *asynchronous loading* of `AVURLAsset` `properties` succeded but somehow `isPlayable` returned `false`.
-        case loadedButNotPlayable
-        
-        /// Media could not ready for playback with the underlying `AVPlayerItem` status changed to `.failed`.
-        case failedToReady(error: Error?)
+    case missingMediaUrl
+    
+    /// `Player` failed to prepare the media for playback.
+    ///
+    /// This occurs when trying to asynchronously load values (eg `properties`) on `AVURLAsset` in preparation for playback. Examples include:
+    /// * `duration`
+    /// * `tracks`
+    /// * `playable`
+    ///
+    /// Internally, `Player` calls `loadValuesAsynchronously(forKeys:)` and then checks the status of each *key* through `statusOfValue(forKey: error:)`. Any key-value pair which returns a `.failed` status will cause the preparation to fail, forwarding the assocaited error.
+    ///
+    /// For more information regarding the *async loading process* of `properties` on `AVAsset`s, please consult Apple's documentation regarding `AVAsynchronousKeyValueLoading`
+    case failedToPrepare(errors: [Error])
+    
+    /// The *asynchronous loading* of `AVURLAsset` `properties` succeded but somehow `isPlayable` returned `false`.
+    case loadedButNotPlayable
+    
+    /// Media could not ready for playback with the underlying `AVPlayerItem` status changed to `.failed`.
+    case failedToReady(error: Error?)
+    
+    /// Meida could not complete playback.
+    case failedToCompletePlayback(error: Error)
+    
+    /// Content Key Validation failed with the specified error, or `nil` if the underlyig error is expected.
+    case failedToValdiateContentKey(error: Error?)
 }
 
 extension HLSNativeError {
@@ -45,6 +51,11 @@ extension HLSNativeError {
         case .failedToReady(error: let error):
             let errorMessage = error != nil ? error!.debugInfoString : "Unknown error"
             return "Asset failed to ready: \(errorMessage)"
+        case .failedToCompletePlayback(error: let error):
+            return "Asset failed to complete playback: \(error.debugInfoString)"
+        case .failedToValdiateContentKey(error: let error):
+            let errorMessage = error != nil ? error!.debugInfoString : "Unknown error"
+            return "Content Key validation failed: \(errorMessage)"
         }
     }
 }
@@ -57,6 +68,8 @@ extension HLSNativeError {
         case .failedToPrepare(errors: _): return 102
         case .failedToReady(error: _): return 103
         case .loadedButNotPlayable: return 104
+        case .failedToCompletePlayback(error: _): return 105
+        case .failedToValdiateContentKey(error: _): return 106
         }
     }
 }

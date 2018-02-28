@@ -41,11 +41,6 @@ extension AVPlayerItem: KeyValueObservable {
         case seekableTimeRanges = "seekableTimeRanges"
         
         case loadedTimeRanges = "loadedTimeRanges"
-        
-        /// Returns all *Observable Keys*.
-        var all: [ObservableKey] {
-            return [.status, .tracks, .duration, .presentationSize, .timedMetadata, .isPlaybackLikelyToKeepUp, .isPlaybackBufferFull, .isPlaybackBufferEmpty, .seekableTimeRanges, .loadedTimeRanges]
-        }
     }
 }
 

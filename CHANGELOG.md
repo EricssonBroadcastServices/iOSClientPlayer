@@ -14,12 +14,14 @@
 * Preferred track option added to `TrackSelectable`. HLSNative now tries to set a prefered language on startup
 * Added seek methods taking a callback
 * Preferred bitrate limit
+* Additional error handling and propagation 
 
 #### Changes
 * Improved handling of bitrate and buffering events
 
 #### Bug Fixes
 * `EMP-11029` Forced locale to en_GB for framework dependant date calculations
+* `EMP-11035` Workaround for exposing *FairPlay* errors encountered during the validation process.
 
 ## 0.77.0
 
