@@ -11,4 +11,6 @@ import AVFoundation
 
 /// Specialized *named* protocol extending `AVAssetResourceLoaderDelegate` intended to be used for *Fairplay* `DRM` management.
 public protocol FairplayRequester: AVAssetResourceLoaderDelegate {
+    /// Should expose errors encountered during the validation process.
+    var keyValidationError: Error? { get }
 }

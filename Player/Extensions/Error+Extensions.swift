@@ -10,6 +10,9 @@ import Foundation
 
 extension Error {
     internal var debugInfoString: String {
+        if let expandedError = self as? ExpandedError {
+            return "\(expandedError.code): " + expandedError.message
+        }
         if let nsError = self as? NSError {
             return nsError.userInfo.description
         }
