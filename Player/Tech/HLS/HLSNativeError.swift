@@ -37,6 +37,9 @@ public enum HLSNativeError: ExpandedError {
     
     /// Content Key Validation failed with the specified error, or `nil` if the underlyig error is expected.
     case failedToValdiateContentKey(error: Error?)
+    
+    /// Media preparation finished after `Tech` was torn down
+    case techDeallocated
 }
 
 extension HLSNativeError {
@@ -56,6 +59,7 @@ extension HLSNativeError {
         case .failedToValdiateContentKey(error: let error):
             let errorMessage = error != nil ? error!.debugInfoString : "Unknown error"
             return "Content Key validation failed: \(errorMessage)"
+        case .techDeallocated: return "Media preparation finished after Tech was deallocated"
         }
     }
 }
@@ -70,6 +74,7 @@ extension HLSNativeError {
         case .loadedButNotPlayable: return 104
         case .failedToCompletePlayback(error: _): return 105
         case .failedToValdiateContentKey(error: _): return 106
+        case .techDeallocated: return 107
         }
     }
 }

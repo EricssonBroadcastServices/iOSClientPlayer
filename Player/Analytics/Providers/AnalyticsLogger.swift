@@ -43,7 +43,7 @@ public struct AnalyticsLogger: AnalyticsProvider {
         print("🏷 AnalyticsLogger",type(of: tech),"🏁 onCompleted",source.playSessionId)
     }
     
-    public func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
+    public func onError<Tech, Source, Context>(tech: Tech?, source: Source?, error: PlayerError<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
         print("🏷 AnalyticsLogger",type(of: tech),"🚨 onError",error.message,error.message,source?.playSessionId ?? "")
     }
     

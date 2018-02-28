@@ -135,7 +135,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         /// - parameter callback: Fires once the async loading is complete, or finishes with an error.
         internal func prepare(loading keys: [AVAsset.LoadableKeys], callback: @escaping (HLSNativeError?) -> Void) {
             urlAsset.loadValuesAsynchronously(forKeys: keys.rawValues) {
+                print("mediaAsset.prepare loadValuesAsynchronously")
                 DispatchQueue.main.async { [weak self] in
+                    print("mediaAsset.prepare DispatchQueue.main.async")
                     
                     // Check for any issues preparing the loaded values
                     let errors = keys.flatMap{ key -> Error? in
@@ -252,17 +254,24 @@ extension HLSNative {
         playbackState = .notStarted
         
         mediaAsset.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
-            guard let `self` = self else { return }
+            print("mediaAsset.prepare")
+            guard let weakSelf = self else {
+                // If the player is torn down before asset preparation is complete, there
+                let error = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.techDeallocated)
+                mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: error)
+                return
+            }
+            
             guard error == nil else {
                 let techError = PlayerError<HLSNative<Context>,Context>.tech(error: error!)
-                self.eventDispatcher.onError(self, mediaAsset.source, techError)
-                mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
+                weakSelf.eventDispatcher.onError(weakSelf, mediaAsset.source, techError)
+                mediaAsset.source.analyticsConnector.onError(tech: weakSelf, source: mediaAsset.source, error: techError)
                 return
             }
             // At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
             onAssetPrepared(mediaAsset)
             
-            self.readyPlayback(with: mediaAsset, callback: finalized)
+            weakSelf.readyPlayback(with: mediaAsset, callback: finalized)
         }
     }
     
@@ -270,11 +279,13 @@ extension HLSNative {
     ///
     /// Finally, once the `Player` is configured, the `currentMedia` is replaced with the newly created one. The system now awaits playback status to return `.readyToPlay`.
     fileprivate func readyPlayback(with mediaAsset: MediaAsset<Context.Source>, callback: @escaping () -> Void) {
+        print("readyPlayback")
         currentAsset = nil
         
         // Observe changes to .status for new playerItem
         // We will perform "pre-load" seek of the `AVPlayerItem` to the requested *Start Time*
         handleStatusChange(mediaAsset: mediaAsset, onActive: { [weak self] in
+            print("handleStatusChange onActive")
             guard let `self` = self else { return }
             
             // `mediaAsset` is now prepared.
@@ -289,6 +300,7 @@ extension HLSNative {
             /// NOTE: It seems we cant reliably select subs and audio until after `replaceCurrentItem(with:)` is called
             self.applyLanguagePreferences(on: mediaAsset)
         }) { [weak self] in
+            print("handleStatusChange onReady")
             guard let `self` = self else { return }
             self.playbackState = .preparing
             // Trigger on-ready callbacks and autoplay if available

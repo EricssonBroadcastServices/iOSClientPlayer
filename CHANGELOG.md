@@ -22,6 +22,7 @@
 #### Bug Fixes
 * `EMP-11029` Forced locale to en_GB for framework dependant date calculations
 * `EMP-11035` Workaround for exposing *FairPlay* errors encountered during the validation process.
+* `EMP-11045` Analytics error event delivered even if tech was deallocated
 
 ## 0.77.0
 

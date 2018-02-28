@@ -52,7 +52,7 @@ public class PassThroughConnector: AnalyticsConnector {
         providers.forEach{ $0.onCompleted(tech: tech, source: source) }
     }
     
-    public func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
+    public func onError<Tech, Source, Context>(tech: Tech?, source: Source?, error: PlayerError<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
         providers.forEach{ $0.onError(tech: tech, source: source, error: error) }
     }
     
