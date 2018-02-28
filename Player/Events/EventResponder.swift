@@ -63,7 +63,7 @@ public protocol EventResponder {
     /// - parameter tech: `Tech` broadcasting the event
     /// - parameter source: `MediaSource` causing the event
     /// - parameter error: `Error` encountered
-    func onError<Tech, Source, Context>(tech: Tech, source: Source?, error: PlayerError<Tech, Context>) where Tech: PlaybackTech, Source: MediaSource, Context: MediaContext
+    func onError<Tech, Source, Context>(tech: Tech?, source: Source?, error: PlayerError<Tech, Context>) where Tech: PlaybackTech, Source: MediaSource, Context: MediaContext
     
     /// Triggered when the bitrate changes
     ///
