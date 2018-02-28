@@ -604,7 +604,7 @@ extension HLSNative {
         let playerItem = mediaAsset.playerItem
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewErrorLogEntry, for: playerItem) { [weak self] notification in
             guard let `self` = self else { return }
-            if let event: AVPlayerItemErrorLogEvent = mediaAsset.playerItem.errorLog()?.events.last {
+            if let event: AVPlayerItemErrorLogEvent = self.currentAsset?.playerItem.errorLog()?.events.last {
                 if event.errorDomain == "CoreMediaErrorDomain" && event.errorStatusCode == -12885 {
                     DispatchQueue.main.async { [weak self] in
                         guard let `self` = self else { return }
