@@ -29,12 +29,6 @@ public protocol MediaPlayback: class {
     /// - parameter position: target buffer position in milliseconds
     func seek(toPosition position: Int64)
     
-    /// Should perform seeking to the specified `position` in the player's buffer.
-    ///
-    /// - parameter position: target buffer position in milliseconds
-    /// - parameter callback: `true` if seek was successful, `false` if it was cancelled
-    func seek(toPosition position: Int64, callback: @escaping (Bool) -> Void)
-    
     /// Should return time ranges within which it is possible to seek.
     var seekableRanges: [CMTimeRange] { get }
     
@@ -51,12 +45,6 @@ public protocol MediaPlayback: class {
     ///
     /// - parameter timeInterval: target timestamp in unix epoch time (milliseconds)
     func seek(toTime timeInterval: Int64)
-    
-    /// For streams where playback is associated with a series of dates, should perform seeking to `timeInterval` as specified in relation to the current `wallclock` time.
-    ///
-    /// - parameter timeInterval: target timestamp in unix epoch time (milliseconds)
-    /// - parameter callback: `true` if seek was successful, `false` if it was cancelled
-    func seek(toTime timeInterval: Int64, callback: @escaping (Bool) -> Void)
     
     /// Should return time ranges of the loaded item.
     var bufferedRanges: [CMTimeRange] { get }
