@@ -66,6 +66,13 @@
 		76BBFBB51EA8DE29001DBDDB /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB41EA8DE29001DBDDB /* Quick.framework */; };
 		76BBFBB71EA8DE34001DBDDB /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB61EA8DE34001DBDDB /* Nimble.framework */; };
 		76BCE05C2047E54B00F1E49C /* PlayerErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BCE05B2047E54B00F1E49C /* PlayerErrorSpec.swift */; };
+		76BCE06F20482BE400F1E49C /* getting-started.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE06E20482BE400F1E49C /* getting-started.md */; };
+		76BCE07520482D5C00F1E49C /* modular-playback-technology.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE07420482D5C00F1E49C /* modular-playback-technology.md */; };
+		76BCE07720482E5C00F1E49C /* responding-to-playback-events.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE07620482E5C00F1E49C /* responding-to-playback-events.md */; };
+		76BCE07920482EF200F1E49C /* enabling-airplay.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE07820482EF200F1E49C /* enabling-airplay.md */; };
+		76BCE07B20482F3400F1E49C /* analytics-how-to.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE07A20482F3400F1E49C /* analytics-how-to.md */; };
+		76BCE07D20482F4300F1E49C /* custom-playback-controls.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE07C20482F4300F1E49C /* custom-playback-controls.md */; };
+		76BCE07F20482F6400F1E49C /* error-handling.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE07E20482F6400F1E49C /* error-handling.md */; };
 		76CD5AE6202B512B00941ABC /* TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE5202B512B00941ABC /* TrackSelectable.swift */; };
 		76CD5AE8202B55F200941ABC /* HLSNative+TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */; };
 		76D4969020455CE9008EF3C7 /* RateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D4968F20455CE9008EF3C7 /* RateObserver.swift */; };
@@ -125,7 +132,6 @@
 		766AC2231FC2F75800843FEF /* ItemObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemObserver.swift; sourceTree = "<group>"; };
 		766AC2251FC2F77000843FEF /* PlayerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerObserver.swift; sourceTree = "<group>"; };
 		766FE46C203AF484003B9B90 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
-		7680ECEC1F61268F00153B50 /* migrating-from-mrr.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "migrating-from-mrr.md"; sourceTree = "<group>"; };
 		768162B71F584E98003C654E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		768162B91F584EDF003C654E /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = SOURCE_ROOT; };
 		768162BB1F585577003C654E /* UPGRADE_GUIDE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = UPGRADE_GUIDE.md; sourceTree = SOURCE_ROOT; };
@@ -156,6 +162,13 @@
 		76BBFBB41EA8DE29001DBDDB /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "Carthage/Checkouts/Quick/build/Debug-iphoneos/Quick.framework"; sourceTree = "<group>"; };
 		76BBFBB61EA8DE34001DBDDB /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "Carthage/Checkouts/Nimble/build/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
 		76BCE05B2047E54B00F1E49C /* PlayerErrorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerErrorSpec.swift; sourceTree = "<group>"; };
+		76BCE06E20482BE400F1E49C /* getting-started.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "getting-started.md"; sourceTree = "<group>"; };
+		76BCE07420482D5C00F1E49C /* modular-playback-technology.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "modular-playback-technology.md"; sourceTree = "<group>"; };
+		76BCE07620482E5C00F1E49C /* responding-to-playback-events.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "responding-to-playback-events.md"; sourceTree = "<group>"; };
+		76BCE07820482EF200F1E49C /* enabling-airplay.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "enabling-airplay.md"; sourceTree = "<group>"; };
+		76BCE07A20482F3400F1E49C /* analytics-how-to.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "analytics-how-to.md"; sourceTree = "<group>"; };
+		76BCE07C20482F4300F1E49C /* custom-playback-controls.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "custom-playback-controls.md"; sourceTree = "<group>"; };
+		76BCE07E20482F6400F1E49C /* error-handling.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "error-handling.md"; sourceTree = "<group>"; };
 		76CD5AE5202B512B00941ABC /* TrackSelectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSelectable.swift; sourceTree = "<group>"; };
 		76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+TrackSelectable.swift"; sourceTree = "<group>"; };
 		76D4968F20455CE9008EF3C7 /* RateObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateObserver.swift; sourceTree = "<group>"; };
@@ -330,7 +343,13 @@
 		768162B61F584DF1003C654E /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
-				7680ECEC1F61268F00153B50 /* migrating-from-mrr.md */,
+				76BCE06E20482BE400F1E49C /* getting-started.md */,
+				76BCE07420482D5C00F1E49C /* modular-playback-technology.md */,
+				76BCE07620482E5C00F1E49C /* responding-to-playback-events.md */,
+				76BCE07820482EF200F1E49C /* enabling-airplay.md */,
+				76BCE07A20482F3400F1E49C /* analytics-how-to.md */,
+				76BCE07C20482F4300F1E49C /* custom-playback-controls.md */,
+				76BCE07E20482F6400F1E49C /* error-handling.md */,
 			);
 			path = Documentation;
 			sourceTree = SOURCE_ROOT;
@@ -556,10 +575,17 @@
 				7667AEC61EC5C0FE00C308FC /* Fastfile in Resources */,
 				7667AEC51EC5C0FE00C308FC /* Appfile in Resources */,
 				760200FD2035C98700EF495D /* update_dependency_graph.rb in Resources */,
+				76BCE07D20482F4300F1E49C /* custom-playback-controls.md in Resources */,
 				76A843691EA77EC300BDAF2C /* Cartfile in Resources */,
+				76BCE07520482D5C00F1E49C /* modular-playback-technology.md in Resources */,
+				76BCE07F20482F6400F1E49C /* error-handling.md in Resources */,
+				76BCE07B20482F3400F1E49C /* analytics-how-to.md in Resources */,
 				7667AEC81EC5C12100C308FC /* .env in Resources */,
+				76BCE07720482E5C00F1E49C /* responding-to-playback-events.md in Resources */,
+				76BCE07920482EF200F1E49C /* enabling-airplay.md in Resources */,
 				76BBFBB31EA8D7CD001DBDDB /* Cartfile.private in Resources */,
 				76BBFBB11EA8D7BB001DBDDB /* Cartfile.resolved in Resources */,
+				76BCE06F20482BE400F1E49C /* getting-started.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
