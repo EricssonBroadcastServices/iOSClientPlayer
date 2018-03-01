@@ -65,7 +65,7 @@ extension HLSNativeError {
 }
 
 extension HLSNativeError {
-    /// Defines the `domain` specific code for the underlying error.
+    /// Defines the specific code for the underlying error.
     public var code: Int {
         switch self {
         case .missingMediaUrl: return 101
@@ -77,4 +77,8 @@ extension HLSNativeError {
         case .techDeallocated: return 107
         }
     }
+}
+
+extension HLSNativeError {
+    public var domain: String { return String(describing: type(of: self))+"Domain" }
 }
