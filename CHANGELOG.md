@@ -14,7 +14,8 @@
 * Preferred track option added to `TrackSelectable`. HLSNative now tries to set a prefered language on startup
 * Added seek methods taking a callback
 * Preferred bitrate limit
-* Additional error handling and propagation 
+* Additional error handling and propagation
+* `EMP-11047` `ExtendedError` now exposes an error `Domain`
 
 #### Changes
 * Improved handling of bitrate and buffering events

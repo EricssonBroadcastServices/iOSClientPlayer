@@ -40,6 +40,8 @@ public final class ManifestContext: MediaContext {
             self.message = message
             self.code = code
         }
+        
+        public var domain: String { return "ManifestContextErrorDomain" }
     }
     
     public struct Warning: WarningMessage {

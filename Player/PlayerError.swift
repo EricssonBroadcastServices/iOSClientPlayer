@@ -43,8 +43,24 @@ extension PlayerError {
     }
 }
 
+extension PlayerError {
+    /// The domain the error belongs to
+    public var domain: String {
+        switch self {
+        case .context(error: let error): return error.domain
+        case .tech(error: let error): return error.domain
+        }
+    }
+}
+
 /// Extension on the basic `Swift.Error` protocol adding an error code.
 public protocol ExpandedError: Error {
+    /// Should return the error code
     var code: Int { get }
+    
+    /// Should return a message describing the error
     var message: String { get }
+    
+    /// Should specify a domain the error belongs to
+    var domain: String { get }
 }

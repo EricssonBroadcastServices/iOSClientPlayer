@@ -65,6 +65,7 @@
 		76BBFBB31EA8D7CD001DBDDB /* Cartfile.private in Resources */ = {isa = PBXBuildFile; fileRef = 76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */; };
 		76BBFBB51EA8DE29001DBDDB /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB41EA8DE29001DBDDB /* Quick.framework */; };
 		76BBFBB71EA8DE34001DBDDB /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB61EA8DE34001DBDDB /* Nimble.framework */; };
+		76BCE05C2047E54B00F1E49C /* PlayerErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BCE05B2047E54B00F1E49C /* PlayerErrorSpec.swift */; };
 		76CD5AE6202B512B00941ABC /* TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE5202B512B00941ABC /* TrackSelectable.swift */; };
 		76CD5AE8202B55F200941ABC /* HLSNative+TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */; };
 		76D4969020455CE9008EF3C7 /* RateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D4968F20455CE9008EF3C7 /* RateObserver.swift */; };
@@ -154,6 +155,7 @@
 		76BBFBB21EA8D7CD001DBDDB /* Cartfile.private */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.private; sourceTree = SOURCE_ROOT; };
 		76BBFBB41EA8DE29001DBDDB /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "Carthage/Checkouts/Quick/build/Debug-iphoneos/Quick.framework"; sourceTree = "<group>"; };
 		76BBFBB61EA8DE34001DBDDB /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "Carthage/Checkouts/Nimble/build/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
+		76BCE05B2047E54B00F1E49C /* PlayerErrorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerErrorSpec.swift; sourceTree = "<group>"; };
 		76CD5AE5202B512B00941ABC /* TrackSelectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSelectable.swift; sourceTree = "<group>"; };
 		76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+TrackSelectable.swift"; sourceTree = "<group>"; };
 		76D4968F20455CE9008EF3C7 /* RateObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateObserver.swift; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 				7691BD44203CAD210038F754 /* MockedAVPlayer.swift */,
 				76EA01DD203EE72200B32345 /* HLSNativeNetworkBehavior.swift */,
 				7690E7C220404BB7003A6485 /* InvalidStartTimeSpec.swift */,
+				76BCE05B2047E54B00F1E49C /* PlayerErrorSpec.swift */,
 			);
 			path = PlayerTests;
 			sourceTree = "<group>";
@@ -632,6 +635,7 @@
 			files = (
 				76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */,
 				76EA01DE203EE72200B32345 /* HLSNativeNetworkBehavior.swift in Sources */,
+				76BCE05C2047E54B00F1E49C /* PlayerErrorSpec.swift in Sources */,
 				7690E7C320404BB7003A6485 /* InvalidStartTimeSpec.swift in Sources */,
 				7691BD41203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift in Sources */,
 				7691BD45203CAD210038F754 /* MockedAVPlayer.swift in Sources */,
