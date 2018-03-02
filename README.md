@@ -14,6 +14,7 @@
     - [Analytics How-To](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/Documentation/analytics-how-to.md)
     - [Custom Playback Controls](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/Documentation/custom-playback-controls.md)
     - [Error Handling](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/Documentation/error-handling.md)
+    - [Subtitles and Multi-Audio](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/Documentation/subtitles-and-multi-audio.md)
 * [Release Notes](#release-notes)
 * [Upgrade Guides](#upgrade-guides)
 * [Roadmap](#roadmap)

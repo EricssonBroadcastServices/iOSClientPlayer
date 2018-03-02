@@ -73,6 +73,7 @@
 		76BCE07B20482F3400F1E49C /* analytics-how-to.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE07A20482F3400F1E49C /* analytics-how-to.md */; };
 		76BCE07D20482F4300F1E49C /* custom-playback-controls.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE07C20482F4300F1E49C /* custom-playback-controls.md */; };
 		76BCE07F20482F6400F1E49C /* error-handling.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE07E20482F6400F1E49C /* error-handling.md */; };
+		76BCE081204844BF00F1E49C /* subtitles-and-multi-audio.md in Resources */ = {isa = PBXBuildFile; fileRef = 76BCE080204844BF00F1E49C /* subtitles-and-multi-audio.md */; };
 		76CD5AE6202B512B00941ABC /* TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE5202B512B00941ABC /* TrackSelectable.swift */; };
 		76CD5AE8202B55F200941ABC /* HLSNative+TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */; };
 		76D4969020455CE9008EF3C7 /* RateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D4968F20455CE9008EF3C7 /* RateObserver.swift */; };
@@ -169,6 +170,7 @@
 		76BCE07A20482F3400F1E49C /* analytics-how-to.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "analytics-how-to.md"; sourceTree = "<group>"; };
 		76BCE07C20482F4300F1E49C /* custom-playback-controls.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "custom-playback-controls.md"; sourceTree = "<group>"; };
 		76BCE07E20482F6400F1E49C /* error-handling.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "error-handling.md"; sourceTree = "<group>"; };
+		76BCE080204844BF00F1E49C /* subtitles-and-multi-audio.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "subtitles-and-multi-audio.md"; sourceTree = "<group>"; };
 		76CD5AE5202B512B00941ABC /* TrackSelectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSelectable.swift; sourceTree = "<group>"; };
 		76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+TrackSelectable.swift"; sourceTree = "<group>"; };
 		76D4968F20455CE9008EF3C7 /* RateObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateObserver.swift; sourceTree = "<group>"; };
@@ -350,6 +352,7 @@
 				76BCE07A20482F3400F1E49C /* analytics-how-to.md */,
 				76BCE07C20482F4300F1E49C /* custom-playback-controls.md */,
 				76BCE07E20482F6400F1E49C /* error-handling.md */,
+				76BCE080204844BF00F1E49C /* subtitles-and-multi-audio.md */,
 			);
 			path = Documentation;
 			sourceTree = SOURCE_ROOT;
@@ -576,6 +579,7 @@
 				7667AEC51EC5C0FE00C308FC /* Appfile in Resources */,
 				760200FD2035C98700EF495D /* update_dependency_graph.rb in Resources */,
 				76BCE07D20482F4300F1E49C /* custom-playback-controls.md in Resources */,
+				76BCE081204844BF00F1E49C /* subtitles-and-multi-audio.md in Resources */,
 				76A843691EA77EC300BDAF2C /* Cartfile in Resources */,
 				76BCE07520482D5C00F1E49C /* modular-playback-technology.md in Resources */,
 				76BCE07F20482F6400F1E49C /* error-handling.md in Resources */,
