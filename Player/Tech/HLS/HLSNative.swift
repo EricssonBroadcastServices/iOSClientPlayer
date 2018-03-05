@@ -365,16 +365,6 @@ extension HLSNative {
     }
 }
 
-
-// MARK: - Warnings
-extension HLSNative {
-    public func process(warning: HLSNativeWarning) {
-//        if logWarnings {
-        eventDispatcher.onWarning(self, currentSource, .tech(warning: warning))
-//        }
-    }
-}
-
 // MARK: - Events
 /// Player Item Status Change Events
 extension HLSNative {
@@ -422,7 +412,9 @@ extension HLSNative {
                                 let inRange = self.seekableTimeRanges.reduce(false) { $0 || $1.containsTime(time) }
                                 
                                 guard inRange else {
-                                    self.process(warning: .invalidStartTime(startTime: value, seekableRanges: self.seekableTimeRanges))
+                                    let warning = PlayerWarning<HLSNative<Context>,Context>.tech(warning: .invalidStartTime(startTime: value, seekableRanges: self.seekableTimeRanges))
+                                    self.eventDispatcher.onWarning(self, self.currentSource, warning)
+                                    self.currentSource?.analyticsConnector.onWarning(tech: self, source: self.currentSource, warning: warning)
                                     onReady()
                                     return
                                 }
