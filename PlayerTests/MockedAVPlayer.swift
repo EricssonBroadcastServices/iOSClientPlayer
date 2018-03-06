@@ -40,6 +40,7 @@ class MockedAVPlayer: AVPlayer {
 class MockedAVPlayerItem: AVPlayerItem {
     weak var associatedWithPlayer: MockedAVPlayer?
     
+    /// NOTE: Do not use a real url as this will force AVPlayerItem to init the loading procedure for the asset, including networking which will slow down the tests making them fail
     init(mockedAVAsset: MockedAVURLAsset) {
         super.init(asset: mockedAVAsset, automaticallyLoadedAssetKeys: nil)
     }
