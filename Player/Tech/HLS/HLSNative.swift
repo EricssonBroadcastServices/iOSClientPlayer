@@ -418,10 +418,28 @@ extension HLSNative {
                                     onReady()
                                     return
                                 }
-                                let date = Date(milliseconds: value)
-                                mediaAsset.playerItem.seek(to: date) { success in
-                                    // TODO: What if the seek was not successful?
-                                    onReady()
+                                
+                                if #available(iOS 11.0, *) {
+                                    /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
+                                    let date = Date(milliseconds: value)
+                                    mediaAsset.playerItem.seek(to: date) { success in
+                                        // TODO: What if the seek was not successful?
+                                        onReady()
+                                    }
+                                }
+                                else {
+                                    /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
+                                    let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
+                                    if let begining = seekableTimeStart?.seconds {
+                                        let startPosition = value - Int64(begining * 1000)
+                                        let cmTime = CMTime(value: startPosition, timescale: 1000)
+                                        mediaAsset.playerItem.seek(to: cmTime) { success in
+                                            onReady()
+                                        }
+                                    }
+                                    else {
+                                        onReady()
+                                    }
                                 }
                             }
                             else {
@@ -715,8 +733,10 @@ extension HLSNative {
                 if let newValue = change.new as? Int, let status = AVPlayerStatus(rawValue: newValue) {
                     switch status {
                     case .unknown:
+                        print("AVPlayer .unknown")
                         return
                     case .readyToPlay:
+                        print("AVPlayer .readyToPlay")
                         return
                     case .failed:
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: self.avPlayer.error))

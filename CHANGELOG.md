@@ -24,6 +24,7 @@
 * `EMP-11029` Forced locale to en_GB for framework dependant date calculations
 * `EMP-11035` Workaround for exposing *FairPlay* errors encountered during the validation process.
 * `EMP-11045` Analytics error event delivered even if tech was deallocated
+* `EMP-11071` Fixed a bug when specifying a *unix timestamp* as *startTime* on `iOS 10`.
 
 ## 0.77.0
 
