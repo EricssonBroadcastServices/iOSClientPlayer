@@ -51,7 +51,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         playerItem.mockedSelectedMediaOption[audibleGroup] = audibleOptions.first
                     })
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.audioGroup).toEventuallyNot(beNil())
                     expect(env.player.tech.audioGroup?.allowsEmptySelection).toEventually(beFalse())
@@ -86,7 +86,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         playerItem.mockedSelectedMediaOption[audibleGroup] = audibleOptions.first
                     })
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.allowsEmptyAudioSelection).toEventually(beFalse())
                     expect(env.player.tech.defaultAudioTrack?.name).toEventually(equal("English"))
@@ -132,7 +132,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         player.tech.selectAudio(track: track)
                     }
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.selectedAudioTrack?.name).toEventually(equal("Swedish"))
                     expect(env.player.tech.selectedAudioTrack?.extendedLanguageTag).toEventually(equal("sv"))
@@ -158,7 +158,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         player.tech.selectAudio(language: "sv")
                     }
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.selectedAudioTrack?.name).toEventually(equal("Swedish"))
                     expect(env.player.tech.selectedAudioTrack?.extendedLanguageTag).toEventually(equal("sv"))
@@ -184,7 +184,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         player.tech.selectAudio(language: nil)
                     }
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.selectedAudioTrack?.name).toEventually(beNil())
                     expect(env.player.tech.selectedAudioTrack?.extendedLanguageTag).toEventually(beNil())
@@ -208,7 +208,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
 
                     env.player.tech.preferredAudioLanguage = "sv"
 
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
 
                     expect(env.player.tech.selectedAudioTrack?.name).toEventually(equal("Swedish"))
                     expect(env.player.tech.selectedAudioTrack?.extendedLanguageTag).toEventually(equal("sv"))
@@ -232,7 +232,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         playerItem.mockedSelectedMediaOption[legibleGroup] = legibleOptions.first
                     })
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.textGroup).toEventuallyNot(beNil(), timeout: 4)
                     expect(env.player.tech.textGroup?.allowsEmptySelection).toEventually(beTrue())
@@ -267,7 +267,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         playerItem.mockedSelectedMediaOption[legibleGroup] = legibleOptions.first
                     })
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.textGroup).toEventuallyNot(beNil(), timeout: 4)
                     expect(env.player.tech.allowsEmptyTextSelection).toEventually(beTrue())
@@ -315,7 +315,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         player.tech.selectText(track: track)
                     }
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.selectedTextTrack?.name).toEventually(equal("Swedish"))
                     expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(equal("sv"))
@@ -341,7 +341,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         player.tech.selectText(language: "sv")
                     }
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.selectedTextTrack?.name).toEventually(equal("Swedish"))
                     expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(equal("sv"))
@@ -367,7 +367,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                         player.tech.selectText(language: nil)
                     }
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.selectedTextTrack?.name).toEventually(beNil())
                     expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(beNil())
@@ -391,7 +391,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                     
                     env.player.tech.preferredTextLanguage = "sv"
                     
-                    env.player.stream(url: URL(fileURLWithPath: "http://www.example.com"))
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
                     expect(env.player.tech.selectedTextTrack?.name).toEventually(equal("Swedish"))
                     expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(equal("sv"))

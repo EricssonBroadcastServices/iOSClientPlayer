@@ -24,7 +24,7 @@ class HLSNativeNetworkBehaviorSpec: QuickSpec {
                 let preferredBitRate: Int64 = 300000
                 env.mockAsset(callback: env.maxBitrateMock { _,_ in })
                 
-                let manifest = Manifest(url: URL(fileURLWithPath: "http://www.example.com"))
+                let manifest = Manifest(url: URL(fileURLWithPath: "file://play/.isml"))
                 let configuration = HLSNativeConfiguration(drm: nil, preferredMaxBitrate: preferredBitRate)
                 
                 env.player.tech.load(source: manifest, configuration: configuration)

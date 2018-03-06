@@ -28,7 +28,7 @@ class InvalidStartTimeSpec: QuickSpec {
                 
                 env.mockAsset(callback: env.defaultAssetMock(currentDate: currentDate, bufferDuration: hour/2))
                 
-                let source = Manifest(url: URL(fileURLWithPath: "http://www.example.com"))
+                let source = Manifest(url: URL(fileURLWithPath: "file://play/.isml"))
                 let conf = HLSNativeConfiguration()
                 env.player.tech.startOffset(atTime: currentDate - hour)
                 
