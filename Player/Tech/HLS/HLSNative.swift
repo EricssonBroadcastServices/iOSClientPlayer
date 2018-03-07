@@ -68,8 +68,16 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public var autoplay: Bool = false
     
     // MARK: StartTime
-    /// Private state tracking `StartTime` status. It should not be exposed externally.
-    internal var startOffset: StartOffset = .defaultStartTime
+    internal var startTimeConfiguration: StartTimeConfiguration = StartTimeConfiguration()
+    internal class StartTimeConfiguration {
+        /// Private state tracking `StartTime` status.
+        internal var startOffset: StartOffset = .defaultStartTime
+        
+        /// Using a startTime delegate will override any static `startOffset` behavior set.
+        ///
+        /// A `StartTimeDelegate` can be used to account for dynamic startTime.
+        internal weak var startTimeDelegate: StartTimeDelegate?
+    }
     
     // Background notifier
     internal let backgroundWatcher = BackgroundWatcher()
@@ -391,11 +399,11 @@ extension HLSNative {
                             // yet know the stream is *timestamp related*. Wait untill playback is ready to do that.
                             //
                             // BUGFIX: We cant trigger `onReady` here since that will trigger `onPlaybackStarted` before we have the manifest loaded. This will cause onPlaybackStarted for Date-Time associated streams to report playback position `nil/0` since the playheadTime cant associate bufferPosition with the manifest stream start.
-                            if case let .startPosition(value) = self.startOffset {
-                                // BUGFIX: AVPlayerItem CANT service a seek with a completion handler untill state == .readyToPlay
-                                let cmTime = CMTime(value: value, timescale: 1000)
-                                mediaAsset.playerItem.seek(to: cmTime)
-                            }
+//                            if let value = self.startPosition {
+//                                // BUGFIX: AVPlayerItem CANT service a seek with a completion handler untill state == .readyToPlay
+//                                let cmTime = CMTime(value: value, timescale: 1000)
+//                                mediaAsset.playerItem.seek(to: cmTime)
+//                            }
                             onActive()
                         default: return
                         }
@@ -403,74 +411,85 @@ extension HLSNative {
                         switch self.playbackState {
                         case .notStarted:
                             // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
-                            if case .startPosition(_) = self.startOffset {
-                                // This has been handled before
-                                onReady()
-                            }
-                            else if case let .startTime(value) = self.startOffset {
-                                let time = CMTime(value: value, timescale: 1000)
-                                let inRange = self.seekableTimeRanges.reduce(false) { $0 || $1.containsTime(time) }
-                                
-                                guard inRange else {
-                                    let warning = PlayerWarning<HLSNative<Context>,Context>.tech(warning: .invalidStartTime(startTime: value, seekableRanges: self.seekableTimeRanges))
-                                    self.eventDispatcher.onWarning(self, self.currentSource, warning)
-                                    self.currentSource?.analyticsConnector.onWarning(tech: self, source: self.currentSource, warning: warning)
+                            let offset = self.startOffset(for: mediaAsset)
+                            let validation = self.validate(startOffset: offset, mediaAsset: mediaAsset)
+                            if let resolvedOffset = validation.0 {
+                                switch resolvedOffset {
+                                case .defaultStartTime:
+                                    /// Use default behaviour
                                     onReady()
-                                    return
-                                }
-                                
-                                if #available(iOS 11.0, *) {
-                                    /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
-                                    let date = Date(milliseconds: value)
-                                    mediaAsset.playerItem.seek(to: date) { success in
-                                        // TODO: What if the seek was not successful?
+                                case let .startPosition(position: value):
+                                    let cmTime = CMTime(value: value, timescale: 1000)
+                                    mediaAsset.playerItem.seek(to: cmTime) { success in
                                         onReady()
                                     }
-                                }
-                                else {
-                                    /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
-                                    let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
-                                    if let begining = seekableTimeStart?.seconds {
-                                        let startPosition = value - Int64(begining * 1000)
-                                        let cmTime = CMTime(value: startPosition, timescale: 1000)
-                                        mediaAsset.playerItem.seek(to: cmTime) { success in
+                                case let .startTime(time: value):
+                                    if #available(iOS 11.0, *) {
+                                        /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
+                                        let date = Date(milliseconds: value)
+                                        mediaAsset.playerItem.seek(to: date) { success in
+                                            // TODO: What if the seek was not successful?
                                             onReady()
                                         }
                                     }
                                     else {
-                                        onReady()
+                                        /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
+                                        let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
+                                        if let begining = seekableTimeStart?.seconds {
+                                            let startPosition = value - Int64(begining * 1000)
+                                            let cmTime = CMTime(value: startPosition, timescale: 1000)
+                                            mediaAsset.playerItem.seek(to: cmTime) { success in
+                                                onReady()
+                                            }
+                                        }
+                                        else {
+                                            onReady()
+                                        }
                                     }
                                 }
                             }
+                            else if let warning = validation.1 {
+                                /// StartTime was illegal
+                                self.eventDispatcher.onWarning(self, self.currentSource, warning)
+                                self.currentSource?.analyticsConnector.onWarning(tech: self, source: self.currentSource, warning: warning)
+                                onReady()
+                            }
                             else {
+                                // No startTime was set
                                 onReady()
                             }
                         default:
                             return
                         }
                     case .failed:
-                        item.errorLog()?.events.forEach{
-                            print("errorLog",$0.errorDomain,$0.errorStatusCode,$0.errorComment)
-                        }
-                        item.accessLog()?.events.forEach{
-                            print("accessLog",$0)
-                        }
-                        if let error = item.error as? NSError {
-                            print(error.userInfo)
-                            print(error.domain)
-                            print(error.code)
-                            if let wrappedError = error.userInfo[NSUnderlyingErrorKey] as? NSError {
-                                print(wrappedError.userInfo)
-                                print(wrappedError.domain)
-                                print(wrappedError.code)
-                            }
-                        }
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
                         self.eventDispatcher.onError(self, mediaAsset.source, techError)
                         mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                     }
                 }
             }
+        }
+    }
+    
+    private func validate(startOffset: StartOffset, mediaAsset: MediaAsset<Context.Source>) -> (StartOffset?, PlayerWarning<HLSNative<Context>,Context>?) {
+        let checkBounds: (Int64, [CMTimeRange]) -> (StartOffset?, PlayerWarning<HLSNative<Context>,Context>?) = {offset, ranges in
+            let cmTime = CMTime(value: offset, timescale: 1000)
+            let inRange = ranges.reduce(false) { $0 || $1.containsTime(cmTime) }
+            
+            guard inRange else {
+                let warning = PlayerWarning<HLSNative<Context>,Context>.tech(warning: .invalidStartTime(startTime: offset, seekableRanges: ranges))
+                return (nil, warning)
+            }
+            return (startOffset, nil)
+        }
+        
+        switch startOffset {
+        case .defaultStartTime:
+            return (nil, nil)
+        case let .startPosition(position: offset):
+            return checkBounds(offset, seekableRanges)
+        case let .startTime(time: offset):
+            return checkBounds(offset, seekableTimeRanges)
         }
     }
 }

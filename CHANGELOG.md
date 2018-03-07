@@ -19,6 +19,7 @@
 
 #### Changes
 * Improved handling of bitrate and buffering events
+* `EMP-11058` Refactor `StartTime` api to make it clearer
 
 #### Bug Fixes
 * `EMP-11029` Forced locale to en_GB for framework dependant date calculations

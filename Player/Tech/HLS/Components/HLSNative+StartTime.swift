@@ -8,47 +8,90 @@
 
 import Foundation
 
+/// Tracking Bookmarks.
+public enum StartOffset {
+    /// Default behaviour applies
+    case defaultStartTime
+    
+    /// Playback should start from the specified `offset` into the buffer (milliseconds)
+    case startPosition(position: Int64)
+    
+    /// Playback should start from the specified `wallclock timestamp` in unix epoch time (milliseconds)
+    case startTime(time: Int64)
+}
+
+
+public protocol StartTimeDelegate: class {
+    func startTime<Context>(for source: MediaSource, tech: HLSNative<Context>) -> StartOffset
+}
+
 /// `HLSNative` adoption of `StartTime`
 extension HLSNative: StartTime {
-    /// Internal state for tracking Bookmarks.
-    internal enum StartOffset {
-        /// Default behaviour applies
-        case defaultStartTime
-        
-        /// Playback should start from the specified `offset` into the buffer (milliseconds)
-        case startPosition(position: Int64)
-        
-        /// Playback should start from the specified `wallclock timestamp` in unix epoch time (milliseconds)
-        case startTime(time: Int64)
-    }
-    
-    /// Returns a target buffer `offset` to start playback if it has been specified, else `nil`.
+    /// Returns a target buffer `offset` (in milliseconds) to start playback if it has been specified, else `nil`.
+    ///
+    /// If a `StartTimeDelegate` has been specified, it will take precedence over deciding the start time
     public var startPosition: Int64? {
-        switch startOffset {
-        case .startPosition(position: let value): return value
-        default: return nil
+        if let delegate = startTimeConfiguration.startTimeDelegate, let source = currentSource {
+            let value = delegate.startTime(for: source, tech: self)
+            switch value {
+            case let .startPosition(position: result): return result
+            default: return nil
+            }
+        }
+        else {
+            switch startTimeConfiguration.startOffset {
+            case .startPosition(position: let value): return value
+            default: return nil
+            }
         }
     }
     
-    /// Returns a target timestamp in wallclock unix epoch time to start playback if it has been specified, else `nil`.
+    /// Returns a target timestamp in wallclock unix epoch time (in milliseconds) to start playback if it has been specified, else `nil`.
+    ///
+    /// If a `StartTimeDelegate` has been specified, it will take precedence over deciding the start time
     public var startTime: Int64? {
-        switch startOffset {
-        case .startTime(time: let value): return value
-        default: return nil
+        if let delegate = startTimeConfiguration.startTimeDelegate, let source = currentSource {
+            let value = delegate.startTime(for: source, tech: self)
+            switch value {
+            case let .startTime(time: result): return result
+            default: return nil
+            }
+        }
+        else {
+            switch startTimeConfiguration.startOffset {
+            case .startTime(time: let value): return value
+            default: return nil
+            }
         }
     }
     
-    /// Should set the `startPosition`  (in milliseconds) to the specified `position` relative to the playback buffer.
+    /// Sets the `startPosition` (in milliseconds) to the specified `position` relative to the playback buffer.
     ///
-    /// Specifying `nil` revert to the default behaviour for startup
-    public func startOffset(atPosition position: Int64?) {
-        startOffset = position != nil ? .startPosition(position: position!) : .defaultStartTime
+    /// Specifying `nil` reverts to the default behaviour for startup but will not remove any `StartTimeDelegate` set.
+    public func startTime(atPosition position: Int64?) {
+        startTimeConfiguration.startOffset = position != nil ? .startPosition(position: position!) : .defaultStartTime
     }
     
-    /// Should set the `startTime` to the specified `timestamp` in wallclock unix epoch time. (in milliseconds)
+    /// Sets the `startTime` to the specified `timestamp` in wallclock unix epoch time. (in milliseconds)
     ///
-    /// Specifying `nil` revert to the default behaviour for startup
-    public func startOffset(atTime timestamp: Int64?) {
-        startOffset = timestamp != nil ? .startTime(time: timestamp!) : .defaultStartTime
+    /// Specifying `nil` reverts to the default behaviour for startup but will not remove any `StartTimeDelegate` set.
+    public func startTime(atTime timestamp: Int64?) {
+        startTimeConfiguration.startOffset = timestamp != nil ? .startTime(time: timestamp!) : .defaultStartTime
+    }
+}
+
+extension HLSNative {
+    /// Specifies `startTime` will be handled by a delegate responsible for supplying the correct `StartOffset`.
+    ///
+    /// This will take precedence over any static `startOffset` behavior set. Specifying `nil` will remove the current delegate
+    public func startTime(byDelegate delegate: StartTimeDelegate?) {
+        startTimeConfiguration.startTimeDelegate = delegate
+    }
+    
+    internal func startOffset(for mediaSource: MediaAsset<Context.Source>) -> StartOffset {
+        if let delegateOffset = startTimeConfiguration.startTimeDelegate?.startTime(for: mediaSource.source, tech: self) {
+            return delegateOffset
+        }
+        return startTimeConfiguration.startOffset
     }
 }

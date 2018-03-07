@@ -286,18 +286,18 @@ class NativeHLSSpec: QuickSpec {
             
             it("Should set startTime") {
                 let specifiedOffset:Int64 = 10
-                self.player.startOffset(atTime: specifiedOffset)
+                self.player.startTime(atTime: specifiedOffset)
                 expect(self.player.startTime).to(equal(specifiedOffset))
                 expect(self.player.startPosition).to(beNil())
             }
             
             it("Should remove startTime") {
                 let specifiedOffset:Int64 = 10
-                self.player.startOffset(atTime: specifiedOffset)
+                self.player.startTime(atTime: specifiedOffset)
                 expect(self.player.startTime).to(equal(specifiedOffset))
                 expect(self.player.startPosition).to(beNil())
                 
-                self.player.startOffset(atTime: nil)
+                self.player.startTime(atTime: nil)
                 
                 expect(self.player.startPosition).to(beNil())
                 expect(self.player.startTime).to(beNil())
@@ -305,18 +305,18 @@ class NativeHLSSpec: QuickSpec {
             
             it("Should set startPosition") {
                 let specifiedOffset:Int64 = 10
-                self.player.startOffset(atPosition: specifiedOffset)
+                self.player.startTime(atPosition: specifiedOffset)
                 expect(self.player.startPosition).to(equal(specifiedOffset))
                 expect(self.player.startTime).to(beNil())
             }
             
             it("Should remove startPosition") {
                 let specifiedOffset:Int64 = 10
-                self.player.startOffset(atPosition: specifiedOffset)
+                self.player.startTime(atPosition: specifiedOffset)
                 expect(self.player.startPosition).to(equal(specifiedOffset))
                 expect(self.player.startTime).to(beNil())
                 
-                self.player.startOffset(atPosition: nil)
+                self.player.startTime(atPosition: nil)
                 
                 expect(self.player.startPosition).to(beNil())
                 expect(self.player.startTime).to(beNil())

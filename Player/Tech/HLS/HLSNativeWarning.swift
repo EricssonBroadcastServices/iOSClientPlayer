@@ -10,10 +10,16 @@ import AVFoundation
 
 
 public enum HLSNativeWarning: WarningMessage {
+    /// Seekable ranges was empty
     case seekableRangesEmpty
+    
+    /// Seekable ranges contained a discontinuity
     case discontinuousSeekableRanges(seekableRanges: [CMTimeRange])
+    
+    /// The requested seek time was beyond the live point
     case seekTimeBeyondLivePoint(timestamp: Int64, livePoint: Int64)
     
+    /// The supplied startTime was invalid for the seekable ranges.
     case invalidStartTime(startTime: Int64, seekableRanges: [CMTimeRange])
 }
 

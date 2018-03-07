@@ -30,7 +30,7 @@ class InvalidStartTimeSpec: QuickSpec {
                 
                 let source = Manifest(url: URL(fileURLWithPath: "file://play/.isml"))
                 let conf = HLSNativeConfiguration()
-                env.player.tech.startOffset(atTime: currentDate - hour)
+                env.player.tech.startTime(atTime: currentDate - hour)
                 
                 var playerWarning: PlayerWarning<HLSNative<ManifestContext>,ManifestContext>? = nil
                 env.player.onWarning{ player, source, warning in
