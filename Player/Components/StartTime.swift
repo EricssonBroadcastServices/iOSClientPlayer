@@ -19,12 +19,12 @@ public protocol StartTime: class {
     /// Should set the `startPosition` (in milliseconds) to the specified `position` relative to the playback buffer.
     ///
     /// Specifying `nil` revert to the default behaviour for startup
-    func startOffset(atPosition position: Int64?)
+    func startTime(atPosition position: Int64?)
     
     /// Should set the `startTime` to the specified `timestamp` in wallclock unix epoch time. (in milliseconds)
     ///
     /// Specifying `nil` revert to the default behaviour for startup
-    func startOffset(atTime timestamp: Int64?)
+    func startTime(atTime timestamp: Int64?)
 }
 
 extension Player where Tech: StartTime {
@@ -39,17 +39,17 @@ extension Player where Tech: StartTime {
         return tech.startTime
     }
     
-    /// Should set the `startPosition`  (in milliseconds) to the specified `position` relative to the playback buffer.
+    /// Should set the `startPosition` (in milliseconds) to the specified `position` relative to the playback buffer.
     ///
     /// Specifying `nil` revert to the default behaviour for startup
-    public func startOffset(atPosition position: Int64?) {
-        tech.startOffset(atPosition: position)
+    public func startTime(atPosition position: Int64?) {
+        tech.startTime(atPosition: position)
     }
     
     /// Should set the `startTime` to the specified `timestamp` in wallclock unix epoch time. (in milliseconds)
     ///
     /// Specifying `nil` revert to the default behaviour for startup
-    public func startOffset(atTime timestamp: Int64?) {
-        tech.startOffset(atTime: timestamp)
+    public func startTime(atTime timestamp: Int64?) {
+        tech.startTime(atTime: timestamp)
     }
 }
