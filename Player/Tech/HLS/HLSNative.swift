@@ -629,6 +629,7 @@ extension HLSNative {
                     if let mediaAsset = self.currentAsset {
                         mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                     }
+                    self.stop()
                 }
             }
             
