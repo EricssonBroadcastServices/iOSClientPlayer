@@ -44,6 +44,7 @@
 		766AC2241FC2F75800843FEF /* ItemObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2231FC2F75800843FEF /* ItemObserver.swift */; };
 		766AC2261FC2F77000843FEF /* PlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2251FC2F77000843FEF /* PlayerObserver.swift */; };
 		766FE46D203AF484003B9B90 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766FE46C203AF484003B9B90 /* Error+Extensions.swift */; };
+		7681014720595D4100EF7F52 /* UnmanagedPlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */; };
 		7690E7C320404BB7003A6485 /* InvalidStartTimeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7690E7C220404BB7003A6485 /* InvalidStartTimeSpec.swift */; };
 		7691BD38203C7A0E0038F754 /* MediaTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD37203C7A0E0038F754 /* MediaTrack.swift */; };
 		7691BD3B203C7A340038F754 /* MediaGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD3A203C7A340038F754 /* MediaGroup.swift */; };
@@ -133,6 +134,7 @@
 		766AC2231FC2F75800843FEF /* ItemObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemObserver.swift; sourceTree = "<group>"; };
 		766AC2251FC2F77000843FEF /* PlayerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerObserver.swift; sourceTree = "<group>"; };
 		766FE46C203AF484003B9B90 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
+		7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnmanagedPlayerObserver.swift; sourceTree = "<group>"; };
 		768162B71F584E98003C654E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		768162B91F584EDF003C654E /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = SOURCE_ROOT; };
 		768162BB1F585577003C654E /* UPGRADE_GUIDE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = UPGRADE_GUIDE.md; sourceTree = SOURCE_ROOT; };
@@ -309,6 +311,7 @@
 		766AC2221FC2F6E200843FEF /* Observation */ = {
 			isa = PBXGroup;
 			children = (
+				7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */,
 				76D4968F20455CE9008EF3C7 /* RateObserver.swift */,
 				766AC20E1FC2F6B700843FEF /* KeyValueObservable.swift */,
 				766AC20F1FC2F6B700843FEF /* KeyValueObserver.swift */,
@@ -626,6 +629,7 @@
 				766039251FC6E24500E79091 /* ManifestContext.swift in Sources */,
 				766039231FC6E17900E79091 /* EventDispatcher.swift in Sources */,
 				7691BD3D203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift in Sources */,
+				7681014720595D4100EF7F52 /* UnmanagedPlayerObserver.swift in Sources */,
 				766AC2261FC2F77000843FEF /* PlayerObserver.swift in Sources */,
 				766AC2191FC2F6B700843FEF /* HLSNativeError.swift in Sources */,
 				76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */,

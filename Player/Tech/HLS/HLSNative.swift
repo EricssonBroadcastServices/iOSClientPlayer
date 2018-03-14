@@ -673,6 +673,7 @@ extension HLSNative {
     ///
     /// - parameter callback: responsible tech | associated source | new rate for this playback
     /// - returns: RateObserver
+    @available(*, introduced: 2.0.78, deprecated: 2.0.79, renamed: "observePlaybackRateChanges(callback:)")
     public func observeRateChanges(callback: @escaping (HLSNative<Context>, Context.Source?, Float) -> Void) -> RateObserver {
         var observer = PlayerObserver()
         observer.observe(path: .rate, on: avPlayer) { [weak self] player, change in
@@ -686,6 +687,25 @@ extension HLSNative {
             }
         }
         return RateObserver(playerObserver: observer)
+    }
+    
+    /// Returns an *unmaintained* KVO token which needs to be cancelled before deallocation. Responsbility for managing this rests entierly on the caller/creator.
+    ///
+    /// - parameter callback: responsible tech | associated source | new rate for this playback
+    /// - returns: UnmanagedPlayerObserver
+    public func observePlaybackRateChanges(callback: @escaping (HLSNative<Context>, Context.Source?, Float) -> Void) -> UnmanagedPlayerObserver {
+        var observer = PlayerObserver()
+        observer.observe(path: .rate, on: avPlayer) { [weak self] player, change in
+            guard let `self` = self else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                guard let newRate = change.new as? Float else {
+                    return
+                }
+                callback(self, self.currentAsset?.source, newRate)
+            }
+        }
+        return UnmanagedPlayerObserver(playerObserver: observer)
     }
 }
 
@@ -792,6 +812,31 @@ extension HLSNative {
                 print("Position:",self.playheadPosition)
             }
         }
+    }
+    
+    
+    /// Returns an *unmaintained* KVO token which needs to be cancelled before deallocation. Responsbility for managing this rests entierly on the caller/creator.
+    ///
+    /// Final parameter in callback tells if playback is external or not
+    ///
+    /// - parameter callback: responsible tech | associated source | external playback active or not
+    /// - returns: UnmanagedPlayerObserver
+    public func observeExternalPlayback(callback: @escaping (HLSNative<Context>, Context.Source?, Bool) -> Void) -> UnmanagedPlayerObserver {
+        var observer = PlayerObserver()
+        observer.observe(path: .isExternalPlaybackActive, on: avPlayer) { [weak self] player, change in
+            guard let `self` = self else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                print("isExternalPlaybackActive",self.avPlayer.isExternalPlaybackActive)
+                if let time = self.playheadTime {
+                    let date = Date(milliseconds: time)
+                    print("PlayheadTime:",date,"|",Date())
+                }
+                print("Position:",self.playheadPosition)
+                callback(self, self.currentAsset?.source, self.avPlayer.isExternalPlaybackActive)
+            }
+        }
+        return UnmanagedPlayerObserver(playerObserver: observer)
     }
 }
 
