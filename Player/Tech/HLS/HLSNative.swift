@@ -184,6 +184,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         handleCurrentItemChanges()
         handlePlaybackStateChanges()
         handleStatusChange()
+        handleExternalPlayback()
         
         backgroundWatcher.handleWillTerminate { [weak self] in self?.stop() }
         backgroundWatcher.handleWillBackgrounding { }
@@ -505,7 +506,10 @@ extension HLSNative {
             guard let `self` = self else { return }
             if let item = notification.object as? AVPlayerItem, let events = item.accessLog()?.events {
                 let newBitrateGenerator: () -> Double? = {
-                    if events.count == 1 {
+                    if events.count == 0 {
+                        return nil
+                    }
+                    else if events.count == 1 {
                         return events.last?.indicatedBitrate
                     }
                     else {
@@ -767,6 +771,25 @@ extension HLSNative {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+// MARK: External Playback
+extension HLSNative {
+    /// Subscribes to and handles `AVPlayer.isExternalPlaybackActive` changes.
+    fileprivate func handleExternalPlayback() {
+        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer) { [weak self] player, change in
+            guard let `self` = self else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                print("isExternalPlaybackActive",self.avPlayer.isExternalPlaybackActive)
+                if let time = self.playheadTime {
+                    let date = Date(milliseconds: time)
+                    print("PlayheadTime:",date,"|",Date())
+                }
+                print("Position:",self.playheadPosition)
             }
         }
     }
