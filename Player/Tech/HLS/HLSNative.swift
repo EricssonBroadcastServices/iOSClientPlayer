@@ -15,6 +15,12 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     
     public var eventDispatcher: EventDispatcher<Context, HLSNative<Context>> = EventDispatcher()
     
+    /// Triggered when Airplay status changes
+    public var onAirplayStatusChanged: (HLSNative<Context>, Context.Source?, Bool) -> Void = { _,_,_ in }
+    
+    /// Optionally deal with airplay events through this delegate
+    public weak var airplayHandler: AirplayHandler?
+    
     /// Returns the currently active `MediaSource` if available.
     public var currentSource: Context.Source? {
         return currentAsset?.source
@@ -625,6 +631,13 @@ extension HLSNative {
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemFailedToPlayToEndTime, for: playerItem) { [weak self] notification in
             guard let `self` = self else { return }
             if let error = notification.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? Error {
+                if let nsError = error as? NSError, let underlyingError = nsError.userInfo[NSUnderlyingErrorKey] as? NSError {
+                    print(nsError.debugInfoString)
+                    print(underlyingError.debugInfoString)
+                    if let underlyingUnderlyingError = underlyingError.userInfo[NSUnderlyingErrorKey] as? Error {
+                        print(underlyingUnderlyingError.debugInfoString)
+                    }
+                }
                 DispatchQueue.main.async { [weak self] in
                     guard let `self` = self else { return }
                     let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToCompletePlayback(error: error))
@@ -636,7 +649,6 @@ extension HLSNative {
                     self.stop()
                 }
             }
-            
         }
     }
 }
@@ -800,16 +812,45 @@ extension HLSNative {
 extension HLSNative {
     /// Subscribes to and handles `AVPlayer.isExternalPlaybackActive` changes.
     fileprivate func handleExternalPlayback() {
-        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer) { [weak self] player, change in
+        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new, .old]) { [weak self] player, change in
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
-                print("isExternalPlaybackActive",self.avPlayer.isExternalPlaybackActive)
-                if let time = self.playheadTime {
-                    let date = Date(milliseconds: time)
-                    print("PlayheadTime:",date,"|",Date())
+                
+                print(">>>>>>>>> handleExternalPlayback")
+                switch self.playbackState {
+                case .notStarted: print("playbackState.notStarted")
+                case .paused: print("playbackState.paused")
+                case .playing: print("playbackState.playing")
+                case .preparing: print("playbackState.preparing")
+                case .stopped: print("playbackState.stopped")
                 }
-                print("Position:",self.playheadPosition)
+                print("Old",(change.old as? Bool) ?? "n/a","->",(change.new as? Bool) ?? "n/a","New","isPrior",(change.isPrior as? Bool) ?? "n/a")
+                print("Protected:",self.avPlayer.currentItem?.asset.hasProtectedContent ?? "n/a")
+                AVAudioSession.sharedInstance().currentRoute.outputs.forEach{
+                    print("Type: [",$0.portType,"] | Name: [",$0.portName,"] | UID: [",$0.uid,"]")
+                }
+                
+                /// Playcall update when Airplaying should not trigger on
+                /// 1. playbackState == .notStarted
+                ///     Airplay was activated before playcall was made, use that playcall
+                ///
+                /// 2. Handoff between two Airplaying devices
+                ///     Switching between two AppleTVs fire a "handoff" event, which takes care of the output while the second AppleTV readies itself.
+                ///     Ignore and wait for the "correct" trigger
+                ///
+                if let new = change.new as? Bool {
+                    let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
+                    let started = self.playbackState == .notStarted
+                    
+                    if !isHandoffTrigger && !started {
+                        print("------- NEW PLAYCALL")
+                        self.airplayHandler?.handleAirplay(active: new, tech: self, source: self.currentSource)
+                    }
+                    
+                    print("------- onAirplayStatusChanged",new)
+                    
+                }
             }
         }
     }
@@ -827,12 +868,6 @@ extension HLSNative {
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
-                print("isExternalPlaybackActive",self.avPlayer.isExternalPlaybackActive)
-                if let time = self.playheadTime {
-                    let date = Date(milliseconds: time)
-                    print("PlayheadTime:",date,"|",Date())
-                }
-                print("Position:",self.playheadPosition)
                 callback(self, self.currentAsset?.source, self.avPlayer.isExternalPlaybackActive)
             }
         }
