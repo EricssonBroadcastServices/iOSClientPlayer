@@ -186,6 +186,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     
     public required init() {
         avPlayer = AVPlayer()
+        avPlayer.usesExternalPlaybackWhileExternalScreenIsActive = true
         
         handleCurrentItemChanges()
         handlePlaybackStateChanges()
@@ -380,6 +381,15 @@ extension HLSNative {
     }
 }
 
+extension HLSNative {
+    /// A Boolean value that indicates whether the player is currently playing video in external playback mode.
+    ///
+    /// External playback mode includes `Airplay` to an Airplay capable device
+    public var isExternalPlaybackActive: Bool {
+        return avPlayer.isExternalPlaybackActive
+    }
+}
+
 // MARK: - Events
 /// Player Item Status Change Events
 extension HLSNative {
@@ -417,15 +427,15 @@ extension HLSNative {
                     case .readyToPlay:
                         switch self.playbackState {
                         case .notStarted:
-                            // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
-                            let offset = self.startOffset(for: mediaAsset)
-                            let validation = self.validate(startOffset: offset, mediaAsset: mediaAsset)
-                            if let resolvedOffset = validation.0 {
-                                switch resolvedOffset {
+                            guard !self.isExternalPlaybackActive else {
+                                // EMP-11129 We cant check for invalidStartTime on Airplay events since the seekable ranges are not loaded yet.
+                                print("isExternalPlaybackActive",self.isExternalPlaybackActive)
+                                let offset = self.startOffset(for: mediaAsset)
+                                switch offset {
                                 case .defaultStartTime:
-                                    /// Use default behaviour
-                                    onReady()
+                                    print("StartTime: .defaultStartTime")
                                 case let .startPosition(position: value):
+                                    print("StartTime: .startPosition",value)
                                     let cmTime = CMTime(value: value, timescale: 1000)
                                     mediaAsset.playerItem.seek(to: cmTime) { success in
                                         onReady()
@@ -434,6 +444,60 @@ extension HLSNative {
                                     if #available(iOS 11.0, *) {
                                         /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
                                         let date = Date(milliseconds: value)
+                                        print("StartTime: .startTime",value)
+                                        mediaAsset.playerItem.seek(to: date) { success in
+                                            onReady()
+                                        }
+                                    }
+                                    else {
+                                        /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
+                                        let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
+                                        if let begining = seekableTimeStart?.seconds {
+                                            let startPosition = value - Int64(begining * 1000)
+                                            let cmTime = CMTime(value: startPosition, timescale: 1000)
+                                            print("StartTime: .startTime -> startPosition",startPosition)
+                                            mediaAsset.playerItem.seek(to: cmTime) { success in
+                                                onReady()
+                                            }
+                                        }
+                                        else {
+                                            onReady()
+                                        }
+                                    }
+                                }
+                                return
+                            }
+                            
+                            print("isExternalPlaybackActive",self.isExternalPlaybackActive)
+                            // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
+                            print("RANGE:", self.seekableRanges.first?.start.seconds, self.seekableRanges.last?.end.seconds)
+                            let offset = self.startOffset(for: mediaAsset)
+                            switch offset {
+                            case .defaultStartTime:
+                                print("Unresolved: .defaultStartTime")
+                            case .startPosition(position: let pos):
+                                print("Unresolved: .postion",pos)
+                            case .startTime(time: let time):
+                                print("Unresolved: .time",time)
+                            }
+                            let validation = self.validate(startOffset: offset, mediaAsset: mediaAsset)
+                            if let resolvedOffset = validation.0 {
+                                switch resolvedOffset {
+                                case .defaultStartTime:
+                                    print("StartTime: .defaultStartTime")
+                                    /// Use default behaviour
+                                    onReady()
+                                case let .startPosition(position: value):
+                                    print("StartTime: .startPosition",value)
+                                    let cmTime = CMTime(value: value, timescale: 1000)
+                                    mediaAsset.playerItem.seek(to: cmTime) { success in
+                                        onReady()
+                                    }
+                                case let .startTime(time: value):
+                                    if #available(iOS 11.0, *) {
+                                        /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
+                                        let date = Date(milliseconds: value)
+                                        print("StartTime: .startTime",value)
                                         mediaAsset.playerItem.seek(to: date) { success in
                                             // TODO: What if the seek was not successful?
                                             onReady()
@@ -445,6 +509,7 @@ extension HLSNative {
                                         if let begining = seekableTimeStart?.seconds {
                                             let startPosition = value - Int64(begining * 1000)
                                             let cmTime = CMTime(value: startPosition, timescale: 1000)
+                                            print("StartTime: .startTime -> startPosition",startPosition)
                                             mediaAsset.playerItem.seek(to: cmTime) { success in
                                                 onReady()
                                             }
@@ -456,6 +521,7 @@ extension HLSNative {
                                 }
                             }
                             else if let warning = validation.1 {
+                                print("StartTime Warning:",warning.message)
                                 /// StartTime was illegal
                                 self.eventDispatcher.onWarning(self, self.currentSource, warning)
                                 self.currentSource?.analyticsConnector.onWarning(tech: self, source: self.currentSource, warning: warning)
@@ -482,7 +548,7 @@ extension HLSNative {
         let checkBounds: (Int64, [CMTimeRange]) -> (StartOffset?, PlayerWarning<HLSNative<Context>,Context>?) = {offset, ranges in
             let cmTime = CMTime(value: offset, timescale: 1000)
             let inRange = ranges.reduce(false) { $0 || $1.containsTime(cmTime) }
-            
+            print("Range:",ranges.first?.start.seconds, offset, ranges.last?.end.seconds,"PHT", self.playheadTime, "|", mediaAsset.playerItem.currentDate()?.millisecondsSince1970, "PHP", self.playheadPosition, mediaAsset.playerItem.currentTime().seconds * 1000)
             guard inRange else {
                 let warning = PlayerWarning<HLSNative<Context>,Context>.tech(warning: .invalidStartTime(startTime: offset, seekableRanges: ranges))
                 return (nil, warning)
@@ -812,12 +878,12 @@ extension HLSNative {
 extension HLSNative {
     /// Subscribes to and handles `AVPlayer.isExternalPlaybackActive` changes.
     fileprivate func handleExternalPlayback() {
-        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new, .old]) { [weak self] player, change in
+        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new, .old, .prior]) { [weak self] player, change in
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
                 
-                print(">>>>>>>>> handleExternalPlayback")
+                print(">>>>>>>>> handleExternalPlayback pos")
                 switch self.playbackState {
                 case .notStarted: print("playbackState.notStarted")
                 case .paused: print("playbackState.paused")
@@ -830,7 +896,7 @@ extension HLSNative {
                 AVAudioSession.sharedInstance().currentRoute.outputs.forEach{
                     print("Type: [",$0.portType,"] | Name: [",$0.portName,"] | UID: [",$0.uid,"]")
                 }
-                
+                print("pos",self.playheadPosition, "time",self.playheadTime)
                 /// Playcall update when Airplaying should not trigger on
                 /// 1. playbackState == .notStarted
                 ///     Airplay was activated before playcall was made, use that playcall
@@ -839,17 +905,21 @@ extension HLSNative {
                 ///     Switching between two AppleTVs fire a "handoff" event, which takes care of the output while the second AppleTV readies itself.
                 ///     Ignore and wait for the "correct" trigger
                 ///
-                if let new = change.new as? Bool {
-                    let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
-                    let started = self.playbackState == .notStarted
-                    
-                    if !isHandoffTrigger && !started {
-                        print("------- NEW PLAYCALL")
-                        self.airplayHandler?.handleAirplay(active: new, tech: self, source: self.currentSource)
+                if change.isPrior {
+                }
+                else {
+                    if let new = change.new as? Bool {
+                        let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
+                        let started = self.playbackState == .notStarted
+                        
+                        if !isHandoffTrigger && !started {
+                            print("------- NEW PLAYCALL")
+                            self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
+                        }
+                        
+                        print("------- onAirplayStatusChanged",new)
+                        self.onAirplayStatusChanged(self, self.currentSource, new)
                     }
-                    
-                    print("------- onAirplayStatusChanged",new)
-                    
                 }
             }
         }

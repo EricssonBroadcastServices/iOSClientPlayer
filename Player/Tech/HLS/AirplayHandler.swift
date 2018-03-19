@@ -9,5 +9,5 @@
 import Foundation
 
 public protocol AirplayHandler: class {
-    func handleAirplay<Tech, Source>(active: Bool, tech: Tech, source: Source?) where Tech: PlaybackTech, Source: MediaSource
+    func handleAirplayEvent<Tech, Source>(active: Bool, tech: Tech, source: Source?) where Tech: PlaybackTech, Source: MediaSource
 }
