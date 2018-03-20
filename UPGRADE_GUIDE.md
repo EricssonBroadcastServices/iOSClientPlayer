@@ -1,5 +1,21 @@
 # Upgrade Guide
 
+## 2.0.80
+
+### API Changes
+
+#### HLSNative
+
+| reason | api |
+| -------- | --- |
+| deprecated | `func observeRateChanges(callback: @escaping (HLSNative<Context>, Context.Source?, Float) -> Void) -> RateObserver` |
+
+#### RateObserver
+| reason | api |
+| -------- | --- |
+| deprecated | `RateObserver` |
+
+
 ## 0.72.0 to 0.77.0
 
 #### API changes
