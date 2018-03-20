@@ -149,10 +149,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         /// - parameter callback: Fires once the async loading is complete, or finishes with an error.
         internal func prepare(loading keys: [AVAsset.LoadableKeys], callback: @escaping (HLSNativeError?) -> Void) {
             urlAsset.loadValuesAsynchronously(forKeys: keys.rawValues) {
-                print("mediaAsset.prepare loadValuesAsynchronously")
                 DispatchQueue.main.async { [weak self] in
-                    print("mediaAsset.prepare DispatchQueue.main.async")
-                    
                     // Check for any issues preparing the loaded values
                     let errors = keys.flatMap{ key -> Error? in
                         var error: NSError?
@@ -271,7 +268,6 @@ extension HLSNative {
         playbackState = .notStarted
         
         mediaAsset.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
-            print("mediaAsset.prepare")
             guard let weakSelf = self else {
                 // If the player is torn down before asset preparation is complete, there
                 let error = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.techDeallocated)
@@ -296,13 +292,11 @@ extension HLSNative {
     ///
     /// Finally, once the `Player` is configured, the `currentMedia` is replaced with the newly created one. The system now awaits playback status to return `.readyToPlay`.
     fileprivate func readyPlayback(with mediaAsset: MediaAsset<Context.Source>, callback: @escaping () -> Void) {
-        print("readyPlayback")
         currentAsset = nil
         
         // Observe changes to .status for new playerItem
         // We will perform "pre-load" seek of the `AVPlayerItem` to the requested *Start Time*
         handleStatusChange(mediaAsset: mediaAsset, onActive: { [weak self] in
-            print("handleStatusChange onActive")
             guard let `self` = self else { return }
             
             // `mediaAsset` is now prepared.
@@ -317,7 +311,6 @@ extension HLSNative {
             /// NOTE: It seems we cant reliably select subs and audio until after `replaceCurrentItem(with:)` is called
             self.applyLanguagePreferences(on: mediaAsset)
         }) { [weak self] in
-            print("handleStatusChange onReady")
             guard let `self` = self else { return }
             self.playbackState = .preparing
             // Trigger on-ready callbacks and autoplay if available
@@ -412,16 +405,6 @@ extension HLSNative {
                     case .unknown:
                         switch self.playbackState {
                         case .notStarted:
-                            // Prepare the `AVPlayerItem` by seeking to the required startTime before we perform any loading or networking.
-                            // We cant set the start time as a unix timestamp at this point since the `playerItem` has not yet loaded the manifest and does
-                            // yet know the stream is *timestamp related*. Wait untill playback is ready to do that.
-                            //
-                            // BUGFIX: We cant trigger `onReady` here since that will trigger `onPlaybackStarted` before we have the manifest loaded. This will cause onPlaybackStarted for Date-Time associated streams to report playback position `nil/0` since the playheadTime cant associate bufferPosition with the manifest stream start.
-//                            if let value = self.startPosition {
-//                                // BUGFIX: AVPlayerItem CANT service a seek with a completion handler untill state == .readyToPlay
-//                                let cmTime = CMTime(value: value, timescale: 1000)
-//                                mediaAsset.playerItem.seek(to: cmTime)
-//                            }
                             onActive()
                         default: return
                         }
@@ -429,14 +412,12 @@ extension HLSNative {
                         switch self.playbackState {
                         case .notStarted:
                             guard !self.isExternalPlaybackActive else {
-                                // EMP-11129 We cant check for invalidStartTime on Airplay events since the seekable ranges are not loaded yet.
-                                print("isExternalPlaybackActive",self.isExternalPlaybackActive)
+                                /// EMP-11129 We cant check for invalidStartTime on Airplay events since the seekable ranges are not loaded yet.
                                 let offset = self.startOffset(for: mediaAsset)
                                 switch offset {
                                 case .defaultStartTime:
-                                    print("StartTime: .defaultStartTime")
+                                    onReady()
                                 case let .startPosition(position: value):
-                                    print("StartTime: .startPosition",value)
                                     let cmTime = CMTime(value: value, timescale: 1000)
                                     mediaAsset.playerItem.seek(to: cmTime) { success in
                                         onReady()
@@ -445,51 +426,39 @@ extension HLSNative {
                                     if #available(iOS 11.0, *) {
                                         /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
                                         let date = Date(milliseconds: value)
-                                        print("StartTime: .startTime",value)
                                         mediaAsset.playerItem.seek(to: date) { success in
                                             onReady()
                                         }
                                     }
                                     else {
                                         /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
-                                        let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
-                                        if let begining = seekableTimeStart?.seconds {
-                                            let startPosition = value - Int64(begining * 1000)
-                                            let cmTime = CMTime(value: startPosition, timescale: 1000)
-                                            print("StartTime: .startTime -> startPosition",startPosition)
-                                            mediaAsset.playerItem.seek(to: cmTime) { success in
-                                                onReady()
-                                            }
-                                        }
-                                        else {
-                                            onReady()
-                                        }
+                                        /// EMP-11129 We cant check for invalidStartTime on Airplay events since the seekable ranges are not loaded yet.
+                                        // TODO: Throw warning?
+//                                        let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
+//                                        if let begining = seekableTimeStart?.seconds {
+//                                            let startPosition = value - Int64(begining * 1000)
+//                                            let cmTime = CMTime(value: startPosition, timescale: 1000)
+//                                            mediaAsset.playerItem.seek(to: cmTime) { success in
+//                                                onReady()
+//                                            }
+//                                        }
+//                                        else {
+//                                            onReady()
+//                                        }
                                     }
                                 }
                                 return
                             }
                             
-                            print("isExternalPlaybackActive",self.isExternalPlaybackActive)
                             // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
-                            print("RANGE:", self.seekableRanges.first?.start.seconds, self.seekableRanges.last?.end.seconds)
                             let offset = self.startOffset(for: mediaAsset)
-                            switch offset {
-                            case .defaultStartTime:
-                                print("Unresolved: .defaultStartTime")
-                            case .startPosition(position: let pos):
-                                print("Unresolved: .postion",pos)
-                            case .startTime(time: let time):
-                                print("Unresolved: .time",time)
-                            }
                             let validation = self.validate(startOffset: offset, mediaAsset: mediaAsset)
                             if let resolvedOffset = validation.0 {
                                 switch resolvedOffset {
                                 case .defaultStartTime:
-                                    print("StartTime: .defaultStartTime")
                                     /// Use default behaviour
                                     onReady()
                                 case let .startPosition(position: value):
-                                    print("StartTime: .startPosition",value)
                                     let cmTime = CMTime(value: value, timescale: 1000)
                                     mediaAsset.playerItem.seek(to: cmTime) { success in
                                         onReady()
@@ -498,7 +467,6 @@ extension HLSNative {
                                     if #available(iOS 11.0, *) {
                                         /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
                                         let date = Date(milliseconds: value)
-                                        print("StartTime: .startTime",value)
                                         mediaAsset.playerItem.seek(to: date) { success in
                                             // TODO: What if the seek was not successful?
                                             onReady()
@@ -510,7 +478,6 @@ extension HLSNative {
                                         if let begining = seekableTimeStart?.seconds {
                                             let startPosition = value - Int64(begining * 1000)
                                             let cmTime = CMTime(value: startPosition, timescale: 1000)
-                                            print("StartTime: .startTime -> startPosition",startPosition)
                                             mediaAsset.playerItem.seek(to: cmTime) { success in
                                                 onReady()
                                             }
@@ -522,7 +489,6 @@ extension HLSNative {
                                 }
                             }
                             else if let warning = validation.1 {
-                                print("StartTime Warning:",warning.message)
                                 /// StartTime was illegal
                                 self.eventDispatcher.onWarning(self, self.currentSource, warning)
                                 self.currentSource?.analyticsConnector.onWarning(tech: self, source: self.currentSource, warning: warning)
@@ -549,7 +515,6 @@ extension HLSNative {
         let checkBounds: (Int64, [CMTimeRange]) -> (StartOffset?, PlayerWarning<HLSNative<Context>,Context>?) = {offset, ranges in
             let cmTime = CMTime(value: offset, timescale: 1000)
             let inRange = ranges.reduce(false) { $0 || $1.containsTime(cmTime) }
-            print("Range:",ranges.first?.start.seconds, offset, ranges.last?.end.seconds,"PHT", self.playheadTime, "|", mediaAsset.playerItem.currentDate()?.millisecondsSince1970, "PHP", self.playheadPosition, mediaAsset.playerItem.currentTime().seconds * 1000)
             guard inRange else {
                 let warning = PlayerWarning<HLSNative<Context>,Context>.tech(warning: .invalidStartTime(startTime: offset, seekableRanges: ranges))
                 return (nil, warning)
@@ -698,17 +663,9 @@ extension HLSNative {
         mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemFailedToPlayToEndTime, for: playerItem) { [weak self] notification in
             guard let `self` = self else { return }
             if let error = notification.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? Error {
-                if let nsError = error as? NSError, let underlyingError = nsError.userInfo[NSUnderlyingErrorKey] as? NSError {
-                    print(nsError.debugInfoString)
-                    print(underlyingError.debugInfoString)
-                    if let underlyingUnderlyingError = underlyingError.userInfo[NSUnderlyingErrorKey] as? Error {
-                        print(underlyingUnderlyingError.debugInfoString)
-                    }
-                }
                 DispatchQueue.main.async { [weak self] in
                     guard let `self` = self else { return }
                     let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToCompletePlayback(error: error))
-                    print(techError.message, techError.code)
                     self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
                     if let mediaAsset = self.currentAsset {
                         mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
@@ -861,7 +818,6 @@ extension HLSNative {
                         return
                     case .failed:
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: self.avPlayer.error))
-                        print(techError.message, techError.code)
                         self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
                         if let mediaAsset = self.currentAsset {
                             mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
