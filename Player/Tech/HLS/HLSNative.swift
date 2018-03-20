@@ -856,10 +856,8 @@ extension HLSNative {
                 if let newValue = change.new as? Int, let status = AVPlayerStatus(rawValue: newValue) {
                     switch status {
                     case .unknown:
-                        print("AVPlayer .unknown")
                         return
                     case .readyToPlay:
-                        print("AVPlayer .readyToPlay")
                         return
                     case .failed:
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: self.avPlayer.error))
@@ -883,21 +881,6 @@ extension HLSNative {
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
-                
-                print(">>>>>>>>> handleExternalPlayback pos")
-                switch self.playbackState {
-                case .notStarted: print("playbackState.notStarted")
-                case .paused: print("playbackState.paused")
-                case .playing: print("playbackState.playing")
-                case .preparing: print("playbackState.preparing")
-                case .stopped: print("playbackState.stopped")
-                }
-                print("Old",(change.old as? Bool) ?? "n/a","->",(change.new as? Bool) ?? "n/a","New","isPrior",(change.isPrior as? Bool) ?? "n/a")
-                print("Protected:",self.avPlayer.currentItem?.asset.hasProtectedContent ?? "n/a")
-                AVAudioSession.sharedInstance().currentRoute.outputs.forEach{
-                    print("Type: [",$0.portType,"] | Name: [",$0.portName,"] | UID: [",$0.uid,"]")
-                }
-                print("pos",self.playheadPosition, "time",self.playheadTime)
                 /// Playcall update when Airplaying should not trigger on
                 /// 1. playbackState == .notStarted
                 ///     Airplay was activated before playcall was made, use that playcall
@@ -911,38 +894,17 @@ extension HLSNative {
                 else {
                     if let new = change.new as? Bool {
                         let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
-                        let started = self.playbackState == .notStarted
+                        let started = (self.playbackState == .notStarted)
                         
                         if !isHandoffTrigger && !started {
-                            print("------- NEW PLAYCALL")
                             self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
                         }
                         
-                        print("------- onAirplayStatusChanged",new)
                         self.onAirplayStatusChanged(self, self.currentSource, new)
                     }
                 }
             }
         }
-    }
-    
-    
-    /// Returns an *unmaintained* KVO token which needs to be cancelled before deallocation. Responsbility for managing this rests entierly on the caller/creator.
-    ///
-    /// Final parameter in callback tells if playback is external or not
-    ///
-    /// - parameter callback: responsible tech | associated source | external playback active or not
-    /// - returns: UnmanagedPlayerObserver
-    public func observeExternalPlayback(callback: @escaping (HLSNative<Context>, Context.Source?, Bool) -> Void) -> UnmanagedPlayerObserver {
-        var observer = PlayerObserver()
-        observer.observe(path: .isExternalPlaybackActive, on: avPlayer) { [weak self] player, change in
-            guard let `self` = self else { return }
-            DispatchQueue.main.async { [weak self] in
-                guard let `self` = self else { return }
-                callback(self, self.currentAsset?.source, self.avPlayer.isExternalPlaybackActive)
-            }
-        }
-        return UnmanagedPlayerObserver(playerObserver: observer)
     }
 }
 
