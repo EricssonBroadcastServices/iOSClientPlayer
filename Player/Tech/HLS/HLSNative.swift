@@ -187,6 +187,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public required init() {
         avPlayer = AVPlayer()
         avPlayer.usesExternalPlaybackWhileExternalScreenIsActive = true
+        avPlayer.allowsExternalPlayback = true
         
         handleCurrentItemChanges()
         handlePlaybackStateChanges()
