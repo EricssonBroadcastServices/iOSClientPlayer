@@ -14,6 +14,9 @@
 #### Features
 * `EMP-11121` Introduced specialized logic, `AirplayHandler` to manage Airplay scenarios.
 
+#### Changes
+* `EMP-11156` Standardized error messages and introduced an `info` variable
+
 ## 2.0.79
 
 #### Bug Fixes

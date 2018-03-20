@@ -46,6 +46,19 @@ extension HLSNativeError {
     
     public var message: String {
         switch self {
+        case .missingMediaUrl: return "MISSING_MEDIA_URL"
+        case .failedToPrepare(errors: _): return "FAILED_TO_PREPARE"
+        case .loadedButNotPlayable: return "LOADED_BUT_NOT_PLAYABLE"
+        case .failedToReady(error: _): return "FAILED_TO_READY"
+        case .failedToCompletePlayback(error: _): return "FAILED_TO_COMPLETE_PLAYBACK"
+        case .failedToValdiateContentKey(error: _): return "FAILED_TO_VALIDATE_CONTENT_KEY"
+        case .techDeallocated: return "TECH_DEALLOCATED"
+        }
+    }
+    
+    /// Returns detailed information about the error
+    public var info: String? {
+        switch self {
         case .missingMediaUrl: return "Missing media url"
         case .failedToPrepare(errors: let errors):
             let combined = errors.map{ $0.debugInfoString }.joined(separator: "\n")
