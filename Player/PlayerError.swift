@@ -24,11 +24,22 @@ public enum PlayerError<Tech: PlaybackTech, Context: MediaContext>: ExpandedErro
 }
 
 extension PlayerError {
-    /// The localized error description
+    
+    /// Error description
     public var message: String {
         switch self {
         case .tech(error: let error): return error.message
         case .context(error: let error): return error.message
+        }
+    }
+}
+
+extension PlayerError {
+    /// Returns detailed information about the error
+    public var info: String? {
+        switch self {
+        case .tech(error: let error): return error.info
+        case .context(error: let error): return error.info
         }
     }
 }
@@ -63,4 +74,7 @@ public protocol ExpandedError: Error {
     
     /// Should specify a domain the error belongs to
     var domain: String { get }
+    
+    /// Should optionally return detailed information describing the error
+    var info: String? { get }
 }

@@ -36,9 +36,12 @@ public final class ManifestContext: MediaContext {
         public let message: String
         public let code: Int
         
-        public init(message: String, code: Int) {
+        public let info: String?
+        
+        public init(message: String, code: Int, info: String? = nil) {
             self.message = message
             self.code = code
+            self.info = info
         }
         
         public var domain: String { return "ManifestContextErrorDomain" }
