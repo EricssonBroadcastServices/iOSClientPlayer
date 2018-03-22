@@ -20,25 +20,32 @@ extension HLSNative: MediaRendering {
             
             renderingView.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
             renderingView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            
+            renderingView.translatesAutoresizingMaskIntoConstraints = false
             playerView.insertSubview(renderingView, at: 0)
             
-            renderingView
+            let leading = renderingView
                 .leadingAnchor
                 .constraint(equalTo: playerView.leadingAnchor)
-                .isActive = true
-            renderingView
+            leading.isActive = true
+            leading.identifier = "PlayerView-RenderingView-Leading"
+            
+            let top = renderingView
                 .topAnchor
                 .constraint(equalTo: playerView.topAnchor)
-                .isActive = true
-            renderingView
-                .rightAnchor
-                .constraint(equalTo: playerView.rightAnchor)
-                .isActive = true
-            renderingView
+            top.isActive = true
+            top.identifier = "PlayerView-RenderingView-Top"
+            
+            let trailing = renderingView
+                .trailingAnchor
+                .constraint(equalTo: playerView.trailingAnchor)
+            trailing.isActive = true
+            trailing.identifier = "PlayerView-RenderingView-Trailing"
+            
+            let bottom = renderingView
                 .bottomAnchor
                 .constraint(equalTo: playerView.bottomAnchor)
-                .isActive = true
+            bottom.isActive = true
+            bottom.identifier = "PlayerView-RenderingView-Bottom"
             
             return renderingView.avPlayerLayer
         }
