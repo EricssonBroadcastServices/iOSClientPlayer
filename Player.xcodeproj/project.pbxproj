@@ -8,59 +8,70 @@
 
 /* Begin PBXBuildFile section */
 		7602E8891F38341A00601CD4 /* StartTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7602E8881F38341A00601CD4 /* StartTime.swift */; };
-		7608004220691479007F59D5 /* HLSNative+MediaPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */; };
-		7608004320691479007F59D5 /* FairplayRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20B1FC2F6B700843FEF /* FairplayRequester.swift */; };
-		7608004420691479007F59D5 /* AirplayHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76810148205ABFBC00EF7F52 /* AirplayHandler.swift */; };
-		7608004520691479007F59D5 /* PassThroughConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660391A1FC6E07500E79091 /* PassThroughConnector.swift */; };
-		7608004620691479007F59D5 /* NotificationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2121FC2F6B700843FEF /* NotificationToken.swift */; };
-		7608004720691479007F59D5 /* MediaSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1E11FC2E61100843FEF /* MediaSource.swift */; };
-		7608004820691479007F59D5 /* Sequence+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8437A1EA7819D00BDAF2C /* Sequence+Extensions.swift */; };
-		7608004920691479007F59D5 /* MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843881EA7819D00BDAF2C /* MediaRendering.swift */; };
-		7608004A20691479007F59D5 /* AVPlayerItem+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20A1FC2F6B700843FEF /* AVPlayerItem+Extensions.swift */; };
-		7608004B20691479007F59D5 /* ItemObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2231FC2F75800843FEF /* ItemObserver.swift */; };
-		7608004C20691479007F59D5 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843821EA7819D00BDAF2C /* Player.swift */; };
-		7608004D20691479007F59D5 /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619E54D1FCC05D600ACACAE /* PlayerError.swift */; };
-		7608004E20691479007F59D5 /* KVOChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2101FC2F6B700843FEF /* KVOChange.swift */; };
-		7608004F20691479007F59D5 /* EventResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039141FC6DF4500E79091 /* EventResponder.swift */; };
-		7608005020691479007F59D5 /* HLSNative+NetworkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01DF203EEC0E00B32345 /* HLSNative+NetworkBehavior.swift */; };
-		7608005120691479007F59D5 /* NotificationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2111FC2F6B700843FEF /* NotificationObserver.swift */; };
-		7608005220691479007F59D5 /* HLSNativeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01DB203EB20700B32345 /* HLSNativeConfiguration.swift */; };
-		7608005320691479007F59D5 /* ManifestContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039241FC6E24500E79091 /* ManifestContext.swift */; };
-		7608005420691479007F59D5 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039221FC6E17900E79091 /* EventDispatcher.swift */; };
-		7608005520691479007F59D5 /* AVMediaSelectionGroup+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD3C203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift */; };
-		7608005620691479007F59D5 /* UnmanagedPlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */; };
-		7608005720691479007F59D5 /* PlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2251FC2F77000843FEF /* PlayerObserver.swift */; };
-		7608005820691479007F59D5 /* HLSNativeError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20D1FC2F6B700843FEF /* HLSNativeError.swift */; };
-		7608005920691479007F59D5 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
-		7608005A20691479007F59D5 /* AVAsset+LoadableKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2081FC2F6B700843FEF /* AVAsset+LoadableKeys.swift */; };
-		7608005B20691479007F59D5 /* TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE5202B512B00941ABC /* TrackSelectable.swift */; };
-		7608005C20691479007F59D5 /* MediaPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843871EA7819D00BDAF2C /* MediaPlayback.swift */; };
-		7608005D20691479007F59D5 /* HLSNative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20C1FC2F6B700843FEF /* HLSNative.swift */; };
-		7608005E20691479007F59D5 /* HLSNative+TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */; };
-		7608005F20691479007F59D5 /* Player+ManifestContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039281FC7069900E79091 /* Player+ManifestContext.swift */; };
-		7608006020691479007F59D5 /* HLSNativeWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */; };
-		7608006120691479007F59D5 /* Warning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E3202056150071D8C9 /* Warning.swift */; };
-		7608006220691479007F59D5 /* Tech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1E41FC2E73B00843FEF /* Tech.swift */; };
-		7608006320691479007F59D5 /* RateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D4968F20455CE9008EF3C7 /* RateObserver.swift */; };
-		7608006420691479007F59D5 /* AnalyticsConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039161FC6DFA200E79091 /* AnalyticsConnector.swift */; };
-		7608006520691479007F59D5 /* Observer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2131FC2F6B700843FEF /* Observer.swift */; };
-		7608006620691479007F59D5 /* MediaContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1DF1FC2E5DE00843FEF /* MediaContext.swift */; };
-		7608006720691479007F59D5 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A89CEB2020915700C23579 /* Date+Extensions.swift */; };
-		7608006820691479007F59D5 /* NetworkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01D5203DEA4C00B32345 /* NetworkBehavior.swift */; };
-		7608006920691479007F59D5 /* MediaGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD3A203C7A340038F754 /* MediaGroup.swift */; };
-		7608006A20691479007F59D5 /* AnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660391D1FC6E0BB00E79091 /* AnalyticsLogger.swift */; };
-		7608006B20691479007F59D5 /* HLSNative+ManifestContext+Airplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014C205AC73500EF7F52 /* HLSNative+ManifestContext+Airplay.swift */; };
-		7608006C20691479007F59D5 /* AVPlayer+KeyValueObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2091FC2F6B700843FEF /* AVPlayer+KeyValueObservable.swift */; };
-		7608006D20691479007F59D5 /* HLSNative+MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */; };
-		7608006E20691479007F59D5 /* MediaTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD37203C7A0E0038F754 /* MediaTrack.swift */; };
-		7608006F20691479007F59D5 /* HLSNative+StartTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */; };
-		7608007020691479007F59D5 /* KeyValueObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20F1FC2F6B700843FEF /* KeyValueObserver.swift */; };
-		7608007120691479007F59D5 /* StartTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7602E8881F38341A00601CD4 /* StartTime.swift */; };
-		7608007220691479007F59D5 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766FE46C203AF484003B9B90 /* Error+Extensions.swift */; };
-		7608007320691479007F59D5 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039261FC6E25800E79091 /* Manifest.swift */; };
-		7608007420691479007F59D5 /* KeyValueObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20E1FC2F6B700843FEF /* KeyValueObservable.swift */; };
-		7608007520691479007F59D5 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8438A1EA7819D00BDAF2C /* PlayerView.swift */; };
-		7608007820691479007F59D5 /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7608009220691E19007F59D5 /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */; };
+		7608009320691E19007F59D5 /* HLSNativeNetworkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01DD203EE72200B32345 /* HLSNativeNetworkBehavior.swift */; };
+		7608009420691E19007F59D5 /* PlayerErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BCE05B2047E54B00F1E49C /* PlayerErrorSpec.swift */; };
+		7608009520691E19007F59D5 /* InvalidStartTimeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7690E7C220404BB7003A6485 /* InvalidStartTimeSpec.swift */; };
+		7608009620691E19007F59D5 /* HLSNativeTrackSelectableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD40203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift */; };
+		7608009720691E19007F59D5 /* MockedAVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD44203CAD210038F754 /* MockedAVPlayer.swift */; };
+		7608009820691E19007F59D5 /* TestEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD42203CAC420038F754 /* TestEnv.swift */; };
+		7608009A20691E19007F59D5 /* Player.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8434E1EA77DF700BDAF2C /* Player.framework */; };
+		7608009B20691E19007F59D5 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB41EA8DE29001DBDDB /* Quick.framework */; };
+		7608009C20691E19007F59D5 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB61EA8DE34001DBDDB /* Nimble.framework */; };
+		7608009D20691E19007F59D5 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
+		760800A82069210E007F59D5 /* HLSNative+MediaPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */; };
+		760800A92069210E007F59D5 /* FairplayRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20B1FC2F6B700843FEF /* FairplayRequester.swift */; };
+		760800AA2069210E007F59D5 /* AirplayHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76810148205ABFBC00EF7F52 /* AirplayHandler.swift */; };
+		760800AB2069210E007F59D5 /* PassThroughConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660391A1FC6E07500E79091 /* PassThroughConnector.swift */; };
+		760800AC2069210E007F59D5 /* NotificationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2121FC2F6B700843FEF /* NotificationToken.swift */; };
+		760800AD2069210E007F59D5 /* MediaSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1E11FC2E61100843FEF /* MediaSource.swift */; };
+		760800AE2069210E007F59D5 /* Sequence+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8437A1EA7819D00BDAF2C /* Sequence+Extensions.swift */; };
+		760800AF2069210E007F59D5 /* MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843881EA7819D00BDAF2C /* MediaRendering.swift */; };
+		760800B02069210E007F59D5 /* AVPlayerItem+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20A1FC2F6B700843FEF /* AVPlayerItem+Extensions.swift */; };
+		760800B12069210E007F59D5 /* ItemObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2231FC2F75800843FEF /* ItemObserver.swift */; };
+		760800B22069210E007F59D5 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843821EA7819D00BDAF2C /* Player.swift */; };
+		760800B32069210E007F59D5 /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619E54D1FCC05D600ACACAE /* PlayerError.swift */; };
+		760800B42069210E007F59D5 /* KVOChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2101FC2F6B700843FEF /* KVOChange.swift */; };
+		760800B52069210E007F59D5 /* EventResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039141FC6DF4500E79091 /* EventResponder.swift */; };
+		760800B62069210E007F59D5 /* HLSNative+NetworkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01DF203EEC0E00B32345 /* HLSNative+NetworkBehavior.swift */; };
+		760800B72069210E007F59D5 /* NotificationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2111FC2F6B700843FEF /* NotificationObserver.swift */; };
+		760800B82069210E007F59D5 /* HLSNativeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01DB203EB20700B32345 /* HLSNativeConfiguration.swift */; };
+		760800B92069210E007F59D5 /* ManifestContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039241FC6E24500E79091 /* ManifestContext.swift */; };
+		760800BA2069210E007F59D5 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039221FC6E17900E79091 /* EventDispatcher.swift */; };
+		760800BB2069210E007F59D5 /* AVMediaSelectionGroup+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD3C203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift */; };
+		760800BC2069210E007F59D5 /* UnmanagedPlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */; };
+		760800BD2069210E007F59D5 /* PlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2251FC2F77000843FEF /* PlayerObserver.swift */; };
+		760800BE2069210E007F59D5 /* HLSNativeError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20D1FC2F6B700843FEF /* HLSNativeError.swift */; };
+		760800BF2069210E007F59D5 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
+		760800C02069210E007F59D5 /* AVAsset+LoadableKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2081FC2F6B700843FEF /* AVAsset+LoadableKeys.swift */; };
+		760800C12069210E007F59D5 /* TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE5202B512B00941ABC /* TrackSelectable.swift */; };
+		760800C22069210E007F59D5 /* MediaPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A843871EA7819D00BDAF2C /* MediaPlayback.swift */; };
+		760800C32069210E007F59D5 /* HLSNative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20C1FC2F6B700843FEF /* HLSNative.swift */; };
+		760800C42069210E007F59D5 /* HLSNative+TrackSelectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CD5AE7202B55F200941ABC /* HLSNative+TrackSelectable.swift */; };
+		760800C52069210E007F59D5 /* Player+ManifestContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039281FC7069900E79091 /* Player+ManifestContext.swift */; };
+		760800C62069210E007F59D5 /* HLSNativeWarning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E5202057E40071D8C9 /* HLSNativeWarning.swift */; };
+		760800C72069210E007F59D5 /* Warning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E7F0E3202056150071D8C9 /* Warning.swift */; };
+		760800C82069210E007F59D5 /* Tech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1E41FC2E73B00843FEF /* Tech.swift */; };
+		760800C92069210E007F59D5 /* RateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D4968F20455CE9008EF3C7 /* RateObserver.swift */; };
+		760800CA2069210E007F59D5 /* AnalyticsConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039161FC6DFA200E79091 /* AnalyticsConnector.swift */; };
+		760800CB2069210E007F59D5 /* Observer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2131FC2F6B700843FEF /* Observer.swift */; };
+		760800CC2069210E007F59D5 /* MediaContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC1DF1FC2E5DE00843FEF /* MediaContext.swift */; };
+		760800CD2069210E007F59D5 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A89CEB2020915700C23579 /* Date+Extensions.swift */; };
+		760800CE2069210E007F59D5 /* NetworkBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EA01D5203DEA4C00B32345 /* NetworkBehavior.swift */; };
+		760800CF2069210E007F59D5 /* MediaGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD3A203C7A340038F754 /* MediaGroup.swift */; };
+		760800D02069210E007F59D5 /* AnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660391D1FC6E0BB00E79091 /* AnalyticsLogger.swift */; };
+		760800D12069210E007F59D5 /* HLSNative+ManifestContext+Airplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014C205AC73500EF7F52 /* HLSNative+ManifestContext+Airplay.swift */; };
+		760800D22069210E007F59D5 /* AVPlayer+KeyValueObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2091FC2F6B700843FEF /* AVPlayer+KeyValueObservable.swift */; };
+		760800D32069210E007F59D5 /* HLSNative+MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */; };
+		760800D42069210E007F59D5 /* MediaTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD37203C7A0E0038F754 /* MediaTrack.swift */; };
+		760800D52069210E007F59D5 /* HLSNative+StartTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */; };
+		760800D62069210E007F59D5 /* KeyValueObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20F1FC2F6B700843FEF /* KeyValueObserver.swift */; };
+		760800D72069210E007F59D5 /* StartTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7602E8881F38341A00601CD4 /* StartTime.swift */; };
+		760800D82069210E007F59D5 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766FE46C203AF484003B9B90 /* Error+Extensions.swift */; };
+		760800D92069210E007F59D5 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039261FC6E25800E79091 /* Manifest.swift */; };
+		760800DA2069210E007F59D5 /* KeyValueObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20E1FC2F6B700843FEF /* KeyValueObservable.swift */; };
+		760800DB2069210E007F59D5 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8438A1EA7819D00BDAF2C /* PlayerView.swift */; };
+		760800DE2069210E007F59D5 /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
 		7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619E54D1FCC05D600ACACAE /* PlayerError.swift */; };
 		7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */; };
@@ -139,7 +150,8 @@
 /* Begin PBXFileReference section */
 		760200FC2035C98700EF495D /* update_dependency_graph.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = update_dependency_graph.rb; sourceTree = "<group>"; };
 		7602E8881F38341A00601CD4 /* StartTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartTime.swift; sourceTree = "<group>"; };
-		7608008C20691479007F59D5 /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		760800A220691E19007F59D5 /* PlayerTests-tvOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PlayerTests-tvOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		760800E32069210E007F59D5 /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
 		7619E54D1FCC05D600ACACAE /* PlayerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerError.swift; sourceTree = "<group>"; };
 		7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaRendering.swift"; sourceTree = "<group>"; };
@@ -192,7 +204,7 @@
 		76A8434E1EA77DF700BDAF2C /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A843511EA77DF700BDAF2C /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		76A843521EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		76A843571EA77DF700BDAF2C /* PlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		76A843571EA77DF700BDAF2C /* PlayerTests-iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PlayerTests-iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTests.swift; sourceTree = "<group>"; };
 		76A8435E1EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		76A843681EA77EC300BDAF2C /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
@@ -228,7 +240,18 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		7608007620691479007F59D5 /* Frameworks */ = {
+		7608009920691E19007F59D5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7608009A20691E19007F59D5 /* Player.framework in Frameworks */,
+				7608009B20691E19007F59D5 /* Quick.framework in Frameworks */,
+				7608009C20691E19007F59D5 /* Nimble.framework in Frameworks */,
+				7608009D20691E19007F59D5 /* Mockingjay.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		760800DC2069210E007F59D5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -435,8 +458,9 @@
 			isa = PBXGroup;
 			children = (
 				76A8434E1EA77DF700BDAF2C /* Player.framework */,
-				76A843571EA77DF700BDAF2C /* PlayerTests.xctest */,
-				7608008C20691479007F59D5 /* Player.framework */,
+				76A843571EA77DF700BDAF2C /* PlayerTests-iOS.xctest */,
+				760800A220691E19007F59D5 /* PlayerTests-tvOS.xctest */,
+				760800E32069210E007F59D5 /* Player.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -537,11 +561,11 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		7608007720691479007F59D5 /* Headers */ = {
+		760800DD2069210E007F59D5 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7608007820691479007F59D5 /* Player.h in Headers */,
+				760800DE2069210E007F59D5 /* Player.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -556,14 +580,31 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		7608004020691479007F59D5 /* Player-tvOS */ = {
+		7608008E20691E19007F59D5 /* PlayerTests-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7608008920691479007F59D5 /* Build configuration list for PBXNativeTarget "Player-tvOS" */;
+			buildConfigurationList = 7608009F20691E19007F59D5 /* Build configuration list for PBXNativeTarget "PlayerTests-tvOS" */;
 			buildPhases = (
-				7608004120691479007F59D5 /* Sources */,
-				7608007620691479007F59D5 /* Frameworks */,
-				7608007720691479007F59D5 /* Headers */,
-				7608007920691479007F59D5 /* Resources */,
+				7608009120691E19007F59D5 /* Sources */,
+				7608009920691E19007F59D5 /* Frameworks */,
+				7608009E20691E19007F59D5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PlayerTests-tvOS";
+			productName = PlayerTests;
+			productReference = 760800A220691E19007F59D5 /* PlayerTests-tvOS.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		760800A62069210E007F59D5 /* Player-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 760800E02069210E007F59D5 /* Build configuration list for PBXNativeTarget "Player-tvOS" */;
+			buildPhases = (
+				760800A72069210E007F59D5 /* Sources */,
+				760800DC2069210E007F59D5 /* Frameworks */,
+				760800DD2069210E007F59D5 /* Headers */,
+				760800DF2069210E007F59D5 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -571,7 +612,7 @@
 			);
 			name = "Player-tvOS";
 			productName = Player;
-			productReference = 7608008C20691479007F59D5 /* Player.framework */;
+			productReference = 760800E32069210E007F59D5 /* Player.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		76A8434D1EA77DF700BDAF2C /* Player-iOS */ = {
@@ -592,9 +633,9 @@
 			productReference = 76A8434E1EA77DF700BDAF2C /* Player.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		76A843561EA77DF700BDAF2C /* PlayerTests */ = {
+		76A843561EA77DF700BDAF2C /* PlayerTests-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 76A843651EA77DF700BDAF2C /* Build configuration list for PBXNativeTarget "PlayerTests" */;
+			buildConfigurationList = 76A843651EA77DF700BDAF2C /* Build configuration list for PBXNativeTarget "PlayerTests-iOS" */;
 			buildPhases = (
 				76A843531EA77DF700BDAF2C /* Sources */,
 				76A843541EA77DF700BDAF2C /* Frameworks */,
@@ -605,9 +646,9 @@
 			dependencies = (
 				76A8435A1EA77DF700BDAF2C /* PBXTargetDependency */,
 			);
-			name = PlayerTests;
+			name = "PlayerTests-iOS";
 			productName = PlayerTests;
-			productReference = 76A843571EA77DF700BDAF2C /* PlayerTests.xctest */;
+			productReference = 76A843571EA77DF700BDAF2C /* PlayerTests-iOS.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -620,7 +661,10 @@
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = emp;
 				TargetAttributes = {
-					7608004020691479007F59D5 = {
+					7608008E20691E19007F59D5 = {
+						DevelopmentTeam = JCUPRVKEC5;
+					};
+					760800A62069210E007F59D5 = {
 						DevelopmentTeam = JCUPRVKEC5;
 						ProvisioningStyle = Automatic;
 					};
@@ -651,14 +695,22 @@
 			projectRoot = "";
 			targets = (
 				76A8434D1EA77DF700BDAF2C /* Player-iOS */,
-				76A843561EA77DF700BDAF2C /* PlayerTests */,
-				7608004020691479007F59D5 /* Player-tvOS */,
+				76A843561EA77DF700BDAF2C /* PlayerTests-iOS */,
+				760800A62069210E007F59D5 /* Player-tvOS */,
+				7608008E20691E19007F59D5 /* PlayerTests-tvOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		7608007920691479007F59D5 /* Resources */ = {
+		7608009E20691E19007F59D5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		760800DF2069210E007F59D5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -682,62 +734,76 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		7608004120691479007F59D5 /* Sources */ = {
+		7608009120691E19007F59D5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7608004220691479007F59D5 /* HLSNative+MediaPlayback.swift in Sources */,
-				7608004320691479007F59D5 /* FairplayRequester.swift in Sources */,
-				7608004420691479007F59D5 /* AirplayHandler.swift in Sources */,
-				7608004520691479007F59D5 /* PassThroughConnector.swift in Sources */,
-				7608004620691479007F59D5 /* NotificationToken.swift in Sources */,
-				7608004720691479007F59D5 /* MediaSource.swift in Sources */,
-				7608004820691479007F59D5 /* Sequence+Extensions.swift in Sources */,
-				7608004920691479007F59D5 /* MediaRendering.swift in Sources */,
-				7608004A20691479007F59D5 /* AVPlayerItem+Extensions.swift in Sources */,
-				7608004B20691479007F59D5 /* ItemObserver.swift in Sources */,
-				7608004C20691479007F59D5 /* Player.swift in Sources */,
-				7608004D20691479007F59D5 /* PlayerError.swift in Sources */,
-				7608004E20691479007F59D5 /* KVOChange.swift in Sources */,
-				7608004F20691479007F59D5 /* EventResponder.swift in Sources */,
-				7608005020691479007F59D5 /* HLSNative+NetworkBehavior.swift in Sources */,
-				7608005120691479007F59D5 /* NotificationObserver.swift in Sources */,
-				7608005220691479007F59D5 /* HLSNativeConfiguration.swift in Sources */,
-				7608005320691479007F59D5 /* ManifestContext.swift in Sources */,
-				7608005420691479007F59D5 /* EventDispatcher.swift in Sources */,
-				7608005520691479007F59D5 /* AVMediaSelectionGroup+Extensions.swift in Sources */,
-				7608005620691479007F59D5 /* UnmanagedPlayerObserver.swift in Sources */,
-				7608005720691479007F59D5 /* PlayerObserver.swift in Sources */,
-				7608005820691479007F59D5 /* HLSNativeError.swift in Sources */,
-				7608005920691479007F59D5 /* AnalyticsProvider.swift in Sources */,
-				7608005A20691479007F59D5 /* AVAsset+LoadableKeys.swift in Sources */,
-				7608005B20691479007F59D5 /* TrackSelectable.swift in Sources */,
-				7608005C20691479007F59D5 /* MediaPlayback.swift in Sources */,
-				7608005D20691479007F59D5 /* HLSNative.swift in Sources */,
-				7608005E20691479007F59D5 /* HLSNative+TrackSelectable.swift in Sources */,
-				7608005F20691479007F59D5 /* Player+ManifestContext.swift in Sources */,
-				7608006020691479007F59D5 /* HLSNativeWarning.swift in Sources */,
-				7608006120691479007F59D5 /* Warning.swift in Sources */,
-				7608006220691479007F59D5 /* Tech.swift in Sources */,
-				7608006320691479007F59D5 /* RateObserver.swift in Sources */,
-				7608006420691479007F59D5 /* AnalyticsConnector.swift in Sources */,
-				7608006520691479007F59D5 /* Observer.swift in Sources */,
-				7608006620691479007F59D5 /* MediaContext.swift in Sources */,
-				7608006720691479007F59D5 /* Date+Extensions.swift in Sources */,
-				7608006820691479007F59D5 /* NetworkBehavior.swift in Sources */,
-				7608006920691479007F59D5 /* MediaGroup.swift in Sources */,
-				7608006A20691479007F59D5 /* AnalyticsLogger.swift in Sources */,
-				7608006B20691479007F59D5 /* HLSNative+ManifestContext+Airplay.swift in Sources */,
-				7608006C20691479007F59D5 /* AVPlayer+KeyValueObservable.swift in Sources */,
-				7608006D20691479007F59D5 /* HLSNative+MediaRendering.swift in Sources */,
-				7608006E20691479007F59D5 /* MediaTrack.swift in Sources */,
-				7608006F20691479007F59D5 /* HLSNative+StartTime.swift in Sources */,
-				7608007020691479007F59D5 /* KeyValueObserver.swift in Sources */,
-				7608007120691479007F59D5 /* StartTime.swift in Sources */,
-				7608007220691479007F59D5 /* Error+Extensions.swift in Sources */,
-				7608007320691479007F59D5 /* Manifest.swift in Sources */,
-				7608007420691479007F59D5 /* KeyValueObservable.swift in Sources */,
-				7608007520691479007F59D5 /* PlayerView.swift in Sources */,
+				7608009220691E19007F59D5 /* PlayerTests.swift in Sources */,
+				7608009320691E19007F59D5 /* HLSNativeNetworkBehavior.swift in Sources */,
+				7608009420691E19007F59D5 /* PlayerErrorSpec.swift in Sources */,
+				7608009520691E19007F59D5 /* InvalidStartTimeSpec.swift in Sources */,
+				7608009620691E19007F59D5 /* HLSNativeTrackSelectableSpec.swift in Sources */,
+				7608009720691E19007F59D5 /* MockedAVPlayer.swift in Sources */,
+				7608009820691E19007F59D5 /* TestEnv.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		760800A72069210E007F59D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				760800A82069210E007F59D5 /* HLSNative+MediaPlayback.swift in Sources */,
+				760800A92069210E007F59D5 /* FairplayRequester.swift in Sources */,
+				760800AA2069210E007F59D5 /* AirplayHandler.swift in Sources */,
+				760800AB2069210E007F59D5 /* PassThroughConnector.swift in Sources */,
+				760800AC2069210E007F59D5 /* NotificationToken.swift in Sources */,
+				760800AD2069210E007F59D5 /* MediaSource.swift in Sources */,
+				760800AE2069210E007F59D5 /* Sequence+Extensions.swift in Sources */,
+				760800AF2069210E007F59D5 /* MediaRendering.swift in Sources */,
+				760800B02069210E007F59D5 /* AVPlayerItem+Extensions.swift in Sources */,
+				760800B12069210E007F59D5 /* ItemObserver.swift in Sources */,
+				760800B22069210E007F59D5 /* Player.swift in Sources */,
+				760800B32069210E007F59D5 /* PlayerError.swift in Sources */,
+				760800B42069210E007F59D5 /* KVOChange.swift in Sources */,
+				760800B52069210E007F59D5 /* EventResponder.swift in Sources */,
+				760800B62069210E007F59D5 /* HLSNative+NetworkBehavior.swift in Sources */,
+				760800B72069210E007F59D5 /* NotificationObserver.swift in Sources */,
+				760800B82069210E007F59D5 /* HLSNativeConfiguration.swift in Sources */,
+				760800B92069210E007F59D5 /* ManifestContext.swift in Sources */,
+				760800BA2069210E007F59D5 /* EventDispatcher.swift in Sources */,
+				760800BB2069210E007F59D5 /* AVMediaSelectionGroup+Extensions.swift in Sources */,
+				760800BC2069210E007F59D5 /* UnmanagedPlayerObserver.swift in Sources */,
+				760800BD2069210E007F59D5 /* PlayerObserver.swift in Sources */,
+				760800BE2069210E007F59D5 /* HLSNativeError.swift in Sources */,
+				760800BF2069210E007F59D5 /* AnalyticsProvider.swift in Sources */,
+				760800C02069210E007F59D5 /* AVAsset+LoadableKeys.swift in Sources */,
+				760800C12069210E007F59D5 /* TrackSelectable.swift in Sources */,
+				760800C22069210E007F59D5 /* MediaPlayback.swift in Sources */,
+				760800C32069210E007F59D5 /* HLSNative.swift in Sources */,
+				760800C42069210E007F59D5 /* HLSNative+TrackSelectable.swift in Sources */,
+				760800C52069210E007F59D5 /* Player+ManifestContext.swift in Sources */,
+				760800C62069210E007F59D5 /* HLSNativeWarning.swift in Sources */,
+				760800C72069210E007F59D5 /* Warning.swift in Sources */,
+				760800C82069210E007F59D5 /* Tech.swift in Sources */,
+				760800C92069210E007F59D5 /* RateObserver.swift in Sources */,
+				760800CA2069210E007F59D5 /* AnalyticsConnector.swift in Sources */,
+				760800CB2069210E007F59D5 /* Observer.swift in Sources */,
+				760800CC2069210E007F59D5 /* MediaContext.swift in Sources */,
+				760800CD2069210E007F59D5 /* Date+Extensions.swift in Sources */,
+				760800CE2069210E007F59D5 /* NetworkBehavior.swift in Sources */,
+				760800CF2069210E007F59D5 /* MediaGroup.swift in Sources */,
+				760800D02069210E007F59D5 /* AnalyticsLogger.swift in Sources */,
+				760800D12069210E007F59D5 /* HLSNative+ManifestContext+Airplay.swift in Sources */,
+				760800D22069210E007F59D5 /* AVPlayer+KeyValueObservable.swift in Sources */,
+				760800D32069210E007F59D5 /* HLSNative+MediaRendering.swift in Sources */,
+				760800D42069210E007F59D5 /* MediaTrack.swift in Sources */,
+				760800D52069210E007F59D5 /* HLSNative+StartTime.swift in Sources */,
+				760800D62069210E007F59D5 /* KeyValueObserver.swift in Sources */,
+				760800D72069210E007F59D5 /* StartTime.swift in Sources */,
+				760800D82069210E007F59D5 /* Error+Extensions.swift in Sources */,
+				760800D92069210E007F59D5 /* Manifest.swift in Sources */,
+				760800DA2069210E007F59D5 /* KeyValueObservable.swift in Sources */,
+				760800DB2069210E007F59D5 /* PlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -825,12 +891,54 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		7608008A20691479007F59D5 /* Debug */ = {
+		760800A020691E19007F59D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = JCUPRVKEC5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Mockingjay/build/Debug",
+				);
+				INFOPLIST_FILE = PlayerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		760800A120691E19007F59D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = JCUPRVKEC5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Mockingjay/build/Debug",
+				);
+				INFOPLIST_FILE = PlayerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+		760800E12069210E007F59D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
@@ -851,16 +959,17 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
-		7608008B20691479007F59D5 /* Release */ = {
+		760800E22069210E007F59D5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
@@ -880,6 +989,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
@@ -1087,11 +1197,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7608008920691479007F59D5 /* Build configuration list for PBXNativeTarget "Player-tvOS" */ = {
+		7608009F20691E19007F59D5 /* Build configuration list for PBXNativeTarget "PlayerTests-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7608008A20691479007F59D5 /* Debug */,
-				7608008B20691479007F59D5 /* Release */,
+				760800A020691E19007F59D5 /* Debug */,
+				760800A120691E19007F59D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		760800E02069210E007F59D5 /* Build configuration list for PBXNativeTarget "Player-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				760800E12069210E007F59D5 /* Debug */,
+				760800E22069210E007F59D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1114,7 +1233,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		76A843651EA77DF700BDAF2C /* Build configuration list for PBXNativeTarget "PlayerTests" */ = {
+		76A843651EA77DF700BDAF2C /* Build configuration list for PBXNativeTarget "PlayerTests-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				76A843661EA77DF700BDAF2C /* Debug */,
