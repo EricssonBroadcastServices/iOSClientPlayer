@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "76A8434D1EA77DF700BDAF2C"
                BuildableName = "Player.framework"
-               BlueprintName = "Player"
+               BlueprintName = "Player-iOS"
                ReferencedContainer = "container:Player.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,7 +46,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "76A8434D1EA77DF700BDAF2C"
             BuildableName = "Player.framework"
-            BlueprintName = "Player"
+            BlueprintName = "Player-iOS"
             ReferencedContainer = "container:Player.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -69,7 +69,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "76A8434D1EA77DF700BDAF2C"
             BuildableName = "Player.framework"
-            BlueprintName = "Player"
+            BlueprintName = "Player-iOS"
             ReferencedContainer = "container:Player.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -87,7 +87,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "76A8434D1EA77DF700BDAF2C"
             BuildableName = "Player.framework"
-            BlueprintName = "Player"
+            BlueprintName = "Player-iOS"
             ReferencedContainer = "container:Player.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
