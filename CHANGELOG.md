@@ -13,6 +13,7 @@
 
 #### Features
 * `EMP-11121` Introduced specialized logic, `AirplayHandler` to manage Airplay scenarios.
+* `EMP-11171` `Player` now supports *tvOS*.
 
 #### Changes
 * `EMP-11156` Standardized error messages and introduced an `info` variable
