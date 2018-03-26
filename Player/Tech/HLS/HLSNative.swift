@@ -192,8 +192,13 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         handleExternalPlayback()
         
         backgroundWatcher.handleWillTerminate { [weak self] in self?.stop() }
-        backgroundWatcher.handleWillBackgrounding { }
-        backgroundWatcher.handleDidEnterBackgrounding { }
+        backgroundWatcher.handleWillEnterForeground { }
+        backgroundWatcher.handleDidEnterBackground { [weak self] in
+            guard let `self` = self else { return }
+            if !self.avPlayer.isExternalPlaybackActive {
+                self.pause()
+            }
+        }
         backgroundWatcher.handleAudioSessionInteruption { [weak self] event in
             switch event {
             case .began: return
@@ -919,11 +924,11 @@ internal class BackgroundWatcher {
 /// Backgrounding Events
 extension BackgroundWatcher {
     /// Backgrounding the player events.
-    internal func handleDidEnterBackgrounding(callback: @escaping () -> Void) {
+    internal func handleDidEnterBackground(callback: @escaping () -> Void) {
         onDidEnterBackground = callback
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
     }
-    internal func handleWillBackgrounding(callback: @escaping () -> Void) {
+    internal func handleWillEnterForeground(callback: @escaping () -> Void) {
         onWillEnterForeground = callback
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
     }

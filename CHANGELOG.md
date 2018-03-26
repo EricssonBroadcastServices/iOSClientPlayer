@@ -17,6 +17,9 @@
 #### Changes
 * `EMP-11156` Standardized error messages and introduced an `info` variable
 
+#### Bug Fixes
+* `EMP-10268` `HLSNative` now pauses playback on app backgrounding, except for during active *Airplay* sessions.
+
 ## 2.0.79
 
 #### Bug Fixes
