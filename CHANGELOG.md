@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `2.0.81` Release - [2.0.81](#2081)
 * `2.0.80` Release - [2.0.80](#2080)
 * `2.0.79` Release - [2.0.79](#2079)
 * `2.0.78` Release - [2.0.78](#2078)
@@ -9,11 +10,15 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
+## 2.0.81
+
+#### Features
+* `EMP-11171` `Player` now supports *tvOS*.
+
 ## 2.0.80
 
 #### Features
 * `EMP-11121` Introduced specialized logic, `AirplayHandler` to manage Airplay scenarios.
-* `EMP-11171` `Player` now supports *tvOS*.
 
 #### Changes
 * `EMP-11156` Standardized error messages and introduced an `info` variable
