@@ -428,7 +428,7 @@ extension HLSNative {
                                         onReady()
                                     }
                                 case let .startTime(time: value):
-                                    if #available(iOS 11.0, *) {
+                                    if #available(iOS 11.0, tvOS 11.0, *) {
                                         /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
                                         let date = Date(milliseconds: value)
                                         mediaAsset.playerItem.seek(to: date) { success in
@@ -469,7 +469,7 @@ extension HLSNative {
                                         onReady()
                                     }
                                 case let .startTime(time: value):
-                                    if #available(iOS 11.0, *) {
+                                    if #available(iOS 11.0, tvOS 11.0, *) {
                                         /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
                                         let date = Date(milliseconds: value)
                                         mediaAsset.playerItem.seek(to: date) { success in
