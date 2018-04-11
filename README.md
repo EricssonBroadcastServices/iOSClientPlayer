@@ -38,6 +38,7 @@
 ## Requirements
 
 * `iOS` 9.0+
+* `tvOS` 9.0+
 * `Swift` 4.0+
 * `Xcode` 9.0+
 

@@ -20,8 +20,17 @@ public enum StartOffset {
     case startTime(time: Int64)
 }
 
-
+/// `HLSNative` optionally support setting a `StartTimeDelegate` to handle start time.
+///
+/// Classes conforming to `StartTimeDelegate` are expected to provide a valid start time during the initialization process of a new `MediaSource`
 public protocol StartTimeDelegate: class {
+    /// During the initialization process, `HLSNative` will ask its delegate for a `StartOffset`.
+    ///
+    /// Protocol adopters can use this method to for example implement a bookmarking service
+    ///
+    /// - parameter source: The `MediaSource` for which this start time request concerns.
+    /// - parameter tech: Tech which will apply the start time.
+    /// - returns: a valid `StartOffset`
     func startTime<Context>(for source: MediaSource, tech: HLSNative<Context>) -> StartOffset
 }
 
