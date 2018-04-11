@@ -24,8 +24,7 @@ public enum PlayerError<Tech: PlaybackTech, Context: MediaContext>: ExpandedErro
 }
 
 extension PlayerError {
-    
-    /// Error description
+    /// Returns a unique message describing the error
     public var message: String {
         switch self {
         case .tech(error: let error): return error.message
