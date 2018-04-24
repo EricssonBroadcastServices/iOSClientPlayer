@@ -39,7 +39,10 @@ platform :ios do
     end
     
     lane :release do
-        version = "v" + get_version_number(xcodeproj: ENV["XCODE_PROJECT"])
+        version = "v" + get_version_number(
+                                           xcodeproj: ENV["XCODE_PROJECT"],
+                                           target: ENV["RELEASE_VERSION_TARGET"]
+                                           )
         
         if !git_tag_exists(tag: version)
         
