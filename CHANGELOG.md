@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `2.0.84` Release - [2.0.84](#2084)
 * `2.0.81` Release - [2.0.81](#2081)
 * `2.0.80` Release - [2.0.80](#2080)
 * `2.0.79` Release - [2.0.79](#2079)
@@ -9,6 +10,11 @@
 * `0.72.x` Releases - [0.72.0](#0720)
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
+
+## 2.0.84
+
+#### Bug Fixes
+* `EMP-11337` Fixed an issue where repeated playback starts would fail to deliver all `events` related to that session resulting in missing or incomplete analytics sessions.
 
 ## 2.0.81
 
