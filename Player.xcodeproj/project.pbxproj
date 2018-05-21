@@ -114,6 +114,8 @@
 		7691BD41203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD40203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift */; };
 		7691BD43203CAC420038F754 /* TestEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD42203CAC420038F754 /* TestEnv.swift */; };
 		7691BD45203CAD210038F754 /* MockedAVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7691BD44203CAD210038F754 /* MockedAVPlayer.swift */; };
+		7696508120B2DD9600B76A14 /* TraceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7696508020B2DD9600B76A14 /* TraceProvider.swift */; };
+		7696508220B2DD9600B76A14 /* TraceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7696508020B2DD9600B76A14 /* TraceProvider.swift */; };
 		76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8434E1EA77DF700BDAF2C /* Player.framework */; };
 		76A8435D1EA77DF700BDAF2C /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8435C1EA77DF700BDAF2C /* PlayerTests.swift */; };
 		76A8435F1EA77DF700BDAF2C /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -201,6 +203,7 @@
 		7691BD40203CAB230038F754 /* HLSNativeTrackSelectableSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeTrackSelectableSpec.swift; sourceTree = "<group>"; };
 		7691BD42203CAC420038F754 /* TestEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestEnv.swift; sourceTree = "<group>"; };
 		7691BD44203CAD210038F754 /* MockedAVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedAVPlayer.swift; sourceTree = "<group>"; };
+		7696508020B2DD9600B76A14 /* TraceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceProvider.swift; sourceTree = "<group>"; };
 		76A8434E1EA77DF700BDAF2C /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A843511EA77DF700BDAF2C /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		76A843521EA77DF700BDAF2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -290,6 +293,7 @@
 		76139F7D1F1CCFD600822023 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
+				7696508020B2DD9600B76A14 /* TraceProvider.swift */,
 				76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */,
 				766039161FC6DFA200E79091 /* AnalyticsConnector.swift */,
 				7660391C1FC6E0AB00E79091 /* Connectors */,
@@ -791,6 +795,7 @@
 				760800CC2069210E007F59D5 /* MediaContext.swift in Sources */,
 				760800CD2069210E007F59D5 /* Date+Extensions.swift in Sources */,
 				760800CE2069210E007F59D5 /* NetworkBehavior.swift in Sources */,
+				7696508220B2DD9600B76A14 /* TraceProvider.swift in Sources */,
 				760800CF2069210E007F59D5 /* MediaGroup.swift in Sources */,
 				760800D02069210E007F59D5 /* AnalyticsLogger.swift in Sources */,
 				760800D12069210E007F59D5 /* HLSNative+ManifestContext+Airplay.swift in Sources */,
@@ -850,6 +855,7 @@
 				766AC1E01FC2E5DE00843FEF /* MediaContext.swift in Sources */,
 				76A89CEC2020915700C23579 /* Date+Extensions.swift in Sources */,
 				76EA01D6203DEA4C00B32345 /* NetworkBehavior.swift in Sources */,
+				7696508120B2DD9600B76A14 /* TraceProvider.swift in Sources */,
 				7691BD3B203C7A340038F754 /* MediaGroup.swift in Sources */,
 				7660391E1FC6E0BB00E79091 /* AnalyticsLogger.swift in Sources */,
 				7681014D205AC73500EF7F52 /* HLSNative+ManifestContext+Airplay.swift in Sources */,

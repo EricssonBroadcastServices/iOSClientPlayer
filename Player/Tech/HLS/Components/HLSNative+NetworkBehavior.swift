@@ -16,8 +16,6 @@ extension HLSNative: NetworkBehavior {
     ///
     /// `nil` will indicate no restrictions should be applied.
     public var preferredMaxBitrate: Int64? {
-        print("----",currentAsset?.playerItem)
-        print("----",currentAsset?.playerItem.preferredPeakBitRate)
         guard let value = currentAsset?.playerItem.preferredPeakBitRate else { return nil }
         return Int64(value)
     }

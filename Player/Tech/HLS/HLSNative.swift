@@ -220,6 +220,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     
     /// Wrapper observing changes to the underlying `AVPlayer`
     fileprivate var playerObserver: PlayerObserver = PlayerObserver()
+    
+    ///
+    public var shouldDispatchErrorLogEvents: Bool = false
 }
 
 // MARK: - Load Source
@@ -343,6 +346,8 @@ extension HLSNative {
         handleFailedToCompletePlayback(mediaAsset: mediaAsset)
         
         handleNewErrorLogEntry(mediaAsset: mediaAsset)
+        
+        handleNewAccessLogEntry(mediaAsset: mediaAsset)
     }
 }
 
@@ -682,6 +687,43 @@ extension HLSNative {
     }
 }
 
+
+extension HLSNative {
+    fileprivate func handleNewAccessLogEntry(mediaAsset: MediaAsset<Context.Source>) {
+//        let playerItem = mediaAsset.playerItem
+//        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [weak self] notification in
+//            guard let `self` = self else { return }
+//            if let event: AVPlayerItemAccessLogEvent = self.currentAsset?.playerItem.accessLog()?.events.last {
+//                var json: [String: Any] = [
+//                    "Message": "PLAYER_ITEM_ACCESS_LOG_ENTRY",
+//                    "StartupTime": Int64(event.startupTime),
+//                    "NumberOfStalls": event.numberOfStalls,
+//                    "NumberOfDroppedVideoFrames": event.numberOfDroppedVideoFrames,
+//                    "DownloadOverdue": event.downloadOverdue,
+//                    "NumberOfServerAddressChanges": event.numberOfServerAddressChanges,
+//                    "MediaRequestsWWAN": event.mediaRequestsWWAN,
+//                    "TransferDuration": event.transferDuration,
+//                    "MediaRequests": event.numberOfMediaRequests
+//                ]
+//
+//                if let uri = event.uri {
+//                    json["URI"] = uri
+//                }
+//
+//                if let serverAddress = event.serverAddress {
+//                    json["ServerAddress"] = serverAddress
+//                }
+//
+//                mediaAsset.source.analyticsConnector.providers.forEach {
+//                    if let traceProvider = $0 as? TraceProvider {
+//                        traceProvider.onTrace(tech: self, source: mediaAsset.source, data: json)
+//                    }
+//                }
+//            }
+//        }
+    }
+}
+
 /// Error Log Events
 extension HLSNative {
     /// Monitors `AVPlayerItem`s *error log* and handles specific cases.
@@ -704,8 +746,40 @@ extension HLSNative {
                         self.stop()
                     }
                 }
+                else {
+                    if let mediaAsset = self.currentAsset, self.shouldDispatchErrorLogEvents {
+                        let json = self.prepareErrorLogJson(event: event)
+                        mediaAsset.source.analyticsConnector.providers.forEach {
+                            if let traceProvider = $0 as? TraceProvider {
+                                traceProvider.onTrace(tech: self, source: mediaAsset.source, data: json)
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+    
+    private func prepareErrorLogJson(event: AVPlayerItemErrorLogEvent) -> [String: Any] {
+        var json: [String: Any] = [
+            "Message": "PLAYER_ITEM_ERROR_LOG_ENTRY",
+            "Domain": event.errorDomain,
+            "Code": event.errorStatusCode
+        ]
+        
+        if let comment = event.errorComment {
+            json["Info"] = comment
+        }
+        
+        if let serverAddress = event.serverAddress {
+            json["ServerAddress"] = serverAddress
+        }
+        
+        if let uri = event.uri {
+            json["URI"] = uri
+        }
+        
+        return json
     }
 }
 
