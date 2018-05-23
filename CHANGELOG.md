@@ -15,6 +15,7 @@
 
 #### Features
 * `EMP-11335` Support for delivering `Trace` events to analytics through `TraceProvider` protocol. `HLSNative` also dispatches trace events when encountering an error.
+* `EMP-11356` Deallocating an `HLSNative` player which is currently preparing an asset will no longer generate an *error message*. Instead, the analytics dispatcher will send a `Trace` event in combination with an `Aborted` event.
 
 ## 2.0.81
 
