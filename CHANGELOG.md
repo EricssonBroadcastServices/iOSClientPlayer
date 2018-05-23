@@ -14,7 +14,8 @@
 ## 2.0.84
 
 #### Features
-* `EMP-11335` Support for delivering `Trace` events to analytics through `TraceProvider` protocol
+* `EMP-11335` Support for delivering `Trace` events to analytics through `TraceProvider` protocol. `HLSNative` also dispatches trace events when encountering an error.
+
 
 ## 2.0.81
 

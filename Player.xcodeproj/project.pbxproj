@@ -73,6 +73,8 @@
 		760800DB2069210E007F59D5 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A8438A1EA7819D00BDAF2C /* PlayerView.swift */; };
 		760800DE2069210E007F59D5 /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 76A843511EA77DF700BDAF2C /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
+		7613F8F620B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F520B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift */; };
+		7613F8F820B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F720B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift */; };
 		7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619E54D1FCC05D600ACACAE /* PlayerError.swift */; };
 		7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */; };
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
@@ -155,6 +157,8 @@
 		760800A220691E19007F59D5 /* PlayerTests-tvOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PlayerTests-tvOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		760800E32069210E007F59D5 /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
+		7613F8F520B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerItemErrorLogEvent+Extensions.swift"; sourceTree = "<group>"; };
+		7613F8F720B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerItemAccessLogEvent+Extensions.swift"; sourceTree = "<group>"; };
 		7619E54D1FCC05D600ACACAE /* PlayerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerError.swift; sourceTree = "<group>"; };
 		7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaRendering.swift"; sourceTree = "<group>"; };
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
@@ -382,6 +386,8 @@
 				766AC2081FC2F6B700843FEF /* AVAsset+LoadableKeys.swift */,
 				766AC2091FC2F6B700843FEF /* AVPlayer+KeyValueObservable.swift */,
 				766AC20A1FC2F6B700843FEF /* AVPlayerItem+Extensions.swift */,
+				7613F8F520B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift */,
+				7613F8F720B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift */,
 				7691BD3C203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift */,
 			);
 			path = Extensions;
@@ -827,7 +833,9 @@
 				766AC2161FC2F6B700843FEF /* AVPlayerItem+Extensions.swift in Sources */,
 				766AC2241FC2F75800843FEF /* ItemObserver.swift in Sources */,
 				76A843971EA7819D00BDAF2C /* Player.swift in Sources */,
+				7613F8F620B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */,
 				7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */,
+				7613F8F820B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift in Sources */,
 				766AC21C1FC2F6B700843FEF /* KVOChange.swift in Sources */,
 				766039151FC6DF4500E79091 /* EventResponder.swift in Sources */,
 				76EA01E0203EEC0E00B32345 /* HLSNative+NetworkBehavior.swift in Sources */,
