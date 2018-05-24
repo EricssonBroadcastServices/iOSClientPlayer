@@ -174,6 +174,36 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
                 }
             }
         }
+        
+        internal func prepareTrace(numEvents: Int = 1) -> [[String: Any]] {
+            // PlayerItem status trace data
+            var result = [playerItem.traceProviderStatusData]
+            
+            // Access Log trace data
+            let accessLogTrace = playerItem
+                .accessLog()?
+                .events
+                .suffix(numEvents)
+                .map{ $0.traceProviderData }
+            
+            if let trace = accessLogTrace {
+                result.append(contentsOf: trace)
+            }
+            
+            // Error Log trace data
+            
+            let errorTrace = playerItem
+                .errorLog()?
+                .events
+                .suffix(numEvents)
+                .map{ $0.traceProviderData }
+            
+            if let trace = errorTrace {
+                result.append(contentsOf: trace)
+            }
+            
+            return result
+        }
     }
     
     /// Generates a fresh MediaAsset to use for loading and preparation of the specified `Source`.
@@ -220,6 +250,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     
     /// Wrapper observing changes to the underlying `AVPlayer`
     fileprivate var playerObserver: PlayerObserver = PlayerObserver()
+    
+    /// Enabling this function will cause HLSNative to continuously dispatch all error events encountered, including recoverable errors not resulting in playback to stop, to the associated `MediaSource`s analytics providers.
+    public var continuouslyDispatchErrorLogEvents: Bool = false
 }
 
 // MARK: - Load Source
@@ -283,6 +316,7 @@ extension HLSNative {
             guard error == nil else {
                 let techError = PlayerError<HLSNative<Context>,Context>.tech(error: error!)
                 weakSelf.eventDispatcher.onError(weakSelf, mediaAsset.source, techError)
+                mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                 mediaAsset.source.analyticsConnector.onError(tech: weakSelf, source: mediaAsset.source, error: techError)
                 return
             }
@@ -343,6 +377,8 @@ extension HLSNative {
         handleFailedToCompletePlayback(mediaAsset: mediaAsset)
         
         handleNewErrorLogEntry(mediaAsset: mediaAsset)
+        
+        handleNewAccessLogEntry(mediaAsset: mediaAsset)
     }
 }
 
@@ -509,6 +545,7 @@ extension HLSNative {
                     case .failed:
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
                         self.eventDispatcher.onError(self, mediaAsset.source, techError)
+                        mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                         mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                     }
                 }
@@ -673,12 +710,49 @@ extension HLSNative {
                     let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToCompletePlayback(error: error))
                     self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
                     if let mediaAsset = self.currentAsset {
+                        mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                         mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                     }
                     self.stop()
                 }
             }
         }
+    }
+}
+
+extension HLSNative {
+    fileprivate func handleNewAccessLogEntry(mediaAsset: MediaAsset<Context.Source>) {
+//        let playerItem = mediaAsset.playerItem
+//        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [weak self] notification in
+//            guard let `self` = self else { return }
+//            if let event: AVPlayerItemAccessLogEvent = self.currentAsset?.playerItem.accessLog()?.events.last {
+//                var json: [String: Any] = [
+//                    "Message": "PLAYER_ITEM_ACCESS_LOG_ENTRY",
+//                    "StartupTime": Int64(event.startupTime),
+//                    "NumberOfStalls": event.numberOfStalls,
+//                    "NumberOfDroppedVideoFrames": event.numberOfDroppedVideoFrames,
+//                    "DownloadOverdue": event.downloadOverdue,
+//                    "NumberOfServerAddressChanges": event.numberOfServerAddressChanges,
+//                    "MediaRequestsWWAN": event.mediaRequestsWWAN,
+//                    "TransferDuration": event.transferDuration,
+//                    "MediaRequests": event.numberOfMediaRequests
+//                ]
+//
+//                if let uri = event.uri {
+//                    json["URI"] = uri
+//                }
+//
+//                if let serverAddress = event.serverAddress {
+//                    json["ServerAddress"] = serverAddress
+//                }
+//
+//                mediaAsset.source.analyticsConnector.providers.forEach {
+//                    if let traceProvider = $0 as? TraceProvider {
+//                        traceProvider.onTrace(tech: self, source: mediaAsset.source, data: json)
+//                    }
+//                }
+//            }
+//        }
     }
 }
 
@@ -699,15 +773,22 @@ extension HLSNative {
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToValdiateContentKey(error: fairplayError))
                         self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
                         if let mediaAsset = self.currentAsset {
+                            mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                             mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                         }
                         self.stop()
+                    }
+                }
+                else {
+                    if let mediaAsset = self.currentAsset, self.continuouslyDispatchErrorLogEvents {
+                        mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: event.traceProviderData)
                     }
                 }
             }
         }
     }
 }
+
 
 extension HLSNative {
     /// Returns an *unmaintained* KVO token which needs to be cancelled before deallocation. Responsbility for managing this rests entierly on the caller/creator.
@@ -825,6 +906,7 @@ extension HLSNative {
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: self.avPlayer.error))
                         self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
                         if let mediaAsset = self.currentAsset {
+                            mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                             mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                         }
                     }

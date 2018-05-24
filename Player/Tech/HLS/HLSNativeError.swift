@@ -60,18 +60,11 @@ extension HLSNativeError {
     public var info: String? {
         switch self {
         case .missingMediaUrl: return "Missing media url"
-        case .failedToPrepare(errors: let errors):
-            let combined = errors.map{ $0.debugInfoString }.joined(separator: "\n")
-            return "Media failed to prepare: " + combined
+        case .failedToPrepare(errors: let errors): return errors.map{ "[\($0.debugInfoString)]" }.joined(separator: "\n")
         case .loadedButNotPlayable: return "Asset loaded but not playable"
-        case .failedToReady(error: let error):
-            let errorMessage = error != nil ? error!.debugInfoString : "Unknown error"
-            return "Asset failed to ready: \(errorMessage)"
-        case .failedToCompletePlayback(error: let error):
-            return "Asset failed to complete playback: \(error.debugInfoString)"
-        case .failedToValdiateContentKey(error: let error):
-            let errorMessage = error != nil ? error!.debugInfoString : "Unknown error"
-            return "Content Key validation failed: \(errorMessage)"
+        case .failedToReady(error: let error): return error != nil ? error!.debugInfoString : "Unknown error"
+        case .failedToCompletePlayback(error: let error): return error.debugInfoString
+        case .failedToValdiateContentKey(error: let error): return error != nil ? error!.debugInfoString : "Unknown error"
         case .techDeallocated: return "Media preparation finished after Tech was deallocated"
         }
     }

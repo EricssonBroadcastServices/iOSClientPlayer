@@ -57,3 +57,26 @@ internal extension AVPlayerItem {
         return MediaGroup(mediaGroup: group, selectedMedia: selectedMediaOption(in: group))
     }
 }
+
+// MARK: - TraceProvider Data
+internal extension AVPlayerItem {
+    /// Gathers TraceProvider data into json format
+    internal var traceProviderStatusData: [String: Any] {
+        var json: [String: Any] = [
+            "Message": "PLAYER_ITEM_STATUS_TRACE_ENTRY",
+            ]
+        
+        var info: String = ""
+        info += "PlaybackLikelyToKeepUp: \(isPlaybackLikelyToKeepUp) \n"
+        info += "PlaybackBufferFull: \(isPlaybackBufferFull) \n"
+        info += "isPlaybackBufferEmpty: \(isPlaybackBufferEmpty) \n"
+        if let urlAsset = asset as? AVURLAsset {
+            info += "URL: \(urlAsset.url)"
+        }
+        
+        json["Info"] = info
+        
+        return json
+    }
+}
+
