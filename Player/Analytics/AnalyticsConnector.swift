@@ -25,7 +25,7 @@ extension AnalyticsConnector {
 }
 
 extension AnalyticsConnector {
-    public func techDeallocated<Source>(beforeMediaPreparationFinalizedOf mediaSource: Source) where Source : MediaSource {
+    public func onTechDeallocated<Source>(beforeMediaPreparationFinalizedOf mediaSource: Source) where Source : MediaSource {
         providers.forEach{
             if let provider = $0 as? TechDeallocationEventProvider {
                 provider.onTechDeallocated(beforeMediaPreparationFinalizedOf: mediaSource)
