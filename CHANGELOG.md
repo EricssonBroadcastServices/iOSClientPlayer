@@ -27,8 +27,6 @@
 #### Bug Fixes
 * Made sure expanded error information is forwarded when an error occurs
 
-## 2.0.80
-
 #### Features
 * `EMP-11121` Introduced specialized logic, `AirplayHandler` to manage Airplay scenarios.
 

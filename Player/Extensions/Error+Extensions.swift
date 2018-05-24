@@ -17,20 +17,29 @@ extension Error {
             var message = ""
             message += "Code=\(nsError.code) \n "
             message += "Domain=\(nsError.domain) \n "
-            if let debugDescription = nsError.userInfo[NSDebugDescriptionErrorKey] as? String {
-                message += "Message=\(debugDescription) \n "
+            if let value = nsError.userInfo[NSDebugDescriptionErrorKey] as? String {
+                message += "Message=\(value) \n "
             }
             else {
                 message += "Message=\(nsError.debugDescription) \n "
             }
+            
+            if let value = nsError.userInfo[NSURLErrorKey] as? URL {
+                message += "URL=\(value.absoluteString) \n"
+            }
+            
             if let uError = nsError.userInfo[NSUnderlyingErrorKey] as? NSError {
                 message += "UnderlyingCode=\(uError.code) \n "
                 message += "UnderlyingDomain=\(uError.domain) \n "
-                if let uDebugDescription = uError.userInfo[NSDebugDescriptionErrorKey] as? String {
-                    message += "UnderlyingMessage=[\(uDebugDescription)] \n "
+                if let value = uError.userInfo[NSDebugDescriptionErrorKey] as? String {
+                    message += "UnderlyingMessage=[\(value)] \n "
                 }
                 else {
                     message += "UnderlyingMessage=[\(uError.debugDescription)] \n "
+                }
+                
+                if let value = uError.userInfo[NSURLErrorKey] as? URL {
+                    message += "UnderlyingURL=\(value.absoluteString) \n"
                 }
             }
             return message
