@@ -106,6 +106,8 @@
 		766AC2241FC2F75800843FEF /* ItemObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2231FC2F75800843FEF /* ItemObserver.swift */; };
 		766AC2261FC2F77000843FEF /* PlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2251FC2F77000843FEF /* PlayerObserver.swift */; };
 		766FE46D203AF484003B9B90 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766FE46C203AF484003B9B90 /* Error+Extensions.swift */; };
+		767284F120B6EFA000E8BCC3 /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F520B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift */; };
+		767284F220B6EFA200E8BCC3 /* AVPlayerItemAccessLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F720B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift */; };
 		7681014720595D4100EF7F52 /* UnmanagedPlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */; };
 		76810149205ABFBC00EF7F52 /* AirplayHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76810148205ABFBC00EF7F52 /* AirplayHandler.swift */; };
 		7681014D205AC73500EF7F52 /* HLSNative+ManifestContext+Airplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014C205AC73500EF7F52 /* HLSNative+ManifestContext+Airplay.swift */; };
@@ -773,7 +775,9 @@
 				760800B02069210E007F59D5 /* AVPlayerItem+Extensions.swift in Sources */,
 				760800B12069210E007F59D5 /* ItemObserver.swift in Sources */,
 				760800B22069210E007F59D5 /* Player.swift in Sources */,
+				767284F120B6EFA000E8BCC3 /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */,
 				760800B32069210E007F59D5 /* PlayerError.swift in Sources */,
+				767284F220B6EFA200E8BCC3 /* AVPlayerItemAccessLogEvent+Extensions.swift in Sources */,
 				760800B42069210E007F59D5 /* KVOChange.swift in Sources */,
 				760800B52069210E007F59D5 /* EventResponder.swift in Sources */,
 				760800B62069210E007F59D5 /* HLSNative+NetworkBehavior.swift in Sources */,
