@@ -308,8 +308,7 @@ extension HLSNative {
         mediaAsset.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
             guard let weakSelf = self else {
                 // If the player is torn down before asset preparation is complete, there
-                let error = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.techDeallocated)
-                mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: error)
+                mediaAsset.source.analyticsConnector.onTechDeallocated(beforeMediaPreparationFinalizedOf: mediaAsset.source)
                 return
             }
             

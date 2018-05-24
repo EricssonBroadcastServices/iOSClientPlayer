@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import AVFoundation
 extension Error {
     internal var debugInfoString: String {
         if let expandedError = self as? ExpandedError {
