@@ -39,6 +39,7 @@ public enum HLSNativeError: ExpandedError {
     case failedToValdiateContentKey(error: Error?)
     
     /// Media preparation finished after `Tech` was torn down
+    @available(*, deprecated: 2.0.85, message: "Deallocation of HLSNative during the media preparation phase is no longer considered an `Error`.")
     case techDeallocated
 }
 

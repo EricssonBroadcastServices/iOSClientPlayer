@@ -106,6 +106,8 @@
 		766AC2241FC2F75800843FEF /* ItemObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2231FC2F75800843FEF /* ItemObserver.swift */; };
 		766AC2261FC2F77000843FEF /* PlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC2251FC2F77000843FEF /* PlayerObserver.swift */; };
 		766FE46D203AF484003B9B90 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766FE46C203AF484003B9B90 /* Error+Extensions.swift */; };
+		767284EB20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767284EA20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift */; };
+		767284EC20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767284EA20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift */; };
 		767284F120B6EFA000E8BCC3 /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F520B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift */; };
 		767284F220B6EFA200E8BCC3 /* AVPlayerItemAccessLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F720B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift */; };
 		7681014720595D4100EF7F52 /* UnmanagedPlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */; };
@@ -195,6 +197,7 @@
 		766AC2231FC2F75800843FEF /* ItemObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemObserver.swift; sourceTree = "<group>"; };
 		766AC2251FC2F77000843FEF /* PlayerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerObserver.swift; sourceTree = "<group>"; };
 		766FE46C203AF484003B9B90 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
+		767284EA20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TechDeallocationEventProvider.swift; sourceTree = "<group>"; };
 		7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnmanagedPlayerObserver.swift; sourceTree = "<group>"; };
 		76810148205ABFBC00EF7F52 /* AirplayHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirplayHandler.swift; sourceTree = "<group>"; };
 		7681014C205AC73500EF7F52 /* HLSNative+ManifestContext+Airplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+ManifestContext+Airplay.swift"; sourceTree = "<group>"; };
@@ -301,6 +304,7 @@
 			children = (
 				7696508020B2DD9600B76A14 /* TraceProvider.swift */,
 				76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */,
+				767284EA20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift */,
 				766039161FC6DFA200E79091 /* AnalyticsConnector.swift */,
 				7660391C1FC6E0AB00E79091 /* Connectors */,
 				7660391F1FC6E0E700E79091 /* Providers */,
@@ -790,6 +794,7 @@
 				760800BD2069210E007F59D5 /* PlayerObserver.swift in Sources */,
 				760800BE2069210E007F59D5 /* HLSNativeError.swift in Sources */,
 				760800BF2069210E007F59D5 /* AnalyticsProvider.swift in Sources */,
+				767284EC20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift in Sources */,
 				760800C02069210E007F59D5 /* AVAsset+LoadableKeys.swift in Sources */,
 				760800C12069210E007F59D5 /* TrackSelectable.swift in Sources */,
 				760800C22069210E007F59D5 /* MediaPlayback.swift in Sources */,
@@ -848,6 +853,7 @@
 				766039251FC6E24500E79091 /* ManifestContext.swift in Sources */,
 				766039231FC6E17900E79091 /* EventDispatcher.swift in Sources */,
 				7691BD3D203C7A990038F754 /* AVMediaSelectionGroup+Extensions.swift in Sources */,
+				767284EB20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift in Sources */,
 				7681014720595D4100EF7F52 /* UnmanagedPlayerObserver.swift in Sources */,
 				766AC2261FC2F77000843FEF /* PlayerObserver.swift in Sources */,
 				766AC2191FC2F6B700843FEF /* HLSNativeError.swift in Sources */,
