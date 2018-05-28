@@ -69,7 +69,7 @@ internal extension AVPlayerItem {
         var info: String = ""
         info += "PlaybackLikelyToKeepUp: \(isPlaybackLikelyToKeepUp) \n"
         info += "PlaybackBufferFull: \(isPlaybackBufferFull) \n"
-        info += "isPlaybackBufferEmpty: \(isPlaybackBufferEmpty) \n"
+        info += "PlaybackBufferEmpty: \(isPlaybackBufferEmpty) \n"
         if let urlAsset = asset as? AVURLAsset {
             info += "URL: \(urlAsset.url)"
         }
