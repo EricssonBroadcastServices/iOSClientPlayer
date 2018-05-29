@@ -223,7 +223,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         
         backgroundWatcher.handleWillTerminate { [weak self] in self?.stop() }
         backgroundWatcher.handleWillEnterForeground { }
-        backgroundWatcher.handleDidEnterBackground { [weak self] in
+        backgroundWatcher.handleDidEnterBackground { }
+        backgroundWatcher.handleWillResignActive { [weak self] in
+            /// `Dispatcher` (`Exposure` module) will force flush event queue on `.UIApplicationDidEnterBackground`, we pause on when
             guard let `self` = self else { return }
             if !self.avPlayer.isExternalPlaybackActive {
                 self.pause()
@@ -978,6 +980,9 @@ internal class BackgroundWatcher {
     /// Closure to fire when the app is about to terminate
     fileprivate var onWillTerminate: () -> Void = { }
     
+    /// Closure to fire when the app is about to loose focus
+    fileprivate var onWillResignActive: () -> Void = { }
+    
     /// Subscribes to *Audio Session Interruption* `Notification`s.
     internal func handleAudioSessionInteruption(callback: @escaping (AudioSessionInterruption) -> Void) {
         onAudioSessionInterruption = callback
@@ -1009,6 +1014,11 @@ extension BackgroundWatcher {
         onDidEnterBackground = callback
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
     }
+    
+    internal func handleWillResignActive(callback: @escaping () -> Void) {
+        onWillResignActive = callback
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillResignActive), name: .UIApplicationWillResignActive, object: nil)
+    }
     internal func handleWillEnterForeground(callback: @escaping () -> Void) {
         onWillEnterForeground = callback
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
@@ -1024,6 +1034,10 @@ extension BackgroundWatcher {
 
     @objc internal func appWillEnterForeground() {
         onWillEnterForeground()
+    }
+    
+    @objc internal func appWillResignActive() {
+        onWillResignActive()
     }
 
     /// If the app is about to terminate make sure to stop playback. This will initiate teardown.
