@@ -11,6 +11,11 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
+## Unreleased
+
+#### Features
+* Added feature to continuously dispatch access and error log entries to analytics. Note: For **debug** puposes only.
+
 ## 2.0.85
 
 #### Features

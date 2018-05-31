@@ -254,7 +254,14 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     fileprivate var playerObserver: PlayerObserver = PlayerObserver()
     
     /// Enabling this function will cause HLSNative to continuously dispatch all error events encountered, including recoverable errors not resulting in playback to stop, to the associated `MediaSource`s analytics providers.
+    ///
+    /// - Important: Not recomended for use in production, will generate high volume traffic. For debug purposes only.
     public var continuouslyDispatchErrorLogEvents: Bool = false
+    
+    /// Enabling this function will cause HLSNative to continuously dispatch all access log events encountered.
+    ///
+    /// - Important: Not recomended for use in production, will generate high volume traffic. For debug purposes only.
+    public var continuouslyDispatchAccessLogEvents: Bool = false
 }
 
 // MARK: - Load Source
@@ -723,37 +730,41 @@ extension HLSNative {
 
 extension HLSNative {
     fileprivate func handleNewAccessLogEntry(mediaAsset: MediaAsset<Context.Source>) {
-//        let playerItem = mediaAsset.playerItem
-//        mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [weak self] notification in
-//            guard let `self` = self else { return }
-//            if let event: AVPlayerItemAccessLogEvent = self.currentAsset?.playerItem.accessLog()?.events.last {
-//                var json: [String: Any] = [
-//                    "Message": "PLAYER_ITEM_ACCESS_LOG_ENTRY",
-//                    "StartupTime": Int64(event.startupTime),
-//                    "NumberOfStalls": event.numberOfStalls,
-//                    "NumberOfDroppedVideoFrames": event.numberOfDroppedVideoFrames,
-//                    "DownloadOverdue": event.downloadOverdue,
-//                    "NumberOfServerAddressChanges": event.numberOfServerAddressChanges,
-//                    "MediaRequestsWWAN": event.mediaRequestsWWAN,
-//                    "TransferDuration": event.transferDuration,
-//                    "MediaRequests": event.numberOfMediaRequests
-//                ]
-//
-//                if let uri = event.uri {
-//                    json["URI"] = uri
-//                }
-//
-//                if let serverAddress = event.serverAddress {
-//                    json["ServerAddress"] = serverAddress
-//                }
-//
-//                mediaAsset.source.analyticsConnector.providers.forEach {
-//                    if let traceProvider = $0 as? TraceProvider {
-//                        traceProvider.onTrace(tech: self, source: mediaAsset.source, data: json)
-//                    }
-//                }
-//            }
-//        }
+        if continuouslyDispatchAccessLogEvents {
+            // IMPORTANT: Do not use in a production environment
+            let playerItem = mediaAsset.playerItem
+            mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [weak self] notification in
+                guard let `self` = self else { return }
+                if let event: AVPlayerItemAccessLogEvent = self.currentAsset?.playerItem.accessLog()?.events.last {
+                    var json: [String: Any] = [
+                        "Message": "PLAYER_ITEM_ACCESS_LOG_ENTRY"
+                    ]
+                    var info = "StartupTime: \(Int64(event.startupTime)) \n"
+                    info += "NumberOfStalls: \(event.numberOfStalls) \n"
+                    info += "NumberOfDroppedVideoFrames: \(event.numberOfDroppedVideoFrames) \n"
+                    info += "DownloadOverdue: \(event.downloadOverdue) \n"
+                    info += "NumberOfServerAddressChanges: \(event.numberOfServerAddressChanges) \n"
+                    info += "MediaRequestsWWAN: \(event.mediaRequestsWWAN) \n"
+                    info += "TransferDuration: \(event.transferDuration) \n"
+                    info += "MediaRequests: \(event.numberOfMediaRequests) \n"
+                    
+                    if let uri = event.uri {
+                        info += "URI: \(uri) \n"
+                    }
+                    
+                    if let serverAddress = event.serverAddress {
+                        info += "ServerAddress: \(serverAddress) \n"
+                    }
+                    json["Info"] = info
+                    
+                    mediaAsset.source.analyticsConnector.providers.forEach {
+                        if let traceProvider = $0 as? TraceProvider {
+                            traceProvider.onTrace(tech: self, source: mediaAsset.source, data: json)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
