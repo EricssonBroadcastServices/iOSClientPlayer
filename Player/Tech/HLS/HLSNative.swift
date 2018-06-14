@@ -254,9 +254,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     fileprivate var playerObserver: PlayerObserver = PlayerObserver()
     
     /// Enabling this function will cause HLSNative to continuously dispatch all error events encountered, including recoverable errors not resulting in playback to stop, to the associated `MediaSource`s analytics providers.
-    ///
-    /// - Important: DEPRECATED in 2.0.86 in favour of DEBUG only `LogLevel`.
-    @available(*, message: "DEPRECATED in favour of DEBUG only LogLevel")
+    @available(*, deprecated: 2.0.86, message: "Use DEBUG only `LogLevel` instead")
     public var continuouslyDispatchErrorLogEvents: Bool = false
 
     /// Internal log level
