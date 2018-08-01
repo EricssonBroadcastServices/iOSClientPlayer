@@ -248,8 +248,6 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         NotificationCenter.default.removeObserver(self)
     }
     
-    
-    
     /// Wrapper observing changes to the underlying `AVPlayer`
     fileprivate var playerObserver: PlayerObserver = PlayerObserver()
     
@@ -933,7 +931,7 @@ extension HLSNative {
 extension HLSNative {
     /// Subscribes to and handles `AVPlayer.isExternalPlaybackActive` changes.
     fileprivate func handleExternalPlayback() {
-        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new, .old, .prior]) { [weak self] player, change in
+        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new]) { [weak self] player, change in
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
@@ -945,18 +943,22 @@ extension HLSNative {
                 ///     Switching between two AppleTVs fire a "handoff" event, which takes care of the output while the second AppleTV readies itself.
                 ///     Ignore and wait for the "correct" trigger
                 ///
-                if change.isPrior {
-                }
-                else {
-                    if let new = change.new as? Bool {
-                        let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
-                        let started = (self.playbackState == .notStarted)
-                        
-                        if !isHandoffTrigger && !started {
-                            self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
-                        }
-                        
-                        self.onAirplayStatusChanged(self, self.currentSource, new)
+                if let new = change.new as? Bool {
+                    let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
+//                    let started = (self.playbackState == .notStarted)
+                    
+                    let notStarted = (self.playbackState == .notStarted)
+                    
+                    if !isHandoffTrigger && notStarted { //}!started {
+                        self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
+                    }
+                    
+                    if new && notStarted {
+                        self.onAirplayStatusChanged(self, self.currentSource, true)
+                    }
+                    
+                    if !new && !notStarted {
+                        self.onAirplayStatusChanged(self, self.currentSource, false)
                     }
                 }
             }
@@ -968,7 +970,7 @@ extension HLSNative {
 extension HLSNative {
     /// Subscribes to and handles `AVPlayer.currentItem` changes.
     fileprivate func handleCurrentItemChanges() {
-        playerObserver.observe(path: .currentItem, on: avPlayer) { player, change in
+            playerObserver.observe(path: .currentItem, on: avPlayer) { player, change in
         }
     }
 }
