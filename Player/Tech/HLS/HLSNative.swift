@@ -21,6 +21,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Optionally deal with airplay events through this delegate
     public weak var airplayHandler: AirplayHandler?
     
+    fileprivate var activeAirplayPorts: [AVAudioSessionPortDescription] = []
+    
     /// Returns the currently active `MediaSource` if available.
     public var currentSource: Context.Source? {
         return currentAsset?.source
@@ -945,20 +947,26 @@ extension HLSNative {
                 ///
                 if let new = change.new as? Bool {
                     let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
-//                    let started = (self.playbackState == .notStarted)
+                    guard !isHandoffTrigger else { return }
                     
-                    let notStarted = (self.playbackState == .notStarted)
+                    let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSessionPortAirPlay }
                     
-                    if !isHandoffTrigger && notStarted { //}!started {
-                        self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
-                    }
-                    
-                    if new && notStarted {
-                        self.onAirplayStatusChanged(self, self.currentSource, true)
-                    }
-                    
-                    if !new && !notStarted {
+                    if connectedAirplayPorts.isEmpty {
+                        // Disconnected Airplay
+                        self.activeAirplayPorts = []
                         self.onAirplayStatusChanged(self, self.currentSource, false)
+                    }
+                    else {
+                        // New Airplay ports
+                        if self.activeAirplayPorts.isEmpty {
+                            self.onAirplayStatusChanged(self, self.currentSource, true)
+                        }
+                        self.activeAirplayPorts = connectedAirplayPorts
+                    }
+                    
+                    let started = (self.playbackState == .notStarted)
+                    if !started {
+                        self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
                     }
                 }
             }
@@ -970,7 +978,7 @@ extension HLSNative {
 extension HLSNative {
     /// Subscribes to and handles `AVPlayer.currentItem` changes.
     fileprivate func handleCurrentItemChanges() {
-            playerObserver.observe(path: .currentItem, on: avPlayer) { player, change in
+        playerObserver.observe(path: .currentItem, on: avPlayer) { player, change in
         }
     }
 }
