@@ -226,14 +226,14 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         
         backgroundWatcher.handleWillTerminate { [weak self] in self?.stop() }
         backgroundWatcher.handleWillEnterForeground { }
-        backgroundWatcher.handleDidEnterBackground { }
-        backgroundWatcher.handleWillResignActive { [weak self] in
+        backgroundWatcher.handleDidEnterBackground { [weak self] in
             /// `Dispatcher` (`Exposure` module) will force flush event queue on `.UIApplicationDidEnterBackground`
             guard let `self` = self else { return }
             if !self.avPlayer.isExternalPlaybackActive {
                 self.pause()
             }
         }
+        backgroundWatcher.handleWillResignActive { }
         backgroundWatcher.handleAudioSessionInteruption { [weak self] event in
             switch event {
             case .began:
