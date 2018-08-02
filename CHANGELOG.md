@@ -17,6 +17,7 @@
 
 #### Bug Fixes
 * `EMP-11603` Fixed an issue where the `onAirplayStatusChanged` callback fired multiple times for a single status update.
+* `EMP-11587` Resolved an issue during *Airplay* where incoming calls caused a sound from the playback to play over the phone's ringtone. 
 
 ## 2.0.86
 

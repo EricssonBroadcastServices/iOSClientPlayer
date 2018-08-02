@@ -18,3 +18,6 @@ Client applications who wish to continue *Airplay* once a user locks their scree
 For the best possible user experience, client applications should reuse the `Player` object between playback calls instead of recreating it each time. This is especially important when using *Airplay mode*.
 
 An application that supports content browsing in *Airplay mode* may experience rendering discontinuities on the external screen (Airplay screen) if a new `Player` object is created for each subsequent play request. This scenario while airplaying to an *appleTV* manifests itself by the *tvOS springboard* briefly becoming visible between the two playback sessions. Client applications are recommended to keep the `Player` object alive during content switching. New `Source` objects are easily loaded into the existing player with the current playback is still underway.
+
+#### Known Limitations
+Airplay protocol version 1 (currently implemented by `Player`) does not support continuous playback in the event of an incomming phone call.
