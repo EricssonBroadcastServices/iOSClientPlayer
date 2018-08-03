@@ -213,6 +213,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         return MediaAsset<Context.Source>(source: source, configuration: configuration)
     }
     
+    internal var hasAudioSessionBeenInterupted: Bool = false
     public required init() {
         avPlayer = AVPlayer()
         avPlayer.usesExternalPlaybackWhileExternalScreenIsActive = true
@@ -227,7 +228,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         backgroundWatcher.handleWillEnterForeground { }
         backgroundWatcher.handleDidEnterBackground { }
         backgroundWatcher.handleWillResignActive { [weak self] in
-            /// `Dispatcher` (`Exposure` module) will force flush event queue on `.UIApplicationDidEnterBackground`, we pause on when
+            /// `Dispatcher` (`Exposure` module) will force flush event queue on `.UIApplicationDidEnterBackground`
             guard let `self` = self else { return }
             if !self.avPlayer.isExternalPlaybackActive {
                 self.pause()
@@ -235,8 +236,11 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         }
         backgroundWatcher.handleAudioSessionInteruption { [weak self] event in
             switch event {
-            case .began: return
+            case .began:
+                self?.hasAudioSessionBeenInterupted = true
+                return
             case .ended(shouldResume: let shouldResume):
+                self?.hasAudioSessionBeenInterupted = false
                 if shouldResume { self?.play() }
             }
         }
@@ -370,7 +374,12 @@ extension HLSNative {
             self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
             if self.autoplay {
-                self.play()
+                // EMP-11587: If the audio session has been interrupted autoplay should be disabled.
+                // Disabling autoplay avoids issues where freshly loaded sources ready for playback during for example an incomming phone call. Without disabling autoplay, the source may start playing over the phones ringtone.
+                if !self.hasAudioSessionBeenInterupted {
+                    self.play()
+                }
+                self.hasAudioSessionBeenInterupted = false
             }
             callback()
         }
