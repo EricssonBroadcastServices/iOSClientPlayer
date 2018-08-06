@@ -78,6 +78,8 @@
 		7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619E54D1FCC05D600ACACAE /* PlayerError.swift */; };
 		7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */; };
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
+		7644FBC021189236006CEBF0 /* SourceAbandonedEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7644FBBF21189236006CEBF0 /* SourceAbandonedEventProvider.swift */; };
+		7644FBC121189236006CEBF0 /* SourceAbandonedEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7644FBBF21189236006CEBF0 /* SourceAbandonedEventProvider.swift */; };
 		766039101FC6D08800E79091 /* HLSNative+MediaPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */; };
 		766039131FC6D1DC00E79091 /* HLSNative+StartTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */; };
 		766039151FC6DF4500E79091 /* EventResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766039141FC6DF4500E79091 /* EventResponder.swift */; };
@@ -166,6 +168,7 @@
 		7619E54D1FCC05D600ACACAE /* PlayerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerError.swift; sourceTree = "<group>"; };
 		7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaRendering.swift"; sourceTree = "<group>"; };
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
+		7644FBBF21189236006CEBF0 /* SourceAbandonedEventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceAbandonedEventProvider.swift; sourceTree = "<group>"; };
 		7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaPlayback.swift"; sourceTree = "<group>"; };
 		766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+StartTime.swift"; sourceTree = "<group>"; };
 		766039141FC6DF4500E79091 /* EventResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventResponder.swift; sourceTree = "<group>"; };
@@ -305,6 +308,7 @@
 				7696508020B2DD9600B76A14 /* TraceProvider.swift */,
 				76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */,
 				767284EA20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift */,
+				7644FBBF21189236006CEBF0 /* SourceAbandonedEventProvider.swift */,
 				766039161FC6DFA200E79091 /* AnalyticsConnector.swift */,
 				7660391C1FC6E0AB00E79091 /* Connectors */,
 				7660391F1FC6E0E700E79091 /* Providers */,
@@ -781,6 +785,7 @@
 				760800B22069210E007F59D5 /* Player.swift in Sources */,
 				767284F120B6EFA000E8BCC3 /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */,
 				760800B32069210E007F59D5 /* PlayerError.swift in Sources */,
+				7644FBC121189236006CEBF0 /* SourceAbandonedEventProvider.swift in Sources */,
 				767284F220B6EFA200E8BCC3 /* AVPlayerItemAccessLogEvent+Extensions.swift in Sources */,
 				760800B42069210E007F59D5 /* KVOChange.swift in Sources */,
 				760800B52069210E007F59D5 /* EventResponder.swift in Sources */,
@@ -844,6 +849,7 @@
 				76A843971EA7819D00BDAF2C /* Player.swift in Sources */,
 				7613F8F620B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */,
 				7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */,
+				7644FBC021189236006CEBF0 /* SourceAbandonedEventProvider.swift in Sources */,
 				7613F8F820B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift in Sources */,
 				766AC21C1FC2F6B700843FEF /* KVOChange.swift in Sources */,
 				766039151FC6DF4500E79091 /* EventResponder.swift in Sources */,

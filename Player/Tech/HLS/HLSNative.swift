@@ -38,12 +38,14 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             handleStatusChange()
         }
     }
-
+    
     /// The currently active `MediaAsset` is stored here.
     ///
     /// This may be `nil` due to several reasons, for example before any media is loaded.
     internal var currentAsset: MediaAsset<Context.Source>?
     
+    /// The asset currently in preparation
+    internal var assetInPreparation: MediaAsset<Context.Source>?
     
     /// `BufferState` is a private state tracking buffering events. It should not be exposed externally.
     internal var bufferState: BufferState = .notInitialized
@@ -177,6 +179,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             }
         }
         
+        
+        internal var abandoned = false
+        
         internal func prepareTrace(numEvents: Int = 1) -> [[String: Any]] {
             // PlayerItem status trace data
             var result = [playerItem.traceProviderStatusData]
@@ -285,31 +290,15 @@ extension HLSNative {
     /// - parameter configuration: Specifies the configuration options
     /// - parameter onLoaded: Callback that fires when the loading proceedure has completed
     public func load(source: Context.Source, configuration: HLSNativeConfiguration, onLoaded: @escaping () -> Void = { }) {
-        loadAndPrepare(source: source, configuration: configuration, onTransitionReady: { mediaAsset in
-            if let oldSource = currentAsset?.source {
-                eventDispatcher.onPlaybackAborted(self, oldSource)
-                oldSource.analyticsConnector.onAborted(tech: self, source: oldSource)
-            }
-            
-            // Start notifications on new session
-            // At this point the `AVURLAsset` has yet to perform async loading of values (such as `duration`, `tracks` or `playable`) through `loadValuesAsynchronously`.
-            eventDispatcher.onPlaybackCreated(self, mediaAsset.source)
-            mediaAsset.source.analyticsConnector.onCreated(tech: self, source: mediaAsset.source)
-            
-        }, onAssetPrepared: { [weak self] mediaAsset in
-            guard let `self` = self else { return }
-            
-            self.eventDispatcher.onPlaybackPrepared(self, mediaAsset.source)
-            mediaAsset.source.analyticsConnector.onPrepared(tech: self, source: mediaAsset.source)
-        }, finalized: onLoaded)
-    }
-    
-    private func loadAndPrepare(source: Context.Source,
-                                configuration: HLSNativeConfiguration,
-                                onTransitionReady: ((MediaAsset<Context.Source>) -> Void),
-                                onAssetPrepared: @escaping ((MediaAsset<Context.Source>) -> Void),
-                                finalized: @escaping () -> Void) {
         let mediaAsset = assetGenerator(source, configuration)
+        if let inPreparation = assetInPreparation {
+            let warning = PlayerWarning<HLSNative, Context>.tech(warning: HLSNative.TechWarning.mediaPreparationAbandoned(playSessionId: inPreparation.source.playSessionId, url: inPreparation.source.url))
+            eventDispatcher.onWarning(self, inPreparation.source, warning)
+            inPreparation.source.analyticsConnector.onSourcePreparationAbandoned(ofSource: inPreparation.source, byTech: self)
+            inPreparation.abandoned = true
+            assetInPreparation = nil
+        }
+        assetInPreparation = mediaAsset
         
         // Unsubscribe any current item
         currentAsset?.itemObserver.stopObservingAll()
@@ -318,8 +307,17 @@ extension HLSNative {
         playbackState = .stopped
         avPlayer.pause()
         
-        // Fire the transition callback
-        onTransitionReady(mediaAsset)
+        if let current = currentAsset {
+            eventDispatcher.onPlaybackAborted(self, current.source)
+            current.source.analyticsConnector.onAborted(tech: self, source: current.source)
+            current.abandoned = true
+            currentAsset = nil
+        }
+        
+        // Start notifications on new session
+        // At this point the `AVURLAsset` has yet to perform async loading of values (such as `duration`, `tracks` or `playable`) through `loadValuesAsynchronously`.
+        eventDispatcher.onPlaybackCreated(self, mediaAsset.source)
+        mediaAsset.source.analyticsConnector.onCreated(tech: self, source: mediaAsset.source)
         
         // Reset playbackState
         playbackState = .notStarted
@@ -339,9 +337,10 @@ extension HLSNative {
                 return
             }
             // At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
-            onAssetPrepared(mediaAsset)
+            weakSelf.eventDispatcher.onPlaybackPrepared(weakSelf, mediaAsset.source)
+            mediaAsset.source.analyticsConnector.onPrepared(tech: weakSelf, source: mediaAsset.source)
             
-            weakSelf.readyPlayback(with: mediaAsset, callback: finalized)
+            weakSelf.readyPlayback(with: mediaAsset, callback: onLoaded)
         }
     }
     
@@ -349,15 +348,22 @@ extension HLSNative {
     ///
     /// Finally, once the `Player` is configured, the `currentMedia` is replaced with the newly created one. The system now awaits playback status to return `.readyToPlay`.
     fileprivate func readyPlayback(with mediaAsset: MediaAsset<Context.Source>, callback: @escaping () -> Void) {
-        currentAsset = nil
-        
         // Observe changes to .status for new playerItem
         // We will perform "pre-load" seek of the `AVPlayerItem` to the requested *Start Time*
         handleStatusChange(mediaAsset: mediaAsset, onActive: { [weak self] in
             guard let `self` = self else { return }
             
+            guard !mediaAsset.abandoned else {
+                if let inPreparation = self.assetInPreparation, inPreparation.source.playSessionId == mediaAsset.source.playSessionId {
+                    self.assetInPreparation = nil
+                }
+                return
+            }
             // `mediaAsset` is now prepared.
             self.currentAsset = mediaAsset
+            
+            // TODO: What if `mediaAsset != assetInPreparation`?
+            self.assetInPreparation = nil
             
             // Replace the player item with a new player item. The item replacement occurs
             // asynchronously; observe the currentItem property to find out when the
@@ -369,6 +375,11 @@ extension HLSNative {
             self.applyLanguagePreferences(on: mediaAsset)
         }) { [weak self] in
             guard let `self` = self else { return }
+            
+            guard !mediaAsset.abandoned else {
+                return
+            }
+            
             self.playbackState = .preparing
             // Trigger on-ready callbacks and autoplay if available
             self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
@@ -498,17 +509,17 @@ extension HLSNative {
                                         /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
                                         /// EMP-11129 We cant check for invalidStartTime on Airplay events since the seekable ranges are not loaded yet.
                                         // TODO: Throw warning?
-//                                        let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
-//                                        if let begining = seekableTimeStart?.seconds {
-//                                            let startPosition = value - Int64(begining * 1000)
-//                                            let cmTime = CMTime(value: startPosition, timescale: 1000)
-//                                            mediaAsset.playerItem.seek(to: cmTime) { success in
-//                                                onReady()
-//                                            }
-//                                        }
-//                                        else {
-//                                            onReady()
-//                                        }
+                                        //                                        let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
+                                        //                                        if let begining = seekableTimeStart?.seconds {
+                                        //                                            let startPosition = value - Int64(begining * 1000)
+                                        //                                            let cmTime = CMTime(value: startPosition, timescale: 1000)
+                                        //                                            mediaAsset.playerItem.seek(to: cmTime) { success in
+                                        //                                                onReady()
+                                        //                                            }
+                                        //                                        }
+                                        //                                        else {
+                                        //                                            onReady()
+                                        //                                        }
                                     }
                                 }
                                 return
@@ -1019,7 +1030,7 @@ internal class BackgroundWatcher {
         onAudioSessionInterruption = callback
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.audioSessionInterruption), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
     }
-
+    
     /// Handles *Audio Session Interruption* events by resuming playback if instructed to do so.
     @objc internal func audioSessionInterruption(notification: Notification) {
         guard let userInfo = notification.userInfo,
@@ -1058,11 +1069,11 @@ extension BackgroundWatcher {
         onWillTerminate = callback
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillTerminate), name: .UIApplicationWillTerminate, object: nil)
     }
-
+    
     @objc internal func appDidEnterBackground() {
         onDidEnterBackground()
     }
-
+    
     @objc internal func appWillEnterForeground() {
         onWillEnterForeground()
     }
@@ -1070,7 +1081,7 @@ extension BackgroundWatcher {
     @objc internal func appWillResignActive() {
         onWillResignActive()
     }
-
+    
     /// If the app is about to terminate make sure to stop playback. This will initiate teardown.
     ///
     /// Any attached `AnalyticsProvider` should hopefully be given enough time to finalize.

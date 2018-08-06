@@ -19,6 +19,7 @@
 * `EMP-11603` Fixed an issue where the `onAirplayStatusChanged` callback fired multiple times for a single status update.
 * `EMP-11587` Resolved an issue during *Airplay* where incoming calls caused a sound from the playback to play over the phone's ringtone.
 * `EMP-11599` Bringing up the iOS Control Center no longer pauses local playback.
+* `EMP-11337` Fixed an issue where repeated playback starts would fail to deliver all `events` related to that session resulting in missing or incomplete analytics sessions.
 
 ## 2.0.86
 
