@@ -21,6 +21,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Optionally deal with airplay events through this delegate
     public weak var airplayHandler: AirplayHandler?
     
+    fileprivate var activeAirplayPorts: [AVAudioSessionPortDescription] = []
+    
     /// Returns the currently active `MediaSource` if available.
     public var currentSource: Context.Source? {
         return currentAsset?.source
@@ -177,7 +179,38 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             }
         }
         
+        
         internal var abandoned = false
+        
+        internal func prepareTrace(numEvents: Int = 1) -> [[String: Any]] {
+            // PlayerItem status trace data
+            var result = [playerItem.traceProviderStatusData]
+            
+            // Access Log trace data
+            let accessLogTrace = playerItem
+                .accessLog()?
+                .events
+                .suffix(numEvents)
+                .map{ $0.traceProviderData }
+            
+            if let trace = accessLogTrace {
+                result.append(contentsOf: trace)
+            }
+            
+            // Error Log trace data
+            
+            let errorTrace = playerItem
+                .errorLog()?
+                .events
+                .suffix(numEvents)
+                .map{ $0.traceProviderData }
+            
+            if let trace = errorTrace {
+                result.append(contentsOf: trace)
+            }
+            
+            return result
+        }
     }
     
     /// Generates a fresh MediaAsset to use for loading and preparation of the specified `Source`.
@@ -185,6 +218,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         return MediaAsset<Context.Source>(source: source, configuration: configuration)
     }
     
+    internal var hasAudioSessionBeenInterupted: Bool = false
     public required init() {
         avPlayer = AVPlayer()
         avPlayer.usesExternalPlaybackWhileExternalScreenIsActive = true
@@ -198,15 +232,20 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         backgroundWatcher.handleWillTerminate { [weak self] in self?.stop() }
         backgroundWatcher.handleWillEnterForeground { }
         backgroundWatcher.handleDidEnterBackground { [weak self] in
+            /// `Dispatcher` (`Exposure` module) will force flush event queue on `.UIApplicationDidEnterBackground`
             guard let `self` = self else { return }
             if !self.avPlayer.isExternalPlaybackActive {
                 self.pause()
             }
         }
+        backgroundWatcher.handleWillResignActive { }
         backgroundWatcher.handleAudioSessionInteruption { [weak self] event in
             switch event {
-            case .began: return
+            case .began:
+                self?.hasAudioSessionBeenInterupted = true
+                return
             case .ended(shouldResume: let shouldResume):
+                self?.hasAudioSessionBeenInterupted = false
                 if shouldResume { self?.play() }
             }
         }
@@ -220,13 +259,24 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         NotificationCenter.default.removeObserver(self)
     }
     
-    
-    
     /// Wrapper observing changes to the underlying `AVPlayer`
     fileprivate var playerObserver: PlayerObserver = PlayerObserver()
     
-    ///
-    public var shouldDispatchErrorLogEvents: Bool = false
+    /// Enabling this function will cause HLSNative to continuously dispatch all error events encountered, including recoverable errors not resulting in playback to stop, to the associated `MediaSource`s analytics providers.
+    @available(*, deprecated: 2.0.86, message: "Use DEBUG only `LogLevel` instead")
+    public var continuouslyDispatchErrorLogEvents: Bool = false
+
+    /// Internal log level
+    internal var logLevel: LogLevel = .none
+    
+    /// LogLevel option
+    internal enum LogLevel {
+        /// No logging
+        case none
+        
+        /// HLSNative will continuously print all error and access log events encountered to the console, including recoverable errors not resulting in playback failure.
+        case debug
+    }
 }
 
 // MARK: - Load Source
@@ -278,14 +328,14 @@ extension HLSNative {
         mediaAsset.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
             guard let weakSelf = self else {
                 // If the player is torn down before asset preparation is complete, there
-                let error = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.techDeallocated)
-                mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: error)
+                mediaAsset.source.analyticsConnector.onTechDeallocated(beforeMediaPreparationFinalizedOf: mediaAsset.source)
                 return
             }
             
             guard error == nil else {
                 let techError = PlayerError<HLSNative<Context>,Context>.tech(error: error!)
                 weakSelf.eventDispatcher.onError(weakSelf, mediaAsset.source, techError)
+                mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                 mediaAsset.source.analyticsConnector.onError(tech: weakSelf, source: mediaAsset.source, error: techError)
                 return
             }
@@ -316,6 +366,8 @@ extension HLSNative {
             }
             // `mediaAsset` is now prepared.
             self.currentAsset = mediaAsset
+            
+            // TODO: What if `mediaAsset != assetInPreparation`?
             self.assetInPreparation = nil
             
             // Replace the player item with a new player item. The item replacement occurs
@@ -338,7 +390,12 @@ extension HLSNative {
             self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
             if self.autoplay {
-                self.play()
+                // EMP-11587: If the audio session has been interrupted autoplay should be disabled.
+                // Disabling autoplay avoids issues where freshly loaded sources ready for playback during for example an incomming phone call. Without disabling autoplay, the source may start playing over the phones ringtone.
+                if !self.hasAudioSessionBeenInterupted {
+                    self.play()
+                }
+                self.hasAudioSessionBeenInterupted = false
             }
             callback()
         }
@@ -359,6 +416,8 @@ extension HLSNative {
         handleFailedToCompletePlayback(mediaAsset: mediaAsset)
         
         handleNewErrorLogEntry(mediaAsset: mediaAsset)
+        
+        handleNewAccessLogEntry(mediaAsset: mediaAsset)
     }
 }
 
@@ -525,6 +584,7 @@ extension HLSNative {
                     case .failed:
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
                         self.eventDispatcher.onError(self, mediaAsset.source, techError)
+                        mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                         mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                     }
                 }
@@ -689,9 +749,46 @@ extension HLSNative {
                     let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToCompletePlayback(error: error))
                     self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
                     if let mediaAsset = self.currentAsset {
+                        mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                         mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                     }
                     self.stop()
+                }
+            }
+        }
+    }
+}
+
+extension HLSNative {
+    fileprivate func handleNewAccessLogEntry(mediaAsset: MediaAsset<Context.Source>) {
+        if logLevel == .debug {
+            // IMPORTANT: Do not use in a production environment
+            let playerItem = mediaAsset.playerItem
+            mediaAsset.itemObserver.subscribe(notification: .AVPlayerItemNewAccessLogEntry, for: playerItem) { [weak self] notification in
+                guard let `self` = self else { return }
+                if let event: AVPlayerItemAccessLogEvent = self.currentAsset?.playerItem.accessLog()?.events.last {
+                    var json: [String: Any] = [
+                        "Message": "PLAYER_ITEM_ACCESS_LOG_ENTRY"
+                    ]
+                    var info = "StartupTime: \(Int64(event.startupTime)) \n "
+                    info += "NumberOfStalls: \(event.numberOfStalls) \n "
+                    info += "NumberOfDroppedVideoFrames: \(event.numberOfDroppedVideoFrames) \n "
+                    info += "DownloadOverdue: \(event.downloadOverdue) \n "
+                    info += "NumberOfServerAddressChanges: \(event.numberOfServerAddressChanges) \n "
+                    info += "MediaRequestsWWAN: \(event.mediaRequestsWWAN) \n "
+                    info += "TransferDuration: \(event.transferDuration) \n "
+                    info += "MediaRequests: \(event.numberOfMediaRequests) \n "
+                    
+                    if let uri = event.uri {
+                        info += "URI: \(uri) \n"
+                    }
+                    
+                    if let serverAddress = event.serverAddress {
+                        info += "ServerAddress: \(serverAddress) \n "
+                    }
+                    json["Info"] = info
+                    
+                    print(json)
                 }
             }
         }
@@ -715,15 +812,21 @@ extension HLSNative {
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToValdiateContentKey(error: fairplayError))
                         self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
                         if let mediaAsset = self.currentAsset {
+                            mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                             mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                         }
                         self.stop()
                     }
                 }
+                
+                if self.logLevel == .debug {
+                    print(event.traceProviderData)
+                }
             }
         }
     }
 }
+
 
 extension HLSNative {
     /// Returns an *unmaintained* KVO token which needs to be cancelled before deallocation. Responsbility for managing this rests entierly on the caller/creator.
@@ -841,6 +944,7 @@ extension HLSNative {
                         let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: self.avPlayer.error))
                         self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
                         if let mediaAsset = self.currentAsset {
+                            mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                             mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                         }
                     }
@@ -854,7 +958,7 @@ extension HLSNative {
 extension HLSNative {
     /// Subscribes to and handles `AVPlayer.isExternalPlaybackActive` changes.
     fileprivate func handleExternalPlayback() {
-        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new, .old, .prior]) { [weak self] player, change in
+        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new]) { [weak self] player, change in
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
@@ -866,18 +970,28 @@ extension HLSNative {
                 ///     Switching between two AppleTVs fire a "handoff" event, which takes care of the output while the second AppleTV readies itself.
                 ///     Ignore and wait for the "correct" trigger
                 ///
-                if change.isPrior {
-                }
-                else {
-                    if let new = change.new as? Bool {
-                        let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
-                        let started = (self.playbackState == .notStarted)
-                        
-                        if !isHandoffTrigger && !started {
-                            self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
+                if let new = change.new as? Bool {
+                    let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
+                    guard !isHandoffTrigger else { return }
+                    
+                    let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSessionPortAirPlay }
+                    
+                    if connectedAirplayPorts.isEmpty {
+                        // Disconnected Airplay
+                        self.activeAirplayPorts = []
+                        self.onAirplayStatusChanged(self, self.currentSource, false)
+                    }
+                    else {
+                        // New Airplay ports
+                        if self.activeAirplayPorts.isEmpty {
+                            self.onAirplayStatusChanged(self, self.currentSource, true)
                         }
-                        
-                        self.onAirplayStatusChanged(self, self.currentSource, new)
+                        self.activeAirplayPorts = connectedAirplayPorts
+                    }
+                    
+                    let started = (self.playbackState == .notStarted)
+                    if !started {
+                        self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
                     }
                 }
             }
@@ -913,6 +1027,9 @@ internal class BackgroundWatcher {
     /// Closure to fire when the app is about to terminate
     fileprivate var onWillTerminate: () -> Void = { }
     
+    /// Closure to fire when the app is about to loose focus
+    fileprivate var onWillResignActive: () -> Void = { }
+    
     /// Subscribes to *Audio Session Interruption* `Notification`s.
     internal func handleAudioSessionInteruption(callback: @escaping (AudioSessionInterruption) -> Void) {
         onAudioSessionInterruption = callback
@@ -944,6 +1061,11 @@ extension BackgroundWatcher {
         onDidEnterBackground = callback
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
     }
+    
+    internal func handleWillResignActive(callback: @escaping () -> Void) {
+        onWillResignActive = callback
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillResignActive), name: .UIApplicationWillResignActive, object: nil)
+    }
     internal func handleWillEnterForeground(callback: @escaping () -> Void) {
         onWillEnterForeground = callback
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
@@ -959,6 +1081,10 @@ extension BackgroundWatcher {
     
     @objc internal func appWillEnterForeground() {
         onWillEnterForeground()
+    }
+    
+    @objc internal func appWillResignActive() {
+        onWillResignActive()
     }
     
     /// If the app is about to terminate make sure to stop playback. This will initiate teardown.

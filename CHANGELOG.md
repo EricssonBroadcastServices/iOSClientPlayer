@@ -1,6 +1,8 @@
 # CHANGELOG
 
-* `2.0.84` Release - [2.0.84](#2084)
+* `2.0.87` Release - [2.0.87](#2087)
+* `2.0.86` Release - [2.0.86](#2086)
+* `2.0.85` Release - [2.0.85](#2085)
 * `2.0.81` Release - [2.0.81](#2081)
 * `2.0.80` Release - [2.0.80](#2080)
 * `2.0.79` Release - [2.0.79](#2079)
@@ -11,10 +13,24 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
-## 2.0.84
+## 2.0.87
 
 #### Bug Fixes
+* `EMP-11603` Fixed an issue where the `onAirplayStatusChanged` callback fired multiple times for a single status update.
+* `EMP-11587` Resolved an issue during *Airplay* where incoming calls caused a sound from the playback to play over the phone's ringtone.
+* `EMP-11599` Bringing up the iOS Control Center no longer pauses local playback.
 * `EMP-11337` Fixed an issue where repeated playback starts would fail to deliver all `events` related to that session resulting in missing or incomplete analytics sessions.
+
+## 2.0.86
+
+#### Changes
+* Added a `DEBUG` feature to continuously print access and error log entries.
+
+## 2.0.85
+
+#### Features
+* `EMP-11335` Support for delivering `Trace` events to analytics through `TraceProvider` protocol. `HLSNative` also dispatches trace events when encountering an error.
+* `EMP-11356` Deallocating an `HLSNative` player which is currently preparing an asset will no longer generate an *error message*. Instead, the analytics dispatcher will send a `Trace` event in combination with an `Aborted` event.
 
 ## 2.0.81
 
