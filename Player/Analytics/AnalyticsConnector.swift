@@ -9,7 +9,7 @@
 import Foundation
 
 /// `AnalyticsConnector` is responsible for managing the interaction between raw `PlaybackTech` events, tailored to the need of specific `AnalyticsProvider`s.
-public protocol AnalyticsConnector: EventResponder, TraceProvider, TechDeallocationEventProvider {
+public protocol AnalyticsConnector: EventResponder, TraceProvider, TechDeallocationEventProvider, SourceAbandonedEventProvider {
     /// Analytics connector will manage, filter and possibly forward events to all providers specified here
     var providers: [AnalyticsProvider] { get set }
 }
@@ -29,6 +29,16 @@ extension AnalyticsConnector {
         providers.forEach{
             if let provider = $0 as? TechDeallocationEventProvider {
                 provider.onTechDeallocated(beforeMediaPreparationFinalizedOf: mediaSource)
+            }
+        }
+    }
+}
+
+extension AnalyticsConnector {
+    public func onSourcePreparationAbandoned<Tech, Source>(ofSource mediaSource: Source, byTech tech: Tech) where Tech : PlaybackTech, Source : MediaSource {
+        providers.forEach{
+            if let provider = $0 as? SourceAbandonedEventProvider {
+                provider.onSourcePreparationAbandoned(ofSource: mediaSource, byTech: tech)
             }
         }
     }

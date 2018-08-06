@@ -291,12 +291,10 @@ extension HLSNative {
     /// - parameter onLoaded: Callback that fires when the loading proceedure has completed
     public func load(source: Context.Source, configuration: HLSNativeConfiguration, onLoaded: @escaping () -> Void = { }) {
         let mediaAsset = assetGenerator(source, configuration)
-        print("CREATE",mediaAsset.source.playSessionId)
         if let inPreparation = assetInPreparation {
-            print("Abort Prep",inPreparation.source.playSessionId)
-            // TODO: Mark Aborted and close
-            eventDispatcher.onPlaybackAborted(self, inPreparation.source)
-            inPreparation.source.analyticsConnector.onAborted(tech: self, source: inPreparation.source)
+            let warning = PlayerWarning<HLSNative, Context>.tech(warning: HLSNative.TechWarning.mediaPreparationAbandoned(playSessionId: inPreparation.source.playSessionId, url: inPreparation.source.url))
+            eventDispatcher.onWarning(self, inPreparation.source, warning)
+            inPreparation.source.analyticsConnector.onSourcePreparationAbandoned(ofSource: inPreparation.source, byTech: self)
             inPreparation.abandoned = true
             assetInPreparation = nil
         }
@@ -310,7 +308,6 @@ extension HLSNative {
         avPlayer.pause()
         
         if let current = currentAsset {
-            print("Abort Curr",current.source.playSessionId)
             eventDispatcher.onPlaybackAborted(self, current.source)
             current.source.analyticsConnector.onAborted(tech: self, source: current.source)
             current.abandoned = true
@@ -357,9 +354,7 @@ extension HLSNative {
             guard let `self` = self else { return }
             
             guard !mediaAsset.abandoned else {
-                print("PREP ABANDONED")
                 if let inPreparation = self.assetInPreparation, inPreparation.source.playSessionId == mediaAsset.source.playSessionId {
-                    print("PREP ABANDONED remove old asset",inPreparation.source.playSessionId)
                     self.assetInPreparation = nil
                 }
                 return

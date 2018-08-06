@@ -21,6 +21,9 @@ public enum HLSNativeWarning: WarningMessage {
     
     /// The supplied startTime was invalid for the seekable ranges.
     case invalidStartTime(startTime: Int64, seekableRanges: [CMTimeRange])
+    
+    /// Another media source was loaded before the currently loading source finalized preparation
+    case mediaPreparationAbandoned(playSessionId: String, url: URL)
 }
 
 extension HLSNativeWarning {
@@ -29,8 +32,8 @@ extension HLSNativeWarning {
         case .seekableRangesEmpty: return "Seekable ranges was empty"
         case .discontinuousSeekableRanges(seekableRanges: let ranges): return "Seekable ranges contain discontinuity \(ranges)"
         case .seekTimeBeyondLivePoint(timestamp: let timestamp, livePoint: let live): return "Requested seek time \(timestamp) was beyond live point \(live)"
-            
         case .invalidStartTime(startTime: let time, seekableRanges: let ranges): return "Invalid start time, \(time) set beyond seekable ranges, \(ranges)"
+        case .mediaPreparationAbandoned(playSessionId: let sessionId, url: let url): return "Preparation of media source with playsessionId: \(sessionId) was abandoned before finalizing. Url: \(url)"
         }
     }
 }
