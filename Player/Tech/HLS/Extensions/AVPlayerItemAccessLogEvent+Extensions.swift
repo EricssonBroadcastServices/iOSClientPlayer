@@ -29,6 +29,38 @@ internal extension AVPlayerItemAccessLogEvent {
             info += "PlaybackType: \(value)\n"
         }
         
+        if numberOfStalls > 0 {
+            info += "PlaybackStalls: \(numberOfStalls)\n"
+        }
+        
+        if numberOfBytesTransferred >= 0 {
+            info += "BytesTransferred: \(numberOfBytesTransferred)\n"
+        }
+        
+        if numberOfDroppedVideoFrames > 0 {
+            info += "DroppedVideoFrames: \(numberOfDroppedVideoFrames)\n"
+        }
+        
+        if downloadOverdue > 0 {
+            info += "SegmentDownloadsOverdue: \(downloadOverdue)\n"
+        }
+        
+        let downloadedDuration = Int64(segmentsDownloadedDuration)
+        if downloadedDuration >= 0 {
+            info += "DurationOfDownloadedSegments: \(downloadedDuration)\n"
+        }
+        
+        let watched = Int64(durationWatched)
+        if durationWatched >= 0 {
+            info += "DurationWatched: \(watched)\n"
+        }
+        
+        let startTime = Int64(startupTime)
+        if startTime > 0 {
+            info += "StartupTime: \(startTime)\n"
+        }
+        
+        
         json["Info"] = info
         return json
     }
