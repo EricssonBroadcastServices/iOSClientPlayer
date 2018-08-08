@@ -20,6 +20,7 @@
 * `EMP-11587` Resolved an issue during *Airplay* where incoming calls caused a sound from the playback to play over the phone's ringtone.
 * `EMP-11599` Bringing up the iOS Control Center no longer pauses local playback.
 * `EMP-11337` Fixed an issue where repeated playback starts would fail to deliver all `events` related to that session resulting in missing or incomplete analytics sessions.
+* `EMP-11623` Special treatment of subsequent playback starts during *Airplay mode* on `iOS 11.4+` due to a bug in `AVFoundation`.
 
 #### Changes
 * Extended access log data delivered on error events. 

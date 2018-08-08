@@ -33,7 +33,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         didSet {
             playerObserver.stopObservingAll()
             playerObserver.unsubscribeAll()
-            handleCurrentItemChanges()
+            airplayWorkaroundObserver.unsubscribeAll()
+            airplayWorkaroundObserver.stopObservingAll()
+            
             handlePlaybackStateChanges()
             handleStatusChange()
         }
@@ -218,13 +220,13 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         return MediaAsset<Context.Source>(source: source, configuration: configuration)
     }
     
+    fileprivate var airplayWorkaroundObserver: PlayerObserver = PlayerObserver()
     internal var hasAudioSessionBeenInterupted: Bool = false
     public required init() {
         avPlayer = AVPlayer()
         avPlayer.usesExternalPlaybackWhileExternalScreenIsActive = true
         avPlayer.allowsExternalPlayback = true
         
-        handleCurrentItemChanges()
         handlePlaybackStateChanges()
         handleStatusChange()
         handleExternalPlayback()
@@ -395,6 +397,30 @@ extension HLSNative {
             callback()
         }
         
+        airplayWorkaroundObserver.unsubscribeAll()
+        airplayWorkaroundObserver.stopObservingAll()
+        startTimeWorkaroundAirplay{ [weak self] in
+            guard let `self` = self else { return }
+            
+            guard !mediaAsset.abandoned else {
+                return
+            }
+            
+            self.playbackState = .preparing
+            // Trigger on-ready callbacks and autoplay if available
+            self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
+            mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
+            if self.autoplay {
+                // EMP-11587: If the audio session has been interrupted autoplay should be disabled.
+                // Disabling autoplay avoids issues where freshly loaded sources ready for playback during for example an incomming phone call. Without disabling autoplay, the source may start playing over the phones ringtone.
+                if !self.hasAudioSessionBeenInterupted {
+                    self.play()
+                }
+                self.hasAudioSessionBeenInterupted = false
+            }
+            callback()
+        }
+        
         // Observe BitRate changes
         handleBitrateChangedEvent(mediaAsset: mediaAsset)
         
@@ -478,101 +504,17 @@ extension HLSNative {
                 if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
                     switch status {
                     case .unknown:
+                        print("mediaAsset.playerItem.unknown")
                         switch self.playbackState {
                         case .notStarted:
                             onActive()
                         default: return
                         }
                     case .readyToPlay:
+                        print("mediaAsset.playerItem.readyToPlay")
                         switch self.playbackState {
                         case .notStarted:
-                            guard !self.isExternalPlaybackActive else {
-                                /// EMP-11129 We cant check for invalidStartTime on Airplay events since the seekable ranges are not loaded yet.
-                                let offset = self.startOffset(for: mediaAsset)
-                                switch offset {
-                                case .defaultStartTime:
-                                    onReady()
-                                case let .startPosition(position: value):
-                                    let cmTime = CMTime(value: value, timescale: 1000)
-                                    mediaAsset.playerItem.seek(to: cmTime) { success in
-                                        onReady()
-                                    }
-                                case let .startTime(time: value):
-                                    if #available(iOS 11.0, tvOS 11.0, *) {
-                                        /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
-                                        let date = Date(milliseconds: value)
-                                        mediaAsset.playerItem.seek(to: date) { success in
-                                            onReady()
-                                        }
-                                    }
-                                    else {
-                                        /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
-                                        /// EMP-11129 We cant check for invalidStartTime on Airplay events since the seekable ranges are not loaded yet.
-                                        // TODO: Throw warning?
-                                        //                                        let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
-                                        //                                        if let begining = seekableTimeStart?.seconds {
-                                        //                                            let startPosition = value - Int64(begining * 1000)
-                                        //                                            let cmTime = CMTime(value: startPosition, timescale: 1000)
-                                        //                                            mediaAsset.playerItem.seek(to: cmTime) { success in
-                                        //                                                onReady()
-                                        //                                            }
-                                        //                                        }
-                                        //                                        else {
-                                        //                                            onReady()
-                                        //                                        }
-                                    }
-                                }
-                                return
-                            }
-                            
-                            // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
-                            let offset = self.startOffset(for: mediaAsset)
-                            let validation = self.validate(startOffset: offset, mediaAsset: mediaAsset)
-                            if let resolvedOffset = validation.0 {
-                                switch resolvedOffset {
-                                case .defaultStartTime:
-                                    /// Use default behaviour
-                                    onReady()
-                                case let .startPosition(position: value):
-                                    let cmTime = CMTime(value: value, timescale: 1000)
-                                    mediaAsset.playerItem.seek(to: cmTime) { success in
-                                        onReady()
-                                    }
-                                case let .startTime(time: value):
-                                    if #available(iOS 11.0, tvOS 11.0, *) {
-                                        /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
-                                        let date = Date(milliseconds: value)
-                                        mediaAsset.playerItem.seek(to: date) { success in
-                                            // TODO: What if the seek was not successful?
-                                            onReady()
-                                        }
-                                    }
-                                    else {
-                                        /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
-                                        let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
-                                        if let begining = seekableTimeStart?.seconds {
-                                            let startPosition = value - Int64(begining * 1000)
-                                            let cmTime = CMTime(value: startPosition, timescale: 1000)
-                                            mediaAsset.playerItem.seek(to: cmTime) { success in
-                                                onReady()
-                                            }
-                                        }
-                                        else {
-                                            onReady()
-                                        }
-                                    }
-                                }
-                            }
-                            else if let warning = validation.1 {
-                                /// StartTime was illegal
-                                self.eventDispatcher.onWarning(self, self.currentSource, warning)
-                                self.currentSource?.analyticsConnector.onWarning(tech: self, source: self.currentSource, warning: warning)
-                                onReady()
-                            }
-                            else {
-                                // No startTime was set
-                                onReady()
-                            }
+                            self.handleStartTime(mediaAsset: mediaAsset, callback: onReady)
                         default:
                             return
                         }
@@ -994,11 +936,109 @@ extension HLSNative {
     }
 }
 
-/// Current Item Changes
 extension HLSNative {
-    /// Subscribes to and handles `AVPlayer.currentItem` changes.
-    fileprivate func handleCurrentItemChanges() {
+    fileprivate func handleStartTime(mediaAsset: MediaAsset<Context.Source>, callback: @escaping () -> Void) {
+        guard !self.isExternalPlaybackActive else {
+            /// EMP-11129 We cant check for invalidStartTime on Airplay events since the seekable ranges are not loaded yet.
+            let offset = self.startOffset(for: mediaAsset)
+            switch offset {
+            case .defaultStartTime:
+                callback()
+            case let .startPosition(position: value):
+                let cmTime = CMTime(value: value, timescale: 1000)
+                mediaAsset.playerItem.seek(to: cmTime) { success in
+                    callback()
+                }
+            case let .startTime(time: value):
+                if #available(iOS 11.0, tvOS 11.0, *) {
+                    /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
+                    let date = Date(milliseconds: value)
+                    mediaAsset.playerItem.seek(to: date) { success in
+                        callback()
+                    }
+                }
+                else {
+                    /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
+                    /// EMP-11129 We cant check for invalidStartTime on Airplay events since the seekable ranges are not loaded yet.
+                    // TODO: Throw warning?
+                    callback()
+                }
+            }
+            return
+        }
+        
+        // The `playerItem` should now be associated with `avPlayer` and the manifest should be loaded. We now have access to the *timestmap related* functionality and can set startTime to a unix timestamp
+        let offset = self.startOffset(for: mediaAsset)
+        let validation = self.validate(startOffset: offset, mediaAsset: mediaAsset)
+        if let resolvedOffset = validation.0 {
+            switch resolvedOffset {
+            case .defaultStartTime:
+                /// Use default behaviour
+                callback()
+            case let .startPosition(position: value):
+                let cmTime = CMTime(value: value, timescale: 1000)
+                mediaAsset.playerItem.seek(to: cmTime) { success in
+                    callback()
+                }
+            case let .startTime(time: value):
+                if #available(iOS 11.0, tvOS 11.0, *) {
+                    /// There seem to be no issues in using `playerItem.seek(to: date)` on iOS 11+
+                    let date = Date(milliseconds: value)
+                    mediaAsset.playerItem.seek(to: date) { success in
+                        // TODO: What if the seek was not successful?
+                        callback()
+                    }
+                }
+                else {
+                    /// EMP-11071: Setting a custom startTime by unix timestamp does not work `playerItem.seek(to: date)`
+                    let seekableTimeStart = self.seekableTimeRanges.first.map{ $0.start }
+                    if let begining = seekableTimeStart?.seconds {
+                        let startPosition = value - Int64(begining * 1000)
+                        let cmTime = CMTime(value: startPosition, timescale: 1000)
+                        mediaAsset.playerItem.seek(to: cmTime) { success in
+                            callback()
+                        }
+                    }
+                    else {
+                        callback()
+                    }
+                }
+            }
+        }
+        else if let warning = validation.1 {
+            /// StartTime was illegal
+            self.eventDispatcher.onWarning(self, self.currentSource, warning)
+            self.currentSource?.analyticsConnector.onWarning(tech: self, source: self.currentSource, warning: warning)
+            callback()
+        }
+        else {
+            // No startTime was set
+            callback()
+        }
+    }
+}
+
+/// Airplay Bugfix
+extension HLSNative {
+    /// BUGFIX: EMP-11623 iOS 11.4 (ie Airplay 2) changed the behaviour of `replaceCurrentItem(with:)` and the loading sequence for `AVPlayerItem` status.
+    /// If Airplay is active and another playback request is made the status of the new incoming AVPlayerItem will never reach `.readyToPlay`. A workaround is to finalize playback setup when AVPlayer.currentItem has been set to the incoming mediaAsset's playerItem.
+    ///
+    /// Several radars exist dealing with similar issues:
+    /// * https://openradar.appspot.com/39750116
+    /// * https://openradar.appspot.com/39750349
+    /// * https://openradar.appspot.com/14275234
+    fileprivate func startTimeWorkaroundAirplay(callback: @escaping () -> Void) {
         playerObserver.observe(path: .currentItem, on: avPlayer) { player, change in
+            if #available(iOS 11.4, *) {
+                if let newItem = change.new as? AVPlayerItem, let mediaAsset = self.currentAsset, self.isExternalPlaybackActive {
+                    switch self.playbackState {
+                    case .notStarted:
+                        self.handleStartTime(mediaAsset: mediaAsset, callback: callback)
+                    default:
+                        return
+                    }
+                }
+            }
         }
     }
 }
