@@ -7,6 +7,8 @@ airplayButton.showsVolumeSlider = false
 view.addSubview(airplayButton)
 ```
 
+For applications targeting `iOS 11.0+` there is an additional option in the form of `AVRoutePickerView`.
+
 #### Background Modes
 Client applications who wish to continue *Airplay* once a user locks their screen or navigates from the app need to set the relevant `Capabilities` in their *Xcode* project.
 
@@ -25,6 +27,7 @@ else if #available(iOS 10.0, *) {
 else {
     try audioSession.setCategory(AVAudioSessionCategoryPlayback)
 }
+try audioSession.setActive(true)
 ```
 
 #### Airplay Best Practices

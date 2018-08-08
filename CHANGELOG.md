@@ -23,6 +23,7 @@
 
 #### Changes
 * Extended access log data delivered on error events. 
+* Updated `enabling-airplay.md` with detailing *Airplay* best practices.
 
 ## 2.0.86
 
