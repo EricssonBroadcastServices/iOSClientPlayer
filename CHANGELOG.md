@@ -1,6 +1,6 @@
 # CHANGELOG
 
-* `2.0.88` Release - [2.0.88](#2088)
+* `2.0.89` Release - [2.0.89](#2089)
 * `2.0.86` Release - [2.0.86](#2086)
 * `2.0.85` Release - [2.0.85](#2085)
 * `2.0.81` Release - [2.0.81](#2081)
@@ -13,7 +13,7 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
-## 2.0.88
+## 2.0.89
 
 #### Bug Fixes
 * `EMP-11603` Fixed an issue where the `onAirplayStatusChanged` callback fired multiple times for a single status update.
