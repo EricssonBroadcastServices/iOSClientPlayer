@@ -257,6 +257,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         print("HLSNative.deinit")
         playerObserver.stopObservingAll()
         playerObserver.unsubscribeAll()
+        airplayWorkaroundObserver.stopObservingAll()
+        airplayWorkaroundObserver.unsubscribeAll()
         stop()
         NotificationCenter.default.removeObserver(self)
     }
@@ -1016,7 +1018,8 @@ extension HLSNative {
     /// * https://openradar.appspot.com/39750349
     /// * https://openradar.appspot.com/14275234
     fileprivate func startTimeWorkaroundAirplay(callback: @escaping () -> Void) {
-        playerObserver.observe(path: .currentItem, on: avPlayer) { player, change in
+        airplayWorkaroundObserver.observe(path: .currentItem, on: avPlayer) { [weak self] player, change in
+            guard let `self` = self else { return }
             if #available(iOS 11.4, *) {
                 if let newItem = change.new as? AVPlayerItem, let mediaAsset = self.currentAsset, self.isExternalPlaybackActive {
                     switch self.playbackState {
