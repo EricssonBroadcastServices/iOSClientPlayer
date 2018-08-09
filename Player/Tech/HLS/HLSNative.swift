@@ -377,48 +377,14 @@ extension HLSNative {
             self.applyLanguagePreferences(on: mediaAsset)
         }) { [weak self] in
             guard let `self` = self else { return }
-            
-            guard !mediaAsset.abandoned else {
-                return
-            }
-            
-            self.playbackState = .preparing
-            // Trigger on-ready callbacks and autoplay if available
-            self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
-            mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
-            if self.autoplay {
-                // EMP-11587: If the audio session has been interrupted autoplay should be disabled.
-                // Disabling autoplay avoids issues where freshly loaded sources ready for playback during for example an incomming phone call. Without disabling autoplay, the source may start playing over the phones ringtone.
-                if !self.hasAudioSessionBeenInterupted {
-                    self.play()
-                }
-                self.hasAudioSessionBeenInterupted = false
-            }
-            callback()
+            self.finalizePlayback(mediaAsset: mediaAsset, callback: callback)
         }
         
         airplayWorkaroundObserver.unsubscribeAll()
         airplayWorkaroundObserver.stopObservingAll()
         startTimeWorkaroundAirplay{ [weak self] in
             guard let `self` = self else { return }
-            
-            guard !mediaAsset.abandoned else {
-                return
-            }
-            
-            self.playbackState = .preparing
-            // Trigger on-ready callbacks and autoplay if available
-            self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
-            mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
-            if self.autoplay {
-                // EMP-11587: If the audio session has been interrupted autoplay should be disabled.
-                // Disabling autoplay avoids issues where freshly loaded sources ready for playback during for example an incomming phone call. Without disabling autoplay, the source may start playing over the phones ringtone.
-                if !self.hasAudioSessionBeenInterupted {
-                    self.play()
-                }
-                self.hasAudioSessionBeenInterupted = false
-            }
-            callback()
+            self.finalizePlayback(mediaAsset: mediaAsset, callback: callback)
         }
         
         // Observe BitRate changes
@@ -933,6 +899,28 @@ extension HLSNative {
                 }
             }
         }
+    }
+}
+
+extension HLSNative {
+    fileprivate func finalizePlayback(mediaAsset: MediaAsset<Context.Source>, callback: @escaping () -> Void) {
+        guard !mediaAsset.abandoned else {
+            return
+        }
+        
+        self.playbackState = .preparing
+        // Trigger on-ready callbacks and autoplay if available
+        self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
+        mediaAsset.source.analyticsConnector.onReady(tech: self, source: mediaAsset.source)
+        if self.autoplay {
+            // EMP-11587: If the audio session has been interrupted autoplay should be disabled.
+            // Disabling autoplay avoids issues where freshly loaded sources ready for playback during for example an incomming phone call. Without disabling autoplay, the source may start playing over the phones ringtone.
+            if !self.hasAudioSessionBeenInterupted {
+                self.play()
+            }
+            self.hasAudioSessionBeenInterupted = false
+        }
+        callback()
     }
 }
 
