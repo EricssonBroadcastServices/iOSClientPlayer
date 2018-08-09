@@ -382,8 +382,8 @@ extension HLSNative {
         
         airplayWorkaroundObserver.unsubscribeAll()
         airplayWorkaroundObserver.stopObservingAll()
-        startTimeWorkaroundAirplay{ [weak self] in
-            guard let `self` = self else { return }
+        startTimeWorkaroundAirplay{ [weak self, weak mediaAsset] in
+            guard let `self` = self, let mediaAsset = mediaAsset else { return }
             self.finalizePlayback(mediaAsset: mediaAsset, callback: callback)
         }
         
