@@ -132,6 +132,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             }
             urlAsset = asset
             playerItem = AVPlayerItem(asset: asset)
+            
             if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
         }
         
@@ -472,14 +473,12 @@ extension HLSNative {
                 if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
                     switch status {
                     case .unknown:
-                        print("mediaAsset.playerItem.unknown")
                         switch self.playbackState {
                         case .notStarted:
                             onActive()
                         default: return
                         }
                     case .readyToPlay:
-                        print("mediaAsset.playerItem.readyToPlay")
                         switch self.playbackState {
                         case .notStarted:
                             self.handleStartTime(mediaAsset: mediaAsset, callback: onReady)
@@ -792,9 +791,11 @@ extension HLSNative {
                         return
                     case .preparing:
                         self.playbackState = .playing
-                        if let source = self.currentAsset?.source {
-                            self.eventDispatcher.onPlaybackStarted(self, source)
-                            source.analyticsConnector.onStarted(tech: self, source: source)
+                        if let mediaAsset = self.currentAsset {
+                            /// Track the internal `X-Playback-Session-Id`
+                            self.assignInternalPlaybackSessionId(toSourceFor: mediaAsset)
+                            self.eventDispatcher.onPlaybackStarted(self, mediaAsset.source)
+                            mediaAsset.source.analyticsConnector.onStarted(tech: self, source: mediaAsset.source)
                         }
                     case .paused:
                         self.playbackState = .playing
@@ -910,6 +911,9 @@ extension HLSNative {
             return
         }
         
+        /// Track the internal `X-Playback-Session-Id`
+        assignInternalPlaybackSessionId(toSourceFor: mediaAsset)
+        
         self.playbackState = .preparing
         // Trigger on-ready callbacks and autoplay if available
         self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
@@ -923,6 +927,22 @@ extension HLSNative {
             self.hasAudioSessionBeenInterupted = false
         }
         callback()
+    }
+}
+
+extension HLSNative {
+    /// EMP-11666: AVFoundation does now allow modifications of the HTTPHeaders `AVPlayer`/`AVURLAsset`/`AVPlayerItem` employs when requesting segments and manifests. This makes it very hard to track requests in a meaningfull way. Using the private `AVURLAssetHTTPHeaderFieldsKey` when specifying options during an `AVURLAsset` allows for header modifications. This is not recomended as using private APIs is grounds for app rejection.
+    ///
+    /// ```Swift
+    /// AVURLAsset(url: source.url, options: ["AVURLAssetHTTPHeaderFieldsKey":["X-My-Header":"value"]]
+    /// ```
+    ///
+    /// Assigns the internal `X-Playback-Session-Id` header added by AVFoundation to the media source. This can be used to track the segment requests.
+    /// - parameter mediaAsset: The media asset to extract data from.
+    fileprivate func assignInternalPlaybackSessionId(toSourceFor mediaAsset: MediaAsset<Context.Source>) {
+        if var nativeSource = mediaAsset.source as? HLSNativeMediaSource {
+            nativeSource.streamingRequestPlaybackSessionId = mediaAsset.playerItem.accessLog()?.events.first?.playbackSessionID
+        }
     }
 }
 

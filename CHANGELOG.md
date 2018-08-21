@@ -22,6 +22,9 @@
 * `EMP-11337` Fixed an issue where repeated playback starts would fail to deliver all `events` related to that session resulting in missing or incomplete analytics sessions.
 * `EMP-11623` Special treatment of subsequent playback starts during *Airplay mode* on `iOS 11.4+` due to a bug in `AVFoundation`.
 
+#### Features
+* `EMP-11667` Added functionality to trace `X-Playback-Session-Id` headers for segment and manifest requests.
+
 #### Changes
 * Extended access log data delivered on error events. 
 * Updated `enabling-airplay.md` with detailing *Airplay* best practices.
