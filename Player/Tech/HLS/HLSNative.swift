@@ -665,6 +665,9 @@ extension HLSNative {
 
 extension HLSNative {
     fileprivate func handleNewAccessLogEntry(mediaAsset: MediaAsset<Context.Source>) {
+        /// Track the internal `X-Playback-Session-Id`
+        assignInternalPlaybackSessionId(toSourceFor: mediaAsset)
+        
         if logLevel == .debug {
             // IMPORTANT: Do not use in a production environment
             let playerItem = mediaAsset.playerItem
@@ -940,8 +943,8 @@ extension HLSNative {
     /// Assigns the internal `X-Playback-Session-Id` header added by AVFoundation to the media source. This can be used to track the segment requests.
     /// - parameter mediaAsset: The media asset to extract data from.
     fileprivate func assignInternalPlaybackSessionId(toSourceFor mediaAsset: MediaAsset<Context.Source>) {
-        if var nativeSource = mediaAsset.source as? HLSNativeMediaSource {
-            nativeSource.streamingRequestPlaybackSessionId = mediaAsset.playerItem.accessLog()?.events.first?.playbackSessionID
+        if var nativeSource = mediaAsset.source as? MediaSourceRequestHeaders, let playbackSessionId = mediaAsset.playerItem.accessLog()?.events.first?.playbackSessionID {
+            nativeSource.mediaSourceRequestHeaders["X-Playback-Session-Id"] = playbackSessionId
         }
     }
 }
