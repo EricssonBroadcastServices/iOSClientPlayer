@@ -19,7 +19,7 @@ public class PlayerView: UIView {
     }
     
     /// Conveniece property that provides a *typed* version of the underlying `CALayer`
-    internal var avPlayerLayer: AVPlayerLayer {
+    public var avPlayerLayer: AVPlayerLayer {
         return layer as! AVPlayerLayer
     }
     

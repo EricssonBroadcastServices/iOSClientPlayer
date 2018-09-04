@@ -19,11 +19,13 @@ public final class ManifestContext: MediaContext {
     /// Source is defined as a `Manifest`
     public typealias Source = Manifest
     
+    public init() { }
+    
     /// Creates a `Manifest` from the specified `URL`
     ///
     /// - parameter url: `URL` to the media source
     /// - returns: `Manifest` describing the media source
-    func manifest(from url: URL, fairplayRequester: FairplayRequester? = nil) -> Manifest {
+    public func manifest(from url: URL, fairplayRequester: FairplayRequester? = nil) -> Manifest {
         let source = Manifest(url: url)
         source.analyticsConnector.providers = analyticsProviders(for: source)
         return source
