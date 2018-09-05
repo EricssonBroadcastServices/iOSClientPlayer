@@ -630,9 +630,9 @@ extension HLSNative {
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
-                self.eventDispatcher.onPlaybackCompleted(self, mediaAsset.source)
+                self.playbackState = .stopped
                 mediaAsset.source.analyticsConnector.onCompleted(tech: self, source: mediaAsset.source)
-                self.unloadOnStop()
+                self.eventDispatcher.onPlaybackCompleted(self, mediaAsset.source)
             }
         }
     }

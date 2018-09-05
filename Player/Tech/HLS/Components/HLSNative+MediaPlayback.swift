@@ -20,6 +20,8 @@ extension HLSNative: MediaPlayback {
             avPlayer.play()
         case .paused:
             avPlayer.play()
+        case .stopped:
+            avPlayer.play()
         default:
             return
         }
@@ -35,6 +37,7 @@ extension HLSNative: MediaPlayback {
     public func stop() {
         switch playbackState {
         case .stopped:
+            unloadOnStop()
             return
         default:
             avPlayer.pause()

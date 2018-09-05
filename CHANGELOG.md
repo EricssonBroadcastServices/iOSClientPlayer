@@ -19,6 +19,9 @@
 #### Changes
 * Made a couple of methods related to manifest context public.
 
+#### Bug Fixes
+* Do not unload `MediaAsset` when playback ends at source duration to allow reuse of downloaded segments.
+
 ## 2.0.89
 
 #### Bug Fixes
