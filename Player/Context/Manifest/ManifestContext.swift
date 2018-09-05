@@ -32,7 +32,7 @@ public final class ManifestContext: MediaContext {
     }
     
     /// Default analytics contains an `AnalyticsLogger`
-    public var analyticsGenerators: [(Source?) -> AnalyticsProvider] = [{ _ in return AnalyticsLogger() }]
+    public var analyticsGenerators: [(Source?) -> AnalyticsProvider] = []
     
     public struct Error: ExpandedError {
         public let message: String
