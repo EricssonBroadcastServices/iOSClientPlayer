@@ -18,6 +18,7 @@
 
 #### Changes
 * Made a couple of methods related to manifest context public.
+* `EMP-11747` Added ability to set `preferredMaxBitrate` on  `HLSNative` .
 
 #### Bug Fixes
 * Do not unload `MediaAsset` when playback ends at source duration to allow reuse of downloaded segments.
