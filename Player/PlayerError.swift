@@ -63,6 +63,17 @@ extension PlayerError {
     }
 }
 
+extension PlayerError {
+    /// The underlying error for this error
+    public var underlyingError: Error? {
+        switch self {
+        case .context(error: let error): return error.underlyingError
+        case .tech(error: let error): return error.underlyingError
+        }
+    }
+}
+
+
 /// Extension on the basic `Swift.Error` protocol adding an error code.
 public protocol ExpandedError: Error {
     /// Should return the error code
@@ -76,4 +87,11 @@ public protocol ExpandedError: Error {
     
     /// Should optionally return detailed information describing the error
     var info: String? { get }
+    
+    /// Should optionally return the underlying error for this error
+    var underlyingError: Error? { get }
+}
+
+extension ExpandedError {
+    public var underlyingError: Error? { return nil }
 }

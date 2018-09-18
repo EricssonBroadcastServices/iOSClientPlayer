@@ -16,6 +16,9 @@
 
 ## 2.0.90
 
+#### Features
+* `EMP-11766` Expanded and harmonized error reporting through analytics dispatch.
+
 #### Changes
 * Made a couple of methods related to manifest context public.
 

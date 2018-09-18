@@ -61,7 +61,7 @@ extension HLSNativeError {
     public var info: String? {
         switch self {
         case .missingMediaUrl: return "Missing media url"
-        case .failedToPrepare(errors: let errors): return errors.map{ "[\($0.debugInfoString)]" }.joined(separator: "\n")
+        case .failedToPrepare(errors: let errors): return errors.map{ "\($0.debugInfoString)" }.joined(separator: "\n")
         case .loadedButNotPlayable: return "Asset loaded but not playable"
         case .failedToReady(error: let error): return error != nil ? error!.debugInfoString : "Unknown error"
         case .failedToCompletePlayback(error: let error): return error.debugInfoString
@@ -88,4 +88,18 @@ extension HLSNativeError {
 
 extension HLSNativeError {
     public var domain: String { return String(describing: type(of: self))+"Domain" }
+}
+
+extension HLSNativeError {
+    public var underlyingError: Error? {
+        switch self {
+        case .missingMediaUrl: return nil
+        case .failedToPrepare(errors: let errors): return errors.first
+        case .failedToReady(error: let error): return error
+        case .loadedButNotPlayable: return nil
+        case .failedToCompletePlayback(error: let error): return error
+        case .failedToValdiateContentKey(error: let error): return error
+        case .techDeallocated: return nil
+        }
+    }
 }

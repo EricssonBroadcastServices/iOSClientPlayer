@@ -71,7 +71,17 @@ internal extension AVPlayerItem {
         info += "PlaybackBufferFull: \(isPlaybackBufferFull) \n"
         info += "PlaybackBufferEmpty: \(isPlaybackBufferEmpty) \n"
         if let urlAsset = asset as? AVURLAsset {
-            info += "URL: \(urlAsset.url)"
+            info += "URL: \(urlAsset.url) \n"
+        }
+        
+        switch status {
+        case .failed:
+            info += "PlayerItem.Status: .failed \n"
+            info += "PlayerItem.Error: " + (error?.debugInfoString ?? "nil") + " \n"
+        case .readyToPlay:
+            info += "PlayerItem.Status: .readyToPlay \n"
+        case .unknown:
+            info += "PlayerItem.Status: .unknown \n"
         }
         
         json["Info"] = info
