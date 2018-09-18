@@ -1,6 +1,6 @@
 # CHANGELOG
 
-* `2.0.90` Release - [2.0.90](#2090)
+* `2.0.91` Release - [2.0.91](#2091)
 * `2.0.89` Release - [2.0.89](#2089)
 * `2.0.86` Release - [2.0.86](#2086)
 * `2.0.85` Release - [2.0.85](#2085)
@@ -14,7 +14,7 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
-## 2.0.90
+## 2.0.91
 
 #### Features
 * `EMP-11766` Expanded and harmonized error reporting through analytics dispatch.
