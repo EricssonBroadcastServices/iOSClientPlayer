@@ -18,6 +18,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Triggered when Airplay status changes
     public var onAirplayStatusChanged: (HLSNative<Context>, Context.Source?, Bool) -> Void = { _,_,_ in }
     
+    /// Triggered when encountering new Timed Metadata
+    public var onTimedMetadataChanged: (HLSNative<Context>, Context.Source?, [AVMetadataItem]?) -> Void = { _,_,_ in }
+    
     /// Optionally deal with airplay events through this delegate
     public weak var airplayHandler: AirplayHandler?
     
@@ -408,6 +411,8 @@ extension HLSNative {
         handleNewErrorLogEntry(mediaAsset: mediaAsset)
         
         handleNewAccessLogEntry(mediaAsset: mediaAsset)
+        
+        handleTimedMetadataChange(mediaAsset: mediaAsset)
     }
 }
 
@@ -734,6 +739,22 @@ extension HLSNative {
     }
 }
 
+/// MARK: TimedMetadata
+extension HLSNative {
+    /// Monitors `AVPlayerItem`s *error log* and handles specific cases.
+    ///
+    /// - parameter mediaAsset: asset to observe and manage event for
+    fileprivate func handleTimedMetadataChange(mediaAsset: MediaAsset<Context.Source>) {
+        let playerItem = mediaAsset.playerItem
+        mediaAsset.itemObserver.observe(path: AVPlayerItem.ObservableKey.timedMetadata, on: playerItem) { [weak self] item, change in
+            guard let `self` = self else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                self.onTimedMetadataChanged(self, self.currentSource, item.timedMetadata)
+            }
+        }
+    }
+}
 
 extension HLSNative {
     /// Returns an *unmaintained* KVO token which needs to be cancelled before deallocation. Responsbility for managing this rests entierly on the caller/creator.
