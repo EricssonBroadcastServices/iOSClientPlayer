@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import AVFoundation
 
 /// `AnalyticsConnector` is responsible for managing the interaction between raw `PlaybackTech` events, tailored to the need of specific `AnalyticsProvider`s.
-public protocol AnalyticsConnector: EventResponder, TraceProvider, TechDeallocationEventProvider, SourceAbandonedEventProvider {
+public protocol AnalyticsConnector: EventResponder, TraceProvider, TechDeallocationEventProvider, SourceAbandonedEventProvider, TimedMetadataProvider {
     /// Analytics connector will manage, filter and possibly forward events to all providers specified here
     var providers: [AnalyticsProvider] { get set }
 }
@@ -39,6 +40,16 @@ extension AnalyticsConnector {
         providers.forEach{
             if let provider = $0 as? SourceAbandonedEventProvider {
                 provider.onSourcePreparationAbandoned(ofSource: mediaSource, byTech: tech)
+            }
+        }
+    }
+}
+
+extension AnalyticsConnector {
+    public func onTimedMetadataChanged<Tech, Source>(source: Source?, tech: Tech, metadata: [AVMetadataItem]?) where Tech : PlaybackTech, Source : MediaSource {
+        providers.forEach{
+            if let provider = $0 as? TimedMetadataProvider {
+                provider.onTimedMetadataChanged(source: source, tech: tech, metadata: metadata)
             }
         }
     }

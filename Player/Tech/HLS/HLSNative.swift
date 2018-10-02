@@ -751,6 +751,7 @@ extension HLSNative {
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
                 self.onTimedMetadataChanged(self, self.currentSource, item.timedMetadata)
+                self.currentSource?.analyticsConnector.onTimedMetadataChanged(source: self.currentSource, tech: self, metadata: item.timedMetadata)
             }
         }
     }
