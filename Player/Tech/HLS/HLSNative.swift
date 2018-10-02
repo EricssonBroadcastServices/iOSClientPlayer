@@ -741,7 +741,7 @@ extension HLSNative {
 
 /// MARK: TimedMetadata
 extension HLSNative {
-    /// Monitors `AVPlayerItem`s *error log* and handles specific cases.
+    /// Monitors `AVPlayerItem`s timed metadata key and dispatches new entries to analytics and registered event callback.
     ///
     /// - parameter mediaAsset: asset to observe and manage event for
     fileprivate func handleTimedMetadataChange(mediaAsset: MediaAsset<Context.Source>) {
