@@ -77,6 +77,8 @@
 		76139F7F1F1CCFEF00822023 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */; };
 		7613F8F620B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F520B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift */; };
 		7613F8F820B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F720B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift */; };
+		7619B4992175CDE000EE0DC8 /* Int64+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619B4982175CDE000EE0DC8 /* Int64+Extensions.swift */; };
+		7619B49A2175CDEE00EE0DC8 /* Int64+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619B4982175CDE000EE0DC8 /* Int64+Extensions.swift */; };
 		7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619E54D1FCC05D600ACACAE /* PlayerError.swift */; };
 		7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */; };
 		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
@@ -168,6 +170,7 @@
 		76139F7E1F1CCFEF00822023 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
 		7613F8F520B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerItemErrorLogEvent+Extensions.swift"; sourceTree = "<group>"; };
 		7613F8F720B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerItemAccessLogEvent+Extensions.swift"; sourceTree = "<group>"; };
+		7619B4982175CDE000EE0DC8 /* Int64+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int64+Extensions.swift"; sourceTree = "<group>"; };
 		7619E54D1FCC05D600ACACAE /* PlayerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerError.swift; sourceTree = "<group>"; };
 		7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaRendering.swift"; sourceTree = "<group>"; };
 		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
@@ -558,6 +561,7 @@
 				76A8437A1EA7819D00BDAF2C /* Sequence+Extensions.swift */,
 				76A89CEB2020915700C23579 /* Date+Extensions.swift */,
 				766FE46C203AF484003B9B90 /* Error+Extensions.swift */,
+				7619B4982175CDE000EE0DC8 /* Int64+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -827,6 +831,7 @@
 				760800D22069210E007F59D5 /* AVPlayer+KeyValueObservable.swift in Sources */,
 				760800D32069210E007F59D5 /* HLSNative+MediaRendering.swift in Sources */,
 				760800D42069210E007F59D5 /* MediaTrack.swift in Sources */,
+				7619B49A2175CDEE00EE0DC8 /* Int64+Extensions.swift in Sources */,
 				760800D52069210E007F59D5 /* HLSNative+StartTime.swift in Sources */,
 				760800D62069210E007F59D5 /* KeyValueObserver.swift in Sources */,
 				760800D72069210E007F59D5 /* StartTime.swift in Sources */,
@@ -892,6 +897,7 @@
 				766AC2151FC2F6B700843FEF /* AVPlayer+KeyValueObservable.swift in Sources */,
 				7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */,
 				7691BD38203C7A0E0038F754 /* MediaTrack.swift in Sources */,
+				7619B4992175CDE000EE0DC8 /* Int64+Extensions.swift in Sources */,
 				766039131FC6D1DC00E79091 /* HLSNative+StartTime.swift in Sources */,
 				766AC21B1FC2F6B700843FEF /* KeyValueObserver.swift in Sources */,
 				7602E8891F38341A00601CD4 /* StartTime.swift in Sources */,

@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `2.0.93` Release - [2.0.93](#2093)
 * `2.0.92` Release - [2.0.92](#2092)
 * `2.0.91` Release - [2.0.91](#2091)
 * `2.0.89` Release - [2.0.89](#2089)
@@ -14,6 +15,11 @@
 * `0.72.x` Releases - [0.72.0](#0720)
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
+
+## 2.0.93
+
+#### Bug Fixes
+* `EMP-11909` Seeking to a unix timestamp does not work correctly when Airplay is active, the associated callbacks fail to ever return or report failure even when the seek was successful. As a workaround, the library now maps unix timestamp seek operations to zero-based stream start offsets internally.
 
 ## 2.0.92
 

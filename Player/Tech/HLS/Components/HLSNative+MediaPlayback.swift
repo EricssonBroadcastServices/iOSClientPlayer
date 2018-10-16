@@ -141,15 +141,41 @@ extension HLSNative: MediaPlayback {
     /// - parameter timeInterval: target timestamp in unix epoch time (milliseconds)
     /// - parameter callback: `true` if seek was successful, `false` if it was cancelled
     public func seek(toTime timeInterval: Int64, callback: @escaping (Bool) -> Void) {
-        let date = Date(milliseconds: timeInterval)
-        currentAsset?.playerItem.seek(to: date) { [weak self] success in
-            guard let `self` = self else { return }
-            if success {
-                if let source = self.currentAsset?.source {
-                    self.eventDispatcher.onPlaybackScrubbed(self, source, timeInterval)
-                    source.analyticsConnector.onScrubbedTo(tech: self, source: source, offset: timeInterval) }
+        /// BUGFIX: EMP-11909: Seeking to a unix timestamp does not work correctly when Airplaying, the associated callbacks which tracks success fails to fire or fire with incorrect status returned. This forces us to seek using `playheadPosition` by mapping the unix timestamp to a buffer position
+        if isExternalPlaybackActive {
+            /// TODO: EMP-11647: If this is an Airplay session, return `AVAudioSessionPortAirPlay`
+            /// let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSessionPortAirPlay }
+            /// return !connectedAirplayPorts.isEmpty ? AVAudioSessionPortAirPlay : nil
+            
+            guard let position = timeInterval.positionFrom(referenceTime: self.playheadTime, referencePosition: playheadPosition) else {
+                /// When playheadTime is unavailable, the seek is considered failed.
+                callback(false)
+                return
             }
-            callback(success)
+            let seekTime = position > 0 ? position : 0
+            let cmTime = CMTime(value: seekTime, timescale: 1000)
+            currentAsset?.playerItem.seek(to: cmTime) { [weak self] success in
+                guard let `self` = self else { return }
+                if success {
+                    /// Since the seek was triggered by seeking to a unix timestamp, ie `timeInterval`, but the workaround was to use zero-based offset when seeking, trigger the callbacks with the correct value of `timeInterval` instead of the *transformed value* we used, ie `position
+                    if let source = self.currentAsset?.source {
+                        self.eventDispatcher.onPlaybackScrubbed(self, source, timeInterval)
+                        source.analyticsConnector.onScrubbedTo(tech: self, source: source, offset: timeInterval) }
+                }
+                callback(success)
+            }
+        }
+        else {
+            let date = Date(milliseconds: timeInterval)
+            currentAsset?.playerItem.seek(to: date) { [weak self] success in
+                guard let `self` = self else { return }
+                if success {
+                    if let source = self.currentAsset?.source {
+                        self.eventDispatcher.onPlaybackScrubbed(self, source, timeInterval)
+                        source.analyticsConnector.onScrubbedTo(tech: self, source: source, offset: timeInterval) }
+                }
+                callback(success)
+            }
         }
     }
     
