@@ -21,6 +21,9 @@
 #### Bug Fixes
 * `EMP-11909` Seeking to a unix timestamp does not work correctly when Airplay is active, the associated callbacks fail to ever return or report failure even when the seek was successful. As a workaround, the library now maps unix timestamp seek operations to zero-based stream start offsets internally.
 
+#### Features
+* `EMP-11838` Expose timed metadata for `HLSNative`
+
 ## 2.0.92
 
 #### Changes

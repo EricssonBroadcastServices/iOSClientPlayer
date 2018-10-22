@@ -116,6 +116,8 @@
 		767284EC20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767284EA20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift */; };
 		767284F120B6EFA000E8BCC3 /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F520B5B53A00AC148F /* AVPlayerItemErrorLogEvent+Extensions.swift */; };
 		767284F220B6EFA200E8BCC3 /* AVPlayerItemAccessLogEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7613F8F720B5B55100AC148F /* AVPlayerItemAccessLogEvent+Extensions.swift */; };
+		767EFCEC216370E200F6CC74 /* TimedMetadataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EFCEB216370E200F6CC74 /* TimedMetadataProvider.swift */; };
+		767EFCED216370E200F6CC74 /* TimedMetadataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EFCEB216370E200F6CC74 /* TimedMetadataProvider.swift */; };
 		7681014720595D4100EF7F52 /* UnmanagedPlayerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */; };
 		76810149205ABFBC00EF7F52 /* AirplayHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76810148205ABFBC00EF7F52 /* AirplayHandler.swift */; };
 		7681014D205AC73500EF7F52 /* HLSNative+ManifestContext+Airplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7681014C205AC73500EF7F52 /* HLSNative+ManifestContext+Airplay.swift */; };
@@ -207,6 +209,7 @@
 		766AC2251FC2F77000843FEF /* PlayerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerObserver.swift; sourceTree = "<group>"; };
 		766FE46C203AF484003B9B90 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
 		767284EA20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TechDeallocationEventProvider.swift; sourceTree = "<group>"; };
+		767EFCEB216370E200F6CC74 /* TimedMetadataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimedMetadataProvider.swift; sourceTree = "<group>"; };
 		7681014620595D4100EF7F52 /* UnmanagedPlayerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnmanagedPlayerObserver.swift; sourceTree = "<group>"; };
 		76810148205ABFBC00EF7F52 /* AirplayHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirplayHandler.swift; sourceTree = "<group>"; };
 		7681014C205AC73500EF7F52 /* HLSNative+ManifestContext+Airplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+ManifestContext+Airplay.swift"; sourceTree = "<group>"; };
@@ -316,6 +319,7 @@
 				767284EA20B6CBD300E8BCC3 /* TechDeallocationEventProvider.swift */,
 				7644FBBF21189236006CEBF0 /* SourceAbandonedEventProvider.swift */,
 				766039161FC6DFA200E79091 /* AnalyticsConnector.swift */,
+				767EFCEB216370E200F6CC74 /* TimedMetadataProvider.swift */,
 				7660391C1FC6E0AB00E79091 /* Connectors */,
 				7660391F1FC6E0E700E79091 /* Providers */,
 			);
@@ -838,6 +842,7 @@
 				760800D82069210E007F59D5 /* Error+Extensions.swift in Sources */,
 				760800D92069210E007F59D5 /* Manifest.swift in Sources */,
 				760800DA2069210E007F59D5 /* KeyValueObservable.swift in Sources */,
+				767EFCED216370E200F6CC74 /* TimedMetadataProvider.swift in Sources */,
 				760800DB2069210E007F59D5 /* PlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -904,6 +909,7 @@
 				766FE46D203AF484003B9B90 /* Error+Extensions.swift in Sources */,
 				766039271FC6E25800E79091 /* Manifest.swift in Sources */,
 				766AC21A1FC2F6B700843FEF /* KeyValueObservable.swift in Sources */,
+				767EFCEC216370E200F6CC74 /* TimedMetadataProvider.swift in Sources */,
 				76A8439D1EA7819D00BDAF2C /* PlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -987,7 +993,7 @@
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 134;
+				DYLIB_CURRENT_VERSION = 137;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Player/Info.plist;
@@ -1018,7 +1024,7 @@
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 134;
+				DYLIB_CURRENT_VERSION = 137;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Player/Info.plist;
@@ -1067,7 +1073,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 134;
+				CURRENT_PROJECT_VERSION = 137;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1126,7 +1132,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 134;
+				CURRENT_PROJECT_VERSION = 137;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1157,7 +1163,7 @@
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 134;
+				DYLIB_CURRENT_VERSION = 137;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Player/Info.plist;
@@ -1182,7 +1188,7 @@
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 134;
+				DYLIB_CURRENT_VERSION = 137;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Player/Info.plist;

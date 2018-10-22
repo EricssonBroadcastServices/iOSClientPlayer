@@ -230,6 +230,18 @@ extension HLSNative: MediaPlayback {
 }
 
 extension HLSNative {
+    /// Set the rate of playback.
+    public var rate: Float {
+        get {
+            return avPlayer.rate
+        }
+        set {
+            avPlayer.rate = newValue
+        }
+    }
+}
+
+extension HLSNative {
     fileprivate func convert(timeRange: CMTimeRange) -> CMTimeRange? {
         guard let start = relate(time: timeRange.start), let end = relate(time: timeRange.end) else { return nil }
         return CMTimeRange(start: start, end: end)
