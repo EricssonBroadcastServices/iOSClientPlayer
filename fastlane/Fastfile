@@ -118,7 +118,7 @@ platform :ios do
     desc "Checkout latest dependencies as declared in Cartfile.resolved"
     private_lane :checkout_dependencies do
         carthage(
-                 command: "bootstrap",
+                 command: "update",
                  platform: "iOS,tvOS",
                  use_submodules: true,
                  use_ssh: true,
