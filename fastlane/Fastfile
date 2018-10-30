@@ -108,7 +108,7 @@ platform :ios do
                  command: "update",
                  platform: "iOS,tvOS",
                  use_submodules: true,
-                 use_ssh: true,
+                 use_ssh: false,
                  use_binaries: false,
                  no_build: true
                  )
