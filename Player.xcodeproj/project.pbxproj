@@ -20,7 +20,6 @@
 		7608009A20691E19007F59D5 /* Player.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76A8434E1EA77DF700BDAF2C /* Player.framework */; };
 		7608009B20691E19007F59D5 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB41EA8DE29001DBDDB /* Quick.framework */; };
 		7608009C20691E19007F59D5 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76BBFBB61EA8DE34001DBDDB /* Nimble.framework */; };
-		7608009D20691E19007F59D5 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
 		760800A82069210E007F59D5 /* HLSNative+MediaPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */; };
 		760800A92069210E007F59D5 /* FairplayRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766AC20B1FC2F6B700843FEF /* FairplayRequester.swift */; };
 		760800AA2069210E007F59D5 /* AirplayHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76810148205ABFBC00EF7F52 /* AirplayHandler.swift */; };
@@ -81,7 +80,6 @@
 		7619B49A2175CDEE00EE0DC8 /* Int64+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619B4982175CDE000EE0DC8 /* Int64+Extensions.swift */; };
 		7619E54E1FCC05D600ACACAE /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7619E54D1FCC05D600ACACAE /* PlayerError.swift */; };
 		7621A5F81FC84CDC00E30973 /* HLSNative+MediaRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */; };
-		7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */; };
 		7644FBC021189236006CEBF0 /* SourceAbandonedEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7644FBBF21189236006CEBF0 /* SourceAbandonedEventProvider.swift */; };
 		7644FBC121189236006CEBF0 /* SourceAbandonedEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7644FBBF21189236006CEBF0 /* SourceAbandonedEventProvider.swift */; };
 		766039101FC6D08800E79091 /* HLSNative+MediaPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */; };
@@ -175,7 +173,6 @@
 		7619B4982175CDE000EE0DC8 /* Int64+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int64+Extensions.swift"; sourceTree = "<group>"; };
 		7619E54D1FCC05D600ACACAE /* PlayerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerError.swift; sourceTree = "<group>"; };
 		7621A5F71FC84CDC00E30973 /* HLSNative+MediaRendering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaRendering.swift"; sourceTree = "<group>"; };
-		7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Checkouts/Mockingjay/build/Debug/Mockingjay.framework; sourceTree = "<group>"; };
 		7644FBBF21189236006CEBF0 /* SourceAbandonedEventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceAbandonedEventProvider.swift; sourceTree = "<group>"; };
 		7660390F1FC6D08800E79091 /* HLSNative+MediaPlayback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+MediaPlayback.swift"; sourceTree = "<group>"; };
 		766039121FC6D1DC00E79091 /* HLSNative+StartTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+StartTime.swift"; sourceTree = "<group>"; };
@@ -271,7 +268,6 @@
 				7608009A20691E19007F59D5 /* Player.framework in Frameworks */,
 				7608009B20691E19007F59D5 /* Quick.framework in Frameworks */,
 				7608009C20691E19007F59D5 /* Nimble.framework in Frameworks */,
-				7608009D20691E19007F59D5 /* Mockingjay.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,7 +292,6 @@
 				76A843581EA77DF700BDAF2C /* Player.framework in Frameworks */,
 				76BBFBB51EA8DE29001DBDDB /* Quick.framework in Frameworks */,
 				76BBFBB71EA8DE34001DBDDB /* Nimble.framework in Frameworks */,
-				7639AAB81EB38CC300F5CCB7 /* Mockingjay.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,7 +537,6 @@
 		76A8436A1EA7811200BDAF2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7639AAB71EB38CC300F5CCB7 /* Mockingjay.framework */,
 				76BBFBB61EA8DE34001DBDDB /* Nimble.framework */,
 				76BBFBB41EA8DE29001DBDDB /* Quick.framework */,
 				76A844791EA7A15B00BDAF2C /* Utilities.framework */,
@@ -719,6 +713,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 76A843441EA77DF700BDAF2C;
@@ -944,14 +939,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Mockingjay/build/Debug",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = PlayerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
@@ -966,14 +956,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Mockingjay/build/Debug",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = PlayerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
@@ -999,7 +984,7 @@
 				INFOPLIST_FILE = Player/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = Player;
@@ -1030,7 +1015,7 @@
 				INFOPLIST_FILE = Player/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = Player;
@@ -1169,7 +1154,7 @@
 				INFOPLIST_FILE = Player/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = Player;
@@ -1194,7 +1179,7 @@
 				INFOPLIST_FILE = Player/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = Player;
@@ -1209,14 +1194,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Mockingjay/build/Debug",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = PlayerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -1229,14 +1209,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Mockingjay/build/Debug",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = PlayerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.PlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;

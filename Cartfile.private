@@ -1,3 +1,2 @@
-github "Quick/Nimble" "v7.3.1"
-github "Quick/Quick" "v1.3.2"
-github "FredrikSjoberg/Mockingjay.git" "2.0.3"
+github "Quick/Nimble"
+github "Quick/Quick"
