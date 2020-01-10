@@ -15,7 +15,7 @@ public struct MediaTrack: Track, Equatable {
     
     /// Describes the `MediaTrack`, for example *audio* or *subtitle*
     public var type: String {
-        return mediaOption.mediaType
+        return mediaOption.mediaType.rawValue
     }
     
     /// A string describing the `MediaTrack`, suitable for display.
