@@ -475,7 +475,7 @@ extension HLSNative {
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
-                if let newValue = change.new as? Int, let status = AVPlayerItemStatus(rawValue: newValue) {
+                if let newValue = change.new as? Int, let status = AVPlayerItem.Status(rawValue: newValue) {
                     switch status {
                     case .unknown:
                         switch self.playbackState {
@@ -865,7 +865,7 @@ extension HLSNative {
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
-                if let newValue = change.new as? Int, let status = AVPlayerStatus(rawValue: newValue) {
+                if let newValue = change.new as? Int, let status = AVPlayer.Status(rawValue: newValue) {
                     switch status {
                     case .unknown:
                         return
@@ -905,7 +905,7 @@ extension HLSNative {
                     let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
                     guard !isHandoffTrigger else { return }
                     
-                    let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSessionPortAirPlay }
+                    let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSession.Port.airPlay }
                     
                     if connectedAirplayPorts.isEmpty {
                         // Disconnected Airplay
@@ -1104,14 +1104,14 @@ internal class BackgroundWatcher {
     /// Subscribes to *Audio Session Interruption* `Notification`s.
     internal func handleAudioSessionInteruption(callback: @escaping (AudioSessionInterruption) -> Void) {
         onAudioSessionInterruption = callback
-        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.audioSessionInterruption), name: .AVAudioSessionInterruption, object: AVAudioSession.sharedInstance())
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.audioSessionInterruption), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
     }
     
     /// Handles *Audio Session Interruption* events by resuming playback if instructed to do so.
     @objc internal func audioSessionInterruption(notification: Notification) {
         guard let userInfo = notification.userInfo,
             let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-            let type = AVAudioSessionInterruptionType(rawValue: typeValue) else {
+            let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
                 return
         }
         switch type {
@@ -1119,7 +1119,7 @@ internal class BackgroundWatcher {
             onAudioSessionInterruption(.began)
         case .ended:
             guard let flagsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
-            let flags = AVAudioSessionInterruptionOptions(rawValue: flagsValue)
+            let flags = AVAudioSession.InterruptionOptions(rawValue: flagsValue)
             onAudioSessionInterruption(.ended(shouldResume: flags.contains(.shouldResume)))
         }
     }
@@ -1130,20 +1130,20 @@ extension BackgroundWatcher {
     /// Backgrounding the player events.
     internal func handleDidEnterBackground(callback: @escaping () -> Void) {
         onDidEnterBackground = callback
-        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appDidEnterBackground), name: .UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appDidEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     internal func handleWillResignActive(callback: @escaping () -> Void) {
         onWillResignActive = callback
-        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillResignActive), name: .UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
     }
     internal func handleWillEnterForeground(callback: @escaping () -> Void) {
         onWillEnterForeground = callback
-        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
     internal func handleWillTerminate(callback: @escaping () -> Void) {
         onWillTerminate = callback
-        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillTerminate), name: .UIApplicationWillTerminate, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillTerminate), name: UIApplication.willTerminateNotification, object: nil)
     }
     
     @objc internal func appDidEnterBackground() {

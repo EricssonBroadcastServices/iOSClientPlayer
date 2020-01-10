@@ -16,6 +16,12 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
+
+## 2.0.122
+
+#### Changes
+* Updated the project to support Swift 4.2 and above
+
 ## 2.0.93
 
 #### Bug Fixes
