@@ -1,5 +1,8 @@
 # Upgrade Guide
 
+## 2.1.00
+Project is updated to use Swift version 4.2 
+
 ## 2.0.86
 
 ### API Changes
