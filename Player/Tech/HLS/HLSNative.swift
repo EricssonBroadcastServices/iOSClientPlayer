@@ -131,9 +131,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             
             let asset = AVURLAsset(url: source.url, options: nil)
             
-            if !asset.resourceLoader.preloadsEligibleContentKeys {
+            /* if !asset.resourceLoader.preloadsEligibleContentKeys {
                 asset.resourceLoader.preloadsEligibleContentKeys = true
-            }
+            } */
             
 
             if fairplayRequester != nil {
@@ -587,21 +587,6 @@ extension HLSNative {
                         
                         print("Failed ", item.errorLog())
                         self.handleStartTime(mediaAsset: mediaAsset, callback: onReady)
-                        
-//                        print("handleStatusChange : failed Code ", item.error)
-//
-//                        let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToReady(error: item.error))
-//
-//                        print("handleStatusChange : failed Code ", techError.code)
-//
-//                        if techError.code != 103 {
-//                            self.eventDispatcher.onError(self, mediaAsset.source, techError)
-//                            mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
-//                            mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
-//                        } else {
-//                            print("No Interent but still trying to play ")
-//                        }
-                        
                     }
                 }
             }
