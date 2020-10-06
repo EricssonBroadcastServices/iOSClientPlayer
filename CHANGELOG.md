@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `2.2.20` Release - [2.2.20](#2220)
 * `2.2.10` Release - [2.2.10](#2210)
 * `2.2.00` Release - [2.2.00](#2200)
 * `2.1.00` Release - [2.1.00](#2100)
@@ -18,6 +19,10 @@
 * `0.72.x` Releases - [0.72.0](#0720)
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
+
+## 2.2.200
+#### Bug Fixes
+* `EMP-15109` Fixed issue where playback did not work with iOS 12 or older devices. 
 
 ## 2.2.100
 #### Changes
