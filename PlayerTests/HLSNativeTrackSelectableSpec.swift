@@ -234,7 +234,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                     
                     env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
-                    expect(env.player.tech.textGroup).toEventuallyNot(beNil(), timeout: 4)
+                    expect(env.player.tech.textGroup).toEventuallyNot(beNil(), timeout: .seconds(4))
                     expect(env.player.tech.textGroup?.allowsEmptySelection).toEventually(beTrue())
                     expect(env.player.tech.textGroup?.defaultTrack?.name).toEventually(equal("Swedish"))
                     expect(env.player.tech.textGroup?.defaultTrack?.extendedLanguageTag).toEventually(equal("sv"))
@@ -269,7 +269,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                     
                     env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
                     
-                    expect(env.player.tech.textGroup).toEventuallyNot(beNil(), timeout: 4)
+                    expect(env.player.tech.textGroup).toEventuallyNot(beNil(), timeout: .seconds(4))
                     expect(env.player.tech.allowsEmptyTextSelection).toEventually(beTrue())
                     expect(env.player.tech.defaultTextTrack?.name).toEventually(equal("Swedish"))
                     expect(env.player.tech.defaultTextTrack?.extendedLanguageTag).toEventually(equal("sv"))

@@ -40,8 +40,8 @@ class InvalidStartTimeSpec: QuickSpec {
                 env.player.tech.load(source: source, configuration: conf)
                 
                 
-                expect(playerWarning).toEventuallyNot(beNil(), timeout: 5)
-                expect(playerWarning?.message).toEventually(contain("Invalid start time"), timeout: 5)
+                expect(playerWarning).toEventuallyNot(beNil(), timeout: .seconds(5))
+                expect(playerWarning?.message).toEventually(contain("Invalid start time"), timeout: .seconds(5))
             }
         }
     }
