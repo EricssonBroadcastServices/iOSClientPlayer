@@ -247,7 +247,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             /// `Dispatcher` (`Exposure` module) will force flush event queue on `.UIApplicationDidEnterBackground`
             guard let `self` = self else { return }
             if !self.avPlayer.isExternalPlaybackActive {
-                self.pause()
+                // self.pause()  ( when player is on picture on picture mode , it should keep playing ) 
             }
         }
         backgroundWatcher.handleWillResignActive { }

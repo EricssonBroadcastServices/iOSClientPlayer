@@ -12,12 +12,12 @@ import AVFoundation
 /// `HLSNative` adoption of `MediaRendering`
 extension HLSNative: MediaRendering {
     /// Creates and configures the associated `CALayer` used to render the media output. This view will be added to the *user supplied* `playerView` as a sub view at `index: 0`. A strong reference to `playerView` is also established.
-    ///
     /// - parameter playerView:  *User supplied* view to configure for playback rendering.
-    public func configure(playerView: UIView) {
-        configureRendering{
+    /// - Returns: AVPlayerLayer
+    public func configure(playerView: UIView) -> AVPlayerLayer {
+       configureRendering {
             let renderingView = PlayerView(frame: playerView.frame)
-            
+
             renderingView.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
             renderingView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             renderingView.translatesAutoresizingMaskIntoConstraints = false
@@ -46,7 +46,7 @@ extension HLSNative: MediaRendering {
                 .constraint(equalTo: playerView.bottomAnchor)
             bottom.isActive = true
             bottom.identifier = "PlayerView-RenderingView-Bottom"
-            
+
             return renderingView.avPlayerLayer
         }
     }
@@ -56,8 +56,11 @@ extension HLSNative: MediaRendering {
     /// The caller is responsible for creating, configuring and retaining the related constituents. End by returning an `AVPlayerLayer` in which the rendering should take place.
     ///
     /// - parameter callback: closure detailing the custom rendering. Must return an `AVPlayerLayer` in which the rendering will take place
-    public func configureRendering(closure: () -> AVPlayerLayer) {
+    
+    /// - Returns: AVPlayerLayer
+    public func configureRendering(closure: () -> AVPlayerLayer) -> AVPlayerLayer {
         let layer = closure()
         layer.player = avPlayer
+        return layer
     }
 }
