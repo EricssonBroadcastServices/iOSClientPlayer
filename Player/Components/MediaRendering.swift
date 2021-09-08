@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import AVKit
 
 /// MediaRendering defines how the player configures a *user supplied* view for playback rendering.
 public protocol MediaRendering {
@@ -16,6 +17,7 @@ public protocol MediaRendering {
     /// - parameter playerView: *User supplied* view to configure for playback rendering.
     func configure(playerView: UIView) -> AVPlayerLayer
     
+    func configureWithDefaultSkin(avPlayerViewController: AVPlayerViewController) -> AVPlayerViewController
 }
 
 extension Player where Tech: MediaRendering {
@@ -26,3 +28,13 @@ extension Player where Tech: MediaRendering {
         return tech.configure(playerView: playerView)
     }
 }
+
+extension Player where Tech: MediaRendering {
+    /// Configures `player` with default skin
+    /// - Parameter avPlayerViewController: avPlayerViewController
+    /// - Returns: AVPlayerViewController
+    public func configureWithDefaultSkin(avPlayerViewController: AVPlayerViewController) -> AVPlayerViewController {
+        return tech.configureWithDefaultSkin(avPlayerViewController: avPlayerViewController)
+    }
+}
+
