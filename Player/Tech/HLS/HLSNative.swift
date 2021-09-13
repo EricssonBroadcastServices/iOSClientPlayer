@@ -31,6 +31,11 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         return currentAsset?.source
     }
     
+    /// Returns the currently active `AVPlayerItem` if available.
+    public var currentPlayerItem: AVPlayerItem? {
+        return currentAsset?.playerItem
+    }
+    
     /// *Native* `AVPlayer` used for playback purposes.
     internal var avPlayer: AVPlayer {
         didSet {
