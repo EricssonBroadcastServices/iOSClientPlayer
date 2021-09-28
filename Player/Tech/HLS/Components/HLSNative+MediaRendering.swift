@@ -8,6 +8,7 @@
 
 import Foundation
 import AVFoundation
+import AVKit
 
 /// `HLSNative` adoption of `MediaRendering`
 extension HLSNative: MediaRendering {
@@ -62,5 +63,14 @@ extension HLSNative: MediaRendering {
         let layer = closure()
         layer.player = avPlayer
         return layer
+    }
+    
+    
+    /// Assign the player to avPlayerViewController.player object
+    /// - Parameter avPlayerViewController: avPlayerViewController
+    /// - Returns: avPlayerViewController
+    public func configureWithDefaultSkin(avPlayerViewController: AVPlayerViewController) -> AVPlayerViewController {
+        avPlayerViewController.player = avPlayer
+        return avPlayerViewController
     }
 }
