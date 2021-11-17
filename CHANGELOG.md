@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `2.3.00` Release - [2.3.00](#2300)
 * `2.2.30` Release - [2.2.30](#2230)
 * `2.2.20` Release - [2.2.20](#2220)
 * `2.2.10` Release - [2.2.10](#2210)
@@ -20,6 +21,10 @@
 * `0.72.x` Releases - [0.72.0](#0720)
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
+
+## 2.3.000
+#### Changes
+* Add support to use default skin when configuring the player
 
 ## 2.2.300
 #### Changes
