@@ -25,13 +25,13 @@ platform :ios do
     lane :development do
         ensure_git_branch(branch: ENV["DEVELOPMENT_BRANCH"])
         ensure_git_status_clean
-        checkout_dependencies
         
-        bump_build_number
+#        checkout_dependencies
+        sh "cd .. && carthage.sh update --use-submodules --use-xcframeworks"
         
         run_unit_tests
         
-        clean_build_artifacts
+        bump_build_number
         
         push_to_git_remote
         
