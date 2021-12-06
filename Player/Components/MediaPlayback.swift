@@ -68,6 +68,9 @@ public protocol MediaPlayback: class {
     
     /// If the playback is muted or not
     var isMuted: Bool { get set }
+    
+    /// avplayer playerItem
+    var playerItem: AVPlayerItem? { get }
 }
 
 extension Player {
@@ -179,5 +182,10 @@ extension Player {
         set {
             tech.isMuted = newValue
         }
+    }
+    
+    /// Should returns the AVPlayerItem associated with the avplayer
+    public var playerItem: AVPlayerItem?{
+        return tech.playerItem
     }
 }

@@ -11,6 +11,8 @@ import AVFoundation
 
 /// `HLSNative` adoption of `MediaPlayback`
 extension HLSNative: MediaPlayback {
+    
+    
     /// Starts or resumes playback.
     public func play() {
         switch playbackState {
@@ -225,6 +227,12 @@ extension HLSNative: MediaPlayback {
         }
         set {
             avPlayer.isMuted = newValue
+        }
+    }
+    
+    public var playerItem: AVPlayerItem? {
+        get {
+            return avPlayer.currentItem
         }
     }
 }
