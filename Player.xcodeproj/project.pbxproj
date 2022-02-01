@@ -258,6 +258,7 @@
 		76EA01DB203EB20700B32345 /* HLSNativeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeConfiguration.swift; sourceTree = "<group>"; };
 		76EA01DD203EE72200B32345 /* HLSNativeNetworkBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSNativeNetworkBehavior.swift; sourceTree = "<group>"; };
 		76EA01DF203EEC0E00B32345 /* HLSNative+NetworkBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HLSNative+NetworkBehavior.swift"; sourceTree = "<group>"; };
+		7838DD0327A934850052848A /* Bitrates-Framerates-Resolutions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Bitrates-Framerates-Resolutions.md"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -457,6 +458,7 @@
 				76BCE07C20482F4300F1E49C /* custom-playback-controls.md */,
 				76BCE07E20482F6400F1E49C /* error-handling.md */,
 				76BCE080204844BF00F1E49C /* subtitles-and-multi-audio.md */,
+				7838DD0327A934850052848A /* Bitrates-Framerates-Resolutions.md */,
 			);
 			path = Documentation;
 			sourceTree = SOURCE_ROOT;
@@ -987,7 +989,7 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1003,7 +1005,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.3.200;
+				MARKETING_VERSION = 2.4.000;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = Player;
@@ -1026,7 +1028,7 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1042,7 +1044,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.3.200;
+				MARKETING_VERSION = 2.4.000;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
@@ -1176,7 +1178,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1192,7 +1194,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/Frameworks";
-				MARKETING_VERSION = 2.3.200;
+				MARKETING_VERSION = 2.4.000;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = Player;
@@ -1210,7 +1212,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JCUPRVKEC5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1226,7 +1228,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/Frameworks";
-				MARKETING_VERSION = 2.3.200;
+				MARKETING_VERSION = 2.4.000;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = Player;

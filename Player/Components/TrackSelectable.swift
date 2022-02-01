@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 public protocol Track {
     /// Should return a human readable display name of the track
@@ -28,6 +29,10 @@ public protocol TrackSelectable {
     
     /// Should fetch all associated audio tracks
     var audioTracks: [AudioTrack] { get }
+    
+    /// Should fetch all associated `AVAssetVariant` s
+    @available(iOS 15.0, tvOS 15.0, *)
+    var variants: [AVAssetVariant]? { get }
     
     /// Should fetch the selected audio track if available, otherwise `nil`
     var selectedAudioTrack: AudioTrack? { get }

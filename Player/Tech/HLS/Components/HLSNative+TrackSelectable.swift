@@ -17,6 +17,15 @@ extension HLSNative: TrackSelectable {
             .audioGroup
     }
     
+    
+    @available(iOS 15.0,tvOS 15.0, *)
+    /// Returns all the available `AVAssetVariant`
+    public var variants: [AVAssetVariant]? {
+        return currentAsset?.urlAsset.variants
+    }
+
+    
+    
     /// Returns the default audio track, or `nil` if unavailable
     public var defaultAudioTrack: MediaTrack? {
         return audioGroup?.defaultTrack
