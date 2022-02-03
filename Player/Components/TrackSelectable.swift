@@ -82,4 +82,7 @@ public protocol TrackSelectable {
     
     /// Should set the preferred text language tag as defined by RFC 4646 standards
     var preferredTextLanguage: String? { get set }
+    
+    /// Set  peakBitRate for the current Asset
+    func setBitRate(selectedBitRate: Double ) 
 }

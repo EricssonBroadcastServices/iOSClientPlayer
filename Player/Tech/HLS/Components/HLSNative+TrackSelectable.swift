@@ -118,4 +118,9 @@ extension HLSNative: TrackSelectable {
         guard let group = group else { return }
         currentAsset?.playerItem.select(track?.mediaOption, in: group)
     }
+
+    /// Convenience method for setting PeakBitRate in the currrentPlayerItem
+    public func setBitRate(selectedBitRate: Double ) {
+        currentAsset?.playerItem.preferredPeakBitRate = selectedBitRate
+    }
 }
