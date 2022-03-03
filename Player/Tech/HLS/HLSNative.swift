@@ -1187,6 +1187,8 @@ extension HLSNative {
     }
 }
 
+
+
 extension HLSNative {
     public func addPeriodicTimeObserverToPlayer(callback: @escaping (CMTime) -> Void) {
         
@@ -1195,10 +1197,7 @@ extension HLSNative {
         let timeScale = CMTimeScale(NSEC_PER_SEC)
         let time = CMTime(seconds: 0.001, preferredTimescale: timeScale)
         
-        // let interval = CMTimeMake(value: 1, timescale: 1)
-        
         timeObserverToken = self.avPlayer.addPeriodicTimeObserver(forInterval: time, queue: .main) { [weak self] time in
-            guard let `self` = self else { return }
             callback(time)
         }
     }
