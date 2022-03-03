@@ -26,6 +26,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     
     fileprivate var activeAirplayPorts: [AVAudioSessionPortDescription] = []
     
+    internal var timeObserverToken: Any?
+    
     /// Returns the currently active `MediaSource` if available.
     public var currentSource: Context.Source? {
         return currentAsset?.source
@@ -1181,6 +1183,29 @@ extension HLSNative {
                     }
                 }
             }
+        }
+    }
+}
+
+
+
+extension HLSNative {
+    public func addPeriodicTimeObserverToPlayer(callback: @escaping (CMTime) -> Void) {
+        
+        self.removePeriodicTimeObserverToPlayer()
+        
+        let timeScale = CMTimeScale(NSEC_PER_SEC)
+        let time = CMTime(seconds: 0.001, preferredTimescale: timeScale)
+        
+        timeObserverToken = self.avPlayer.addPeriodicTimeObserver(forInterval: time, queue: .main) { [weak self] time in
+            callback(time)
+        }
+    }
+    
+    public func removePeriodicTimeObserverToPlayer() {
+        if let timeObserverToken = timeObserverToken {
+            self.avPlayer.removeTimeObserver(timeObserverToken)
+                self.timeObserverToken = nil
         }
     }
 }
