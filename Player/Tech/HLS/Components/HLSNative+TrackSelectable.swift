@@ -65,6 +65,28 @@ extension HLSNative: TrackSelectable {
         selectAudio(track: MediaTrack(mediaOption: option))
     }
     
+    
+    /// Selects the specified audio language if available or, if `allowsEmptyAudioSelection` == true, select no audio track
+    ///
+    /// - parameter mediaTrackId: mediaTrackId of the track
+    public func selectAudio(mediaTrackId: Int) {
+        guard let option = audioGroup?.mediaSelectionOption(forId: mediaTrackId) else { return }
+        selectAudio(track: option)
+    }
+    
+    /// Selects the specified audio language if available or, if `allowsEmptyAudioSelection` == true, select no audio track
+    ///
+    /// - parameter title: title of the track
+    public func selectAudio(title: String?) {
+        guard let title = title else {
+            selectAudio(track: nil)
+            return
+        }
+        guard let track = textGroup?.mediaSelectionOption(forTitle: title) else { return }
+        selectAudio(track: track)
+    }
+    
+    
     // MARK: Text
     /// Returns the text related `MediaGroup`
     public var textGroup: MediaGroup? {
@@ -110,6 +132,26 @@ extension HLSNative: TrackSelectable {
         }
         guard let option = textGroup?.mediaSelectionOption(forLanguage: language) else { return }
         selectText(track: MediaTrack(mediaOption: option))
+    }
+    
+    /// Selects the specified text language if available or, if `allowsEmptyTextSelection` == true, select no text track
+    ///
+    /// - parameter mediaTrackId: mediaTrackId of the track
+    public func selectText(mediaTrackId: Int) {
+        guard let option = textGroup?.mediaSelectionOption(forId: mediaTrackId) else { return }
+        selectText(track: option)
+    }
+    
+    /// Selects the specified text language if available or, if `allowsEmptyTextSelection` == true, select no text track
+    ///
+    /// - parameter title: title of the track
+    public func selectText(title: String?) {
+        guard let title = title else {
+            selectText(track: nil)
+            return
+        }
+        guard let track = textGroup?.mediaSelectionOption(forTitle: title) else { return }
+        selectText(track: track)
     }
     
     // MARK: Private
