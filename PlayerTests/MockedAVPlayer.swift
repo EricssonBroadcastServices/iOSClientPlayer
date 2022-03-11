@@ -161,4 +161,14 @@ class MockedAVMediaSelectionOption: AVMediaSelectionOption {
     override var extendedLanguageTag: String {
         return mockedExtendedLanguageTag
     }
+    
+    var mockedTitle: String = "title"
+    override var title: String {
+        return mockedTitle
+    }
+    
+    var mockedId: Int = 0
+    override var mediaTrackId: Int {
+        return mockedId
+    }
 }
