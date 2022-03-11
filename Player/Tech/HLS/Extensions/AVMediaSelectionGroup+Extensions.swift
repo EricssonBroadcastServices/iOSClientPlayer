@@ -11,18 +11,38 @@ import AVFoundation
 internal extension AVMediaSelectionGroup {
     
     // Convenience property returning the all `AVMediaSelectionOption`s for the group
-    internal var tracks: [MediaTrack] {
-        return options.map(MediaTrack.init)
+    var tracks: [MediaTrack] {
+        let tracks = options.enumerated().map( { (index, option) in
+            return (MediaTrack.init(mediaOption: option, id: index))
+        })
+        
+        return tracks
     }
     
     // Convenience property returning the default `AVMediaSelectionOption` for the group
-    internal var defaultTrack: MediaTrack? {
+    var defaultTrack: MediaTrack? {
         guard let option = defaultOption else { return nil }
-        return MediaTrack(mediaOption: option)
+        
+        guard let index = options.firstIndex(where:  { $0 == option }) else { return nil }
+        return MediaTrack(mediaOption: option, id: index)
     }
     
     /// Convenience method selecting a track in a group
-    internal func track(forLanguage language: String) -> AVMediaSelectionOption? {
+    func track(forLanguage language: String) -> AVMediaSelectionOption? {
         return options.filter{ $0.extendedLanguageTag == language }.first
+    }
+    
+    /// Convenience method selecting a track using `mediaTrackId`
+    func track(forId mediaTrackId: Int) -> MediaTrack? {
+        if let foundTrack =  tracks.filter({ $0.mediaTrackId == mediaTrackId }).first {
+            return foundTrack
+        } else {
+            return nil
+        }
+    }
+    
+    /// Convenience method selecting a track using `title`
+    func track(forTitle title: String) -> MediaTrack? {
+        return tracks.filter{ $0.title == title }.first
     }
 }

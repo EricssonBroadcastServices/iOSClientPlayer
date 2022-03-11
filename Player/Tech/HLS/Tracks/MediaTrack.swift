@@ -12,6 +12,12 @@ import AVFoundation
 /// MediaTrack describes a selectable track
 public struct MediaTrack: Track, Equatable {
     internal let mediaOption: AVMediaSelectionOption
+    internal let id: Int?
+    
+    init(mediaOption: AVMediaSelectionOption, id: Int? = nil ) {
+        self.mediaOption = mediaOption
+        self.id = id
+    }
     
     /// Describes the `MediaTrack`, for example *audio* or *subtitle*
     public var type: String {
@@ -23,6 +29,19 @@ public struct MediaTrack: Track, Equatable {
         return mediaOption.displayName
     }
     
+    /// Returns the`NAME` tag value associated with the track or `nil` if unavailable
+    public var title: String? {
+        return mediaOption.value(forKey: "title") as? String
+    }
+    
+    /// Returns the id value for the track
+    public var mediaTrackId: Int? {
+        if let id = id {
+            return id
+        }
+        return nil
+    }
+    
     /// Returns the RFC 4646 language tag associated with the track or `nil` if unavailable
     public var extendedLanguageTag: String? {
         return mediaOption.extendedLanguageTag
@@ -31,4 +50,6 @@ public struct MediaTrack: Track, Equatable {
     public static func == (lhs: MediaTrack, rhs: MediaTrack) -> Bool {
         return lhs.mediaOption == rhs.mediaOption
     }
+    
+    
 }
