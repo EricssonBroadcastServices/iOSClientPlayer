@@ -30,7 +30,7 @@ public struct MediaGroup {
     /// Returns the selected `MediaTrack` or `nil` if no track has been selected in the group
     public var selectedTrack: MediaTrack? {
         guard let media = selectedMedia else { return nil }
-        return MediaTrack(mediaOption: media)
+        return mediaGroup.selectedTrack(media: media)
     }
     
     /// Returns true if the group allows no `MediaTrack` to be selected

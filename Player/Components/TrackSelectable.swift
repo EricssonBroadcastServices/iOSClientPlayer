@@ -59,7 +59,7 @@ public protocol TrackSelectable {
     /// Should select the specified audio language if available or, if `allowsEmptyAudioSelection` == true, select no audio track
     ///
     /// - parameter mediaTrackId: unique id of the mediaTrack
-    func selectAudio(mediaTrackId: Int)
+    func selectAudio(mediaTrackId: Int?)
     
     /// Should select the specified audio language if available or, if `allowsEmptyAudioSelection` == true, select no audio track
     ///
@@ -98,7 +98,7 @@ public protocol TrackSelectable {
     /// Should select the specified text language if available or, if `allowsEmptyTextSelection` == true, select no text track
     ///
     /// - parameter mediaTrackId: unique id of the track
-    func selectText(mediaTrackId: Int)
+    func selectText(mediaTrackId: Int?)
     
     /// Should select the specified text language if available or, if `allowsEmptyTextSelection` == true, select no text track
     ///

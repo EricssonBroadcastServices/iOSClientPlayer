@@ -69,7 +69,11 @@ extension HLSNative: TrackSelectable {
     /// Selects the specified audio language if available or, if `allowsEmptyAudioSelection` == true, select no audio track
     ///
     /// - parameter mediaTrackId: mediaTrackId of the track
-    public func selectAudio(mediaTrackId: Int) {
+    public func selectAudio(mediaTrackId: Int?) {
+        guard let mediaTrackId = mediaTrackId else {
+            selectAudio(track: nil)
+            return
+        }
         guard let option = audioGroup?.mediaSelectionOption(forId: mediaTrackId) else { return }
         selectAudio(track: option)
     }
@@ -137,7 +141,11 @@ extension HLSNative: TrackSelectable {
     /// Selects the specified text language if available or, if `allowsEmptyTextSelection` == true, select no text track
     ///
     /// - parameter mediaTrackId: mediaTrackId of the track
-    public func selectText(mediaTrackId: Int) {
+    public func selectText(mediaTrackId: Int?) {
+        guard let mediaTrackId = mediaTrackId else {
+            selectText(track: nil)
+            return
+        }
         guard let option = textGroup?.mediaSelectionOption(forId: mediaTrackId) else { return }
         selectText(track: option)
     }

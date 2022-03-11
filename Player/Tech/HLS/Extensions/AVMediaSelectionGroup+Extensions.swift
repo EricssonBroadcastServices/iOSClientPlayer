@@ -45,4 +45,10 @@ internal extension AVMediaSelectionGroup {
     func track(forTitle title: String) -> MediaTrack? {
         return tracks.filter{ $0.title == title }.first
     }
+    
+    /// Convenience method returning the selectedTrack `AVMediaSelectionOption`
+    func selectedTrack(media: AVMediaSelectionOption) -> MediaTrack? {
+        guard let index = options.firstIndex(where:  { $0 == media }) else { return nil }
+        return MediaTrack(mediaOption: media, id: index)
+    }
 }
