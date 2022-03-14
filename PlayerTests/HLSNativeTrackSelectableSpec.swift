@@ -26,11 +26,15 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                 en.mockedDisplayName = "English"
                 en.mockedExtendedLanguageTag = "en"
                 en.mockedMediaType = $0
+                en.mediaTrackId = 0
+                en.title = "English"
                 
                 let sv = MockedAVMediaSelectionOption()
                 sv.mockedDisplayName = "Swedish"
                 sv.mockedExtendedLanguageTag = "sv"
                 sv.mockedMediaType = $0
+                sv.mediaTrackId = 1
+                sv.title = "Swedish"
                 
                 return [en, sv]
             }
@@ -214,6 +218,60 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                     expect(env.player.tech.selectedAudioTrack?.extendedLanguageTag).toEventually(equal("sv"))
                     expect(env.player.tech.selectedAudioTrack?.type).toEventually(equal("audio"))
                 }
+                
+                it("should select by mediaTrackId") {
+                    let env = TestEnv()
+                    
+                    env.mockAsset(callback: env.defaultAssetMock(currentDate: currentDate, bufferDuration: hour/2) { urlAsset, playerItem in
+                        let audibleGroup = MockedAVMediaSelectionGroup()
+                        let audibleOptions = options("audio")
+                        audibleGroup.mockedAllowsEmptySelection = false
+                        audibleGroup.mockedOptions = audibleOptions
+                        audibleGroup.mockedDefaultOption = audibleOptions.first
+                        
+                        urlAsset.mockedMediaSelectionGroup[AVMediaCharacteristic.audible] = audibleGroup
+                        
+                        playerItem.mockedSelectedMediaOption[audibleGroup] = audibleOptions.first
+                    })
+                    
+                    env.player.onPlaybackReady{ player, source in
+                        player.tech.selectAudio(mediaTrackId: 1)
+                    }
+                    
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
+                    
+                    expect(env.player.tech.selectedAudioTrack?.name).toEventually(equal("Swedish"))
+                    expect(env.player.tech.selectedAudioTrack?.extendedLanguageTag).toEventually(equal("sv"))
+                    expect(env.player.tech.selectedAudioTrack?.type).toEventually(equal("audio"))
+                }
+                
+                
+                it("should select by title") {
+                    let env = TestEnv()
+                    
+                    env.mockAsset(callback: env.defaultAssetMock(currentDate: currentDate, bufferDuration: hour/2) { urlAsset, playerItem in
+                        let audibleGroup = MockedAVMediaSelectionGroup()
+                        let audibleOptions = options("audio")
+                        audibleGroup.mockedAllowsEmptySelection = false
+                        audibleGroup.mockedOptions = audibleOptions
+                        audibleGroup.mockedDefaultOption = audibleOptions.first
+                        
+                        urlAsset.mockedMediaSelectionGroup[AVMediaCharacteristic.audible] = audibleGroup
+                        
+                        playerItem.mockedSelectedMediaOption[audibleGroup] = audibleOptions.first
+                    })
+                    
+                    env.player.onPlaybackReady{ player, source in
+                        player.tech.selectAudio(title: "Swedish")
+                    }
+                    
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
+                    
+                    expect(env.player.tech.selectedAudioTrack?.name).toEventually(equal("Swedish"))
+                    expect(env.player.tech.selectedAudioTrack?.extendedLanguageTag).toEventually(equal("sv"))
+                    expect(env.player.tech.selectedAudioTrack?.type).toEventually(equal("audio"))
+                }
+                
             }
             
             context("Text") {
@@ -374,6 +432,7 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                     expect(env.player.tech.selectedTextTrack?.type).toEventually(beNil())
                 }
                 
+                
                 it("should adhere to preferred language") {
                     let env = TestEnv()
                     
@@ -396,6 +455,59 @@ class HLSNativeTrackSelectableSpec: QuickSpec {
                     expect(env.player.tech.selectedTextTrack?.name).toEventually(equal("Swedish"))
                     expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(equal("sv"))
                     expect(env.player.tech.selectedTextTrack?.type).toEventually(equal("audio"))
+                }
+                
+                
+                it("should select by mediaTrackid") {
+                    let env = TestEnv()
+                    
+                    env.mockAsset(callback: env.defaultAssetMock(currentDate: currentDate, bufferDuration: hour/2) { urlAsset, playerItem in
+                        let audibleGroup = MockedAVMediaSelectionGroup()
+                        let audibleOptions = options("subtitle")
+                        audibleGroup.mockedAllowsEmptySelection = false
+                        audibleGroup.mockedOptions = audibleOptions
+                        audibleGroup.mockedDefaultOption = audibleOptions.first
+                        
+                        urlAsset.mockedMediaSelectionGroup[AVMediaCharacteristic.legible] = audibleGroup
+                        
+                        playerItem.mockedSelectedMediaOption[audibleGroup] = audibleOptions.first
+                    })
+                    
+                    env.player.onPlaybackReady{ player, source in
+                        player.tech.selectText(mediaTrackId: 1)
+                    }
+                    
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
+                    
+                    expect(env.player.tech.selectedTextTrack?.name).toEventually(equal("Swedish"))
+                    expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(equal("sv"))
+                    expect(env.player.tech.selectedTextTrack?.type).toEventually(equal("subtitle"))
+                }
+                
+                it("should select by title") {
+                    let env = TestEnv()
+                    
+                    env.mockAsset(callback: env.defaultAssetMock(currentDate: currentDate, bufferDuration: hour/2) { urlAsset, playerItem in
+                        let audibleGroup = MockedAVMediaSelectionGroup()
+                        let audibleOptions = options("subtitle")
+                        audibleGroup.mockedAllowsEmptySelection = false
+                        audibleGroup.mockedOptions = audibleOptions
+                        audibleGroup.mockedDefaultOption = audibleOptions.first
+                        
+                        urlAsset.mockedMediaSelectionGroup[AVMediaCharacteristic.legible] = audibleGroup
+                        
+                        playerItem.mockedSelectedMediaOption[audibleGroup] = audibleOptions.first
+                    })
+                    
+                    env.player.onPlaybackReady{ player, source in
+                        player.tech.selectText(title: "Swedish")
+                    }
+                    
+                    env.player.stream(url: URL(fileURLWithPath: "file://play/.isml"))
+                    
+                    expect(env.player.tech.selectedTextTrack?.name).toEventually(equal("Swedish"))
+                    expect(env.player.tech.selectedTextTrack?.extendedLanguageTag).toEventually(equal("sv"))
+                    expect(env.player.tech.selectedTextTrack?.type).toEventually(equal("subtitle"))
                 }
             }
         }
