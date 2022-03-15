@@ -163,12 +163,12 @@ class MockedAVMediaSelectionOption: AVMediaSelectionOption {
     }
     
     var mockedTitle: String = "title"
-    override var title: String {
+    var title: String {
         return mockedTitle
     }
     
-    var mockedId: Int = 0
-    override var mediaTrackId: Int {
-        return mockedId
+    var mockedMediaTrackId: Int = 0
+    var mediaTrackId: Int {
+        return mockedMediaTrackId
     }
 }
