@@ -112,7 +112,7 @@ platform :ios do
         UI.message("Build: #{new_build_number}")
         
         sh 'cd .. && git update-index --assume-unchanged iOSClientPlayer.xcodeproj/project.pbxproj'
-        sh 'cd .. && git update-index --assume-unchanged Package.resolved'
+        sh 'git update-index --assume-unchanged Package.resolved'
         
         commit_version_bump(
                             message: "Build number bumped: #{new_build_number}",
