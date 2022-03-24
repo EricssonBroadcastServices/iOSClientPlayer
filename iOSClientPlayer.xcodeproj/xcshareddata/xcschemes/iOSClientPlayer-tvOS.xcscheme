@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "760800A62069210E007F59D5"
-               BuildableName = "Player.framework"
+               BuildableName = "iOSClientPlayer.framework"
                BlueprintName = "iOSClientPlayer-tvOS"
                ReferencedContainer = "container:iOSClientPlayer.xcodeproj">
             </BuildableReference>
@@ -51,7 +51,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "760800A62069210E007F59D5"
-            BuildableName = "Player.framework"
+            BuildableName = "iOSClientPlayer.framework"
             BlueprintName = "iOSClientPlayer-tvOS"
             ReferencedContainer = "container:iOSClientPlayer.xcodeproj">
          </BuildableReference>

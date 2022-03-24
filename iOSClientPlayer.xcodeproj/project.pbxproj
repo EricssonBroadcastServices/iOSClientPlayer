@@ -206,8 +206,8 @@
 		78310F9027EB67F8009B3114 /* SourceAbandonedEventProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceAbandonedEventProvider.swift; sourceTree = "<group>"; };
 		78310F9127EB67F8009B3114 /* TimedMetadataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimedMetadataProvider.swift; sourceTree = "<group>"; };
 		7831101127EB687D009B3114 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
-		7831101427EB6894009B3114 /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7831101527EB6897009B3114 /* Player.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Player.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7831101427EB6894009B3114 /* iOSClientPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = iOSClientPlayer.framework; path = "/Users/udaya/EricssonBroadcastServices/iOSClientPlayer/build/Debug-iphoneos/iOSClientPlayer.framework"; sourceTree = "<absolute>"; };
+		7831101527EB6897009B3114 /* iOSClientPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iOSClientPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,8 +237,7 @@
 				78310F3627EB659A009B3114 /* Documentation */,
 				78310F3527EB6595009B3114 /* CHANGELOG.md */,
 				78310F3227EB658B009B3114 /* UPGRADE_GUIDE.md */,
-				7831101427EB6894009B3114 /* Player.framework */,
-				7831101527EB6897009B3114 /* Player.framework */,
+				7831101527EB6897009B3114 /* iOSClientPlayer.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -501,7 +500,7 @@
 			);
 			name = "iOSClientPlayer-tvOS";
 			productName = Player;
-			productReference = 7831101527EB6897009B3114 /* Player.framework */;
+			productReference = 7831101527EB6897009B3114 /* iOSClientPlayer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		76A8434D1EA77DF700BDAF2C /* iOSClientPlayer */ = {
@@ -519,7 +518,7 @@
 			);
 			name = iOSClientPlayer;
 			productName = Player;
-			productReference = 7831101427EB6894009B3114 /* Player.framework */;
+			productReference = 7831101427EB6894009B3114 /* iOSClientPlayer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -744,7 +743,7 @@
 				MARKETING_VERSION = 3.0.000;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
-				PRODUCT_NAME = Player;
+				PRODUCT_NAME = iOSClientPlayer;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -784,7 +783,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
-				PRODUCT_NAME = Player;
+				PRODUCT_NAME = iOSClientPlayer;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -934,7 +933,7 @@
 				MARKETING_VERSION = 3.0.000;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
-				PRODUCT_NAME = Player;
+				PRODUCT_NAME = iOSClientPlayer;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
@@ -972,7 +971,7 @@
 				MARKETING_VERSION = 3.0.000;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
-				PRODUCT_NAME = Player;
+				PRODUCT_NAME = iOSClientPlayer;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
