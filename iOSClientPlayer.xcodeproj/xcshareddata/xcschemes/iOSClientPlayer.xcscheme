@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "76A8434D1EA77DF700BDAF2C"
-               BuildableName = "Player.framework"
+               BuildableName = "iOSClientPlayer.framework"
                BlueprintName = "iOSClientPlayer"
                ReferencedContainer = "container:iOSClientPlayer.xcodeproj">
             </BuildableReference>
@@ -51,7 +51,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "76A8434D1EA77DF700BDAF2C"
-            BuildableName = "Player.framework"
+            BuildableName = "iOSClientPlayer.framework"
             BlueprintName = "iOSClientPlayer"
             ReferencedContainer = "container:iOSClientPlayer.xcodeproj">
          </BuildableReference>
