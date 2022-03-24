@@ -110,6 +110,10 @@ platform :ios do
     private_lane :bump_build_number do
         new_build_number = increment_build_number(xcodeproj: ENV["XCODE_PROJECT"])
         UI.message("Build: #{new_build_number}")
+        
+        sh 'git update-index --assume-unchanged iOSClientExposure.xcodeproj/project.pbxproj'
+        sh 'git update-index --assume-unchanged Package.resolved'
+        
         commit_version_bump(
                             message: "Build number bumped: #{new_build_number}",
                             xcodeproj: ENV["XCODE_PROJECT"]
