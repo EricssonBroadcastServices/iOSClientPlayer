@@ -27,9 +27,11 @@ platform :ios do
         ensure_git_status_clean
         
 #        checkout_dependencies
-        sh "cd .. && carthage.sh update --use-submodules --use-xcframeworks"
+        #sh "cd .. && carthage.sh update --use-submodules --use-xcframeworks"
         
-        run_unit_tests
+        build_spm
+
+        #run_unit_tests
         
         bump_build_number
         
@@ -41,7 +43,7 @@ platform :ios do
     lane :release do
         version = "v" + get_version_number(
                                            xcodeproj: ENV["XCODE_PROJECT"],
-                                           target: ENV["RELEASE_VERSION_TARGET"]
+                                           target: "iOSClientPlayer"
                                            )
         
         if !git_tag_exists(tag: version)
@@ -92,6 +94,18 @@ platform :ios do
     
     
     # Private lanes
+
+    desc "Build project using spm"
+    lane :build_spm do
+
+        sh 'swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios13.0-simulator"'
+        UI.success("== iOS Project Build Success ==")
+
+        sh 'swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk appletvsimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-tvos13.0-simulator"'
+        UI.success("== tvOS Project Build Success ==")
+
+
+    end
     
     private_lane :bump_build_number do
         new_build_number = increment_build_number(xcodeproj: ENV["XCODE_PROJECT"])

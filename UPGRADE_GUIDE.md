@@ -1,5 +1,11 @@
 # Upgrade Guide
 
+## 3.0.00
+Project is now distributed via Swift package manager , Cocoapods & Carthage.
+Unit tests have been moved to SPM tests.
+Module name has been renamed from `Player` to `iOSClientPlayer`.
+
+
 ## 2.1.00
 Project is updated to use Swift version 4.2 
 
