@@ -104,12 +104,19 @@ extension HLSNative: MediaPlayback {
     
     /// Returns the time ranges within which it is possible to seek.
     public var seekableRanges: [CMTimeRange] {
-        return currentAsset?.playerItem.seekableTimeRanges.flatMap{ $0 as? CMTimeRange } ?? []
+        return currentAsset?.playerItem.seekableTimeRanges.compactMap{ $0 as? CMTimeRange } ?? []
     }
     
     /// Returns time ranges in unix epoch time within which it is possible to seek.
     public var seekableTimeRanges: [CMTimeRange] {
-        return seekableRanges.flatMap{ convert(timeRange: $0) }
+        
+        // Check for the duration as SSAI streams seems to have nil playheadTime but a valid duration
+        if( playheadTime == nil && duration == nil ) {
+            return seekableRanges.compactMap{ convert(timeRange: $0) }
+        } else {
+            return currentAsset?.playerItem.seekableTimeRanges.compactMap{ $0 as? CMTimeRange } ?? []
+        }
+        
     }
     
     /// Return the playhead position timestamp using the internal buffer time reference in milliseconds

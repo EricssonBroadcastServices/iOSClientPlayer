@@ -52,10 +52,11 @@
 The Swift Package Manager is a tool for automating the distribution of Swift code and is integrated into the swift compiler.
 Once you have your Swift package set up, adding `iOSClientPlayer` as a dependency is as easy as adding it to the dependencies value of your Package.swift.
 
+```sh
 dependencies: [
-    .package(url: "https://github.com/EricssonBroadcastServices/iOSClientPlayer", from: "3.0.0")
+    .package(url: "https://github.com/EricssonBroadcastServices/iOSClientPlayer", from: "3.0.1")
 ]
-
+```
 
 ### Carthage
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependency graph without interfering with your `Xcode` project setup. `CI` integration through [fastlane](https://github.com/fastlane/fastlane) is also available.
@@ -80,8 +81,9 @@ Finaly, make sure you add the `.framework`s to your targets *General -> Embedded
 ### CocoaPods
 CocoaPods is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate `iOSClientPlayer` into your Xcode project using CocoaPods, specify it in your Podfile:
 
-pod 'iOSClientPlayer', '~>  3.0.0'
-
+```sh
+pod 'iOSClientPlayer', '~>  3.0.1'
+```
 
 ## Release Notes
 Release specific changes can be found in the [CHANGELOG](https://github.com/EricssonBroadcastServices/iOSClientPlayer/blob/master/CHANGELOG.md).
@@ -93,3 +95,4 @@ Major changes between releases will be documented with special [Upgrade Guides](
 
 ### Carthage
 Updating your dependencies is done by running  `carthage update` with the relevant *options*, such as `--use-submodules`, depending on your project setup. For more information regarding dependency management with `Carthage` please consult their [documentation](https://github.com/Carthage/Carthage/blob/master/README.md) or run `carthage help`.
+
