@@ -78,6 +78,27 @@ extension HLSNative: MediaPlayback {
     
     
     
+    /// Use this method to seek to a specified buffer timestamp for the active media. The seek request will fail if interrupted by another seek request or by any other operation.
+    ///
+    /// - parameter position: in milliseconds
+    public func seek(toPosition position: Int64) {
+        if #available(iOS 10.0, *) {
+            if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
+                if accetCache.isPlayableOffline {
+                    offlineSeek(position)
+                } else {
+                    seek(toPosition: position) { _ in }
+                }
+            } else {
+                seek(toPosition: position) { _ in }
+            }
+            
+        } else {
+            // Fallback on earlier versions
+            seek(toPosition: position) { _ in }
+        }
+    }
+
     /// Customised seek for offline playback to avoid video frame freeze
     /// - Parameter position: position
     fileprivate func offlineSeek(_ position: Int64) {
@@ -112,26 +133,7 @@ extension HLSNative: MediaPlayback {
         }
     }
     
-    /// Use this method to seek to a specified buffer timestamp for the active media. The seek request will fail if interrupted by another seek request or by any other operation.
-    ///
-    /// - parameter position: in milliseconds
-    public func seek(toPosition position: Int64) {
-        if #available(iOS 10.0, *) {
-            if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
-                if accetCache.isPlayableOffline {
-                    offlineSeek(position)
-                } else {
-                    seek(toPosition: position) { _ in }
-                }
-            } else {
-                seek(toPosition: position) { _ in }
-            }
-            
-        } else {
-            // Fallback on earlier versions
-            seek(toPosition: position) { _ in }
-        }
-    }
+
 
     /// Try to do the seek
     /// - Parameter playerCurrentItemStatus: AVPlayerItem.Status
@@ -244,6 +246,31 @@ extension HLSNative: MediaPlayback {
         seek(toTime: timeInterval) { _ in }
     }
     
+    fileprivate func seekToTimeWhenExternalPlayback(_ cmTime: CMTime, _ timeInterval: Int64,  callback: @escaping(Bool) -> Void) {
+        currentAsset?.playerItem.seek(to: cmTime) { [weak self] success in
+            guard let `self` = self else { return }
+            if success {
+                /// Since the seek was triggered by seeking to a unix timestamp, ie `timeInterval`, but the workaround was to use zero-based offset when seeking, trigger the callbacks with the correct value of `timeInterval` instead of the *transformed value* we used, ie `position
+                if let source = self.currentAsset?.source {
+                    self.eventDispatcher.onPlaybackScrubbed(self, source, timeInterval)
+                    source.analyticsConnector.onScrubbedTo(tech: self, source: source, offset: timeInterval) }
+            }
+            callback(success)
+        }
+    }
+    
+    fileprivate func seekToTimeWhenNoExternalPlayback(_ date: Date, _ timeInterval: Int64, callback: @escaping(Bool) -> Void) {
+        currentAsset?.playerItem.seek(to: date) { [weak self] success in
+            guard let `self` = self else { return }
+            if success {
+                if let source = self.currentAsset?.source {
+                    self.eventDispatcher.onPlaybackScrubbed(self, source, timeInterval)
+                    source.analyticsConnector.onScrubbedTo(tech: self, source: source, offset: timeInterval) }
+            }
+            callback(success)
+        }
+    }
+    
     /// For playback content that is associated with a range of dates, move the playhead to point within that range.
     ///
     /// Will fail if the supplied date is outside the range or if the content is not associated with a range of dates.
@@ -264,27 +291,52 @@ extension HLSNative: MediaPlayback {
             }
             let seekTime = position > 0 ? position : 0
             let cmTime = CMTime(value: seekTime, timescale: 1000)
-            currentAsset?.playerItem.seek(to: cmTime) { [weak self] success in
-                guard let `self` = self else { return }
-                if success {
-                    /// Since the seek was triggered by seeking to a unix timestamp, ie `timeInterval`, but the workaround was to use zero-based offset when seeking, trigger the callbacks with the correct value of `timeInterval` instead of the *transformed value* we used, ie `position
-                    if let source = self.currentAsset?.source {
-                        self.eventDispatcher.onPlaybackScrubbed(self, source, timeInterval)
-                        source.analyticsConnector.onScrubbedTo(tech: self, source: source, offset: timeInterval) }
+            
+            // Offline seek HACK :
+            if #available(iOS 10.0, *) {
+                if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
+                    if accetCache.isPlayableOffline {
+                        offlineSeek(position)
+                    } else {
+                        seekToTimeWhenExternalPlayback(cmTime, timeInterval, callback: callback)
+                    }
+                } else {
+                    seekToTimeWhenExternalPlayback(cmTime, timeInterval, callback: callback)
                 }
-                callback(success)
+                
+            } else {
+                // Fallback on earlier versions
+                seekToTimeWhenExternalPlayback(cmTime, timeInterval, callback: callback)
             }
+            
+            
         }
         else {
             let date = Date(milliseconds: timeInterval)
-            currentAsset?.playerItem.seek(to: date) { [weak self] success in
-                guard let `self` = self else { return }
-                if success {
-                    if let source = self.currentAsset?.source {
-                        self.eventDispatcher.onPlaybackScrubbed(self, source, timeInterval)
-                        source.analyticsConnector.onScrubbedTo(tech: self, source: source, offset: timeInterval) }
+            
+            // Offline seek HACK :
+            if #available(iOS 10.0, *) {
+                if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
+                    if accetCache.isPlayableOffline {
+                        
+                        guard let position = timeInterval.positionFrom(referenceTime: self.playheadTime, referencePosition: playheadPosition) else {
+                            /// When playheadTime is unavailable, the seek is considered failed.
+                            callback(false)
+                            return
+                        }
+                        
+                        offlineSeek(position)
+                        
+                    } else {
+                        seekToTimeWhenNoExternalPlayback(date, timeInterval, callback: callback)
+                    }
+                } else {
+                    seekToTimeWhenNoExternalPlayback(date, timeInterval, callback: callback)
                 }
-                callback(success)
+                
+            } else {
+                // Fallback on earlier versions
+                seekToTimeWhenNoExternalPlayback(date, timeInterval, callback: callback)
             }
         }
     }
