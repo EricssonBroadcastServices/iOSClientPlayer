@@ -77,11 +77,112 @@ extension HLSNative: MediaPlayback {
     }
     
     
+    
+    /// Customised seek for offline playback to avoid video frame freeze
+    /// - Parameter position: position
+    fileprivate func offlineSeek(_ position: Int64) {
+        avPlayer.pause()
+        
+        /// : NOTE : Hack : When doing fast seeking video Track seems to get lost in the avplayer item. Then either video frame freezes while audio / subtitle tracks keep playing or video become black
+        /// : This seems to be an issue in AVFoundation
+        ///
+        // Find the currently assigned text track & remove it temporary until the seek ends
+        if let playerItem = currentAsset?.playerItem,
+           let group = playerItem.asset.mediaSelectionGroup(forMediaCharacteristic: .legible) {
+            
+            mediaSelectionGroup = group
+            selectedOption = playerItem.currentMediaSelection.selectedMediaOption(in: group)
+            playerItem.select(nil, in: group)
+        }
+        
+        let seekTime = position > 0 ? position : 0
+        let cmTime = CMTime(value: seekTime, timescale: 1000)
+        
+        let item = currentAsset?.playerItem
+        
+        // Check if there is any previosly assigned chaseTime available
+        if CMTimeCompare(cmTime, chaseTime) != 0 {
+            chaseTime = cmTime;
+            if !isSeekInProgress {
+                if let playerStatus = item?.status {
+                    trySeekToChaseTime(playerStatus)
+                }
+                
+            }
+        }
+    }
+    
     /// Use this method to seek to a specified buffer timestamp for the active media. The seek request will fail if interrupted by another seek request or by any other operation.
     ///
     /// - parameter position: in milliseconds
     public func seek(toPosition position: Int64) {
-        seek(toPosition: position) { _ in }
+        if #available(iOS 10.0, *) {
+            if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
+                if accetCache.isPlayableOffline {
+                    offlineSeek(position)
+                } else {
+                    seek(toPosition: position) { _ in }
+                }
+            } else {
+                seek(toPosition: position) { _ in }
+            }
+            
+        } else {
+            // Fallback on earlier versions
+            seek(toPosition: position) { _ in }
+        }
+    }
+
+    /// Try to do the seek
+    /// - Parameter playerCurrentItemStatus: AVPlayerItem.Status
+    func trySeekToChaseTime( _ playerCurrentItemStatus: AVPlayerItem.Status) {
+        if playerCurrentItemStatus == .unknown {
+            // wait until item becomes ready (KVO player.currentItem.status)
+            print("! wait until item becomes ready! ")
+            print("\n")
+        }
+        else if playerCurrentItemStatus == .readyToPlay {
+            actuallySeekToTime() { _ in }
+        }
+    }
+    
+    
+    /// Seek to Time in the player & assigned the text track back
+    /// - Parameter callback: callback
+    private func actuallySeekToTime(callback: @escaping (Bool) -> Void = { _ in }) {
+        
+        self.isSeekInProgress = true
+        let seekTimeInProgress = self.chaseTime
+        
+        avPlayer.seek(to: self.chaseTime, toleranceBefore: .zero, toleranceAfter: .zero) {  [weak self] success in
+            guard let `self` = self else {
+                callback(success)
+                return }
+            
+            if CMTimeCompare(seekTimeInProgress, self.chaseTime) == 0 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    if self.avPlayer.currentItem?.status == .readyToPlay {
+                        
+                        if let group = self.mediaSelectionGroup {
+                            self.avPlayer.currentItem?.select(self.selectedOption, in: group)
+                        }
+                        self.avPlayer.play()
+                    } else {
+                        print(" Attention : player item is not ready ")
+                    }
+                }
+                self.isSeekInProgress = false
+            }
+            else {
+                if let playerStatus = self.currentAsset?.playerItem.status {
+                    self.trySeekToChaseTime(playerStatus)
+                }
+            }
+            
+            callback(success)
+        }
+        
+        
     }
     
     /// Use this method to seek to a specified buffer timestamp for the active media. The seek request will fail if interrupted by another seek request or by any other operation.
