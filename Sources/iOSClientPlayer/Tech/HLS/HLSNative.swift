@@ -145,7 +145,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             
             let asset = AVURLAsset(url: source.url, options: nil)
             
-            if #available(iOS 10.0, *) {
+            if #available(iOS 10.0, tvOS 10.0, *) {
                 if ((asset.assetCache?.isPlayableOffline) != nil) {
                     asset.resourceLoader.preloadsEligibleContentKeys = true
                 }
@@ -163,7 +163,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             }
             urlAsset = asset
             
-            if #available(iOS 10.0, *) {
+            if #available(iOS 10.0,tvOS 10.0, *) {
                 if ((asset.assetCache?.isPlayableOffline) != nil) {
                     
                     playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration", "tracks", "seekableTimeRanges", "loadedTimeRanges"])

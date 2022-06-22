@@ -82,7 +82,7 @@ extension HLSNative: MediaPlayback {
     ///
     /// - parameter position: in milliseconds
     public func seek(toPosition position: Int64) {
-        if #available(iOS 10.0, *) {
+        if #available(iOS 10.0, tvOS 10.0, *) {
             if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
                 if accetCache.isPlayableOffline {
                     offlineSeek(position)
@@ -293,7 +293,7 @@ extension HLSNative: MediaPlayback {
             let cmTime = CMTime(value: seekTime, timescale: 1000)
             
             // Offline seek HACK :
-            if #available(iOS 10.0, *) {
+            if #available(iOS 10.0, tvOS 10.0, *) {
                 if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
                     if accetCache.isPlayableOffline {
                         offlineSeek(position)
@@ -315,7 +315,7 @@ extension HLSNative: MediaPlayback {
             let date = Date(milliseconds: timeInterval)
             
             // Offline seek HACK :
-            if #available(iOS 10.0, *) {
+            if #available(iOS 10.0, tvOS 10.0, *) {
                 if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
                     if accetCache.isPlayableOffline {
                         
