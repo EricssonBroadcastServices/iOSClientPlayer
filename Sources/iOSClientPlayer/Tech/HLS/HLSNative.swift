@@ -93,7 +93,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public var isSeekInProgress: Bool = false
     public var chaseTime: CMTime = .zero
     public var selectedOption: AVMediaSelectionOption? = nil
-    public var mediaSelectionGroup: AVMediaSelectionGroup? = nil 
+    public var mediaSelectionGroup: AVMediaSelectionGroup? = nil
     
     // MARK: StartTime
     internal var startTimeConfiguration: StartTimeConfiguration = StartTimeConfiguration()
@@ -142,16 +142,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             self.source = source
             self.fairplayRequester = configuration.drm
             
-            
             let asset = AVURLAsset(url: source.url, options: nil)
-            
-            if #available(iOS 10.0, tvOS 10.0, *) {
-                if ((asset.assetCache?.isPlayableOffline) != nil) {
-                    asset.resourceLoader.preloadsEligibleContentKeys = true
-                }
-            } else {
-                // Fallback on earlier versions
-            }
             
             /* if !asset.resourceLoader.preloadsEligibleContentKeys {
                 asset.resourceLoader.preloadsEligibleContentKeys = true
@@ -163,23 +154,10 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             }
             urlAsset = asset
             
-            if #available(iOS 10.0,tvOS 10.0, *) {
-                if ((asset.assetCache?.isPlayableOffline) != nil) {
-                    
-                    playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration", "tracks", "seekableTimeRanges", "loadedTimeRanges"])
-                } else {
-                    playerItem = AVPlayerItem(asset: asset)
-                    if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
-                }
-            } else {
-                // Fallback on earlier versions
-                playerItem = AVPlayerItem(asset: asset)
-                
-                if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
-            }
-           
-            
-            
+            playerItem = AVPlayerItem(asset: asset)
+
+            if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
+
         }
         
         // MARK: Change Observation
@@ -284,7 +262,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             /// `Dispatcher` (`Exposure` module) will force flush event queue on `.UIApplicationDidEnterBackground`
             guard let `self` = self else { return }
             if !self.avPlayer.isExternalPlaybackActive {
-                // self.pause()  ( when player is on picture on picture mode , it should keep playing ) 
+                // self.pause()  ( when player is on picture on picture mode , it should keep playing )
             }
         }
         backgroundWatcher.handleWillResignActive { }
@@ -406,7 +384,6 @@ extension HLSNative {
     ///   - configuration: Specifies the configuration options
     ///   - onLoaded: Callback that fires when the loading proceedure has completed
     public func loadOffline(source: Context.Source, configuration: HLSNativeConfiguration, onLoaded: @escaping () -> Void = { }) {
-        
         let mediaAsset = assetGenerator(source, configuration)
         
         if let inPreparation = assetInPreparation {
@@ -451,22 +428,20 @@ extension HLSNative {
             }
             
             /* guard error == nil else {
-
                 let techError = PlayerError<HLSNative<Context>,Context>.tech(error: error!)
                 weakSelf.eventDispatcher.onError(weakSelf, mediaAsset.source, techError)
                 mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
                 mediaAsset.source.analyticsConnector.onError(tech: weakSelf, source: mediaAsset.source, error: techError)
                 return
-            }
-            */
+            } */
             // At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
             weakSelf.eventDispatcher.onPlaybackPrepared(weakSelf, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onPrepared(tech: weakSelf, source: mediaAsset.source)
             
             weakSelf.readyPlayback(with: mediaAsset, callback: onLoaded)
-            
         }
     }
+    
     
     
     
@@ -486,7 +461,6 @@ extension HLSNative {
                 }
                 return
             }
-
             // `mediaAsset` is now prepared.
             self.currentAsset = mediaAsset
             
@@ -496,9 +470,6 @@ extension HLSNative {
             // Replace the player item with a new player item. The item replacement occurs
             // asynchronously; observe the currentItem property to find out when the
             // replacement will/did occur
-            
-            
-            
             self.avPlayer.replaceCurrentItem(with: mediaAsset.playerItem)
   
             // Apply preferred audio and subtitles
@@ -1330,4 +1301,3 @@ extension BackgroundWatcher {
         onWillTerminate()
     }
 }
-
