@@ -216,10 +216,14 @@ extension HLSNative: MediaPlayback {
         // Check for the duration as SSAI streams seems to have nil playheadTime but a valid duration
         if( playheadTime == nil && duration == nil ) {
             return seekableRanges.compactMap{ convert(timeRange: $0) }
+        }
+        
+        // Duration is nil for live streams
+        else if (duration == nil) {
+            return seekableRanges.compactMap{ convert(timeRange: $0) }
         } else {
             return currentAsset?.playerItem.seekableTimeRanges.compactMap{ $0 as? CMTimeRange } ?? []
         }
-        
     }
     
     /// Return the playhead position timestamp using the internal buffer time reference in milliseconds
