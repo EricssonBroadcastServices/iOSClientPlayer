@@ -482,15 +482,15 @@ extension HLSNative {
 
         airplayWorkaroundObserver.unsubscribeAll()
         airplayWorkaroundObserver.stopObservingAll()
-        startTimeWorkaroundAirplay{ [weak self, weak mediaAsset] in
-
+        
+        // Note : This should fix with the latest iOS version 12 & up : This will cause airplay to stop working when recreating playback on third party airplay devices
+        /* startTimeWorkaroundAirplay{ [weak self, weak mediaAsset] in
             guard let `self` = self, let mediaAsset = mediaAsset else {
                 return
-                
             }
             
             self.finalizePlayback(mediaAsset: mediaAsset, callback: callback)
-        }
+        } */
         
         // Observe BitRate changes
         handleBitrateChangedEvent(mediaAsset: mediaAsset)
