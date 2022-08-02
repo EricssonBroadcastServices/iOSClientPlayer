@@ -999,45 +999,115 @@ extension HLSNative {
 extension HLSNative {
     /// Subscribes to and handles `AVPlayer.isExternalPlaybackActive` changes.
     fileprivate func handleExternalPlayback() {
-        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new]) { [weak self] player, change in
-            guard let `self` = self else { return }
-            DispatchQueue.main.async { [weak self] in
+ 
+        /// Note : Use `prepareRouteSelectionForPlayback` for checking external playback rather than using playerObserver
+        
+        #if os(iOS)
+        if #available(iOS 13.0, *) {
+            AVAudioSession.sharedInstance().prepareRouteSelectionForPlayback(completionHandler: { (shouldStartPlayback, routeSelection) in
+                if shouldStartPlayback {
+                    switch routeSelection {
+                    case .local:
+                        // playing locally
+                        break
+                    case .external:
+                        // add a small delay to prevent dismissing already started playback session
+                        self.airplayHandler?.handleAirplayEvent(active: true, tech: self, source: self.currentSource)
+                    case .none:
+                        fallthrough
+                    @unknown default:
+                        // Cancelling playback
+                        break
+                    }
+                } else {
+                    // Cancelling playback
+                }
+            })
+        } else {
+            
+            /// Note : Use playerObserver for old iOS versions 
+            playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new]) { [weak self] player, change in
                 guard let `self` = self else { return }
-                /// Playcall update when Airplaying should not trigger on
-                /// 1. playbackState == .notStarted
-                ///     Airplay was activated before playcall was made, use that playcall
-                ///
-                /// 2. Handoff between two Airplaying devices
-                ///     Switching between two AppleTVs fire a "handoff" event, which takes care of the output while the second AppleTV readies itself.
-                ///     Ignore and wait for the "correct" trigger
-                ///
-                if let new = change.new as? Bool {
-                    let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
-                    guard !isHandoffTrigger else { return }
-                    
-                    let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSession.Port.airPlay }
-                    
-                    if connectedAirplayPorts.isEmpty {
-                        // Disconnected Airplay
-                        self.activeAirplayPorts = []
-                        self.onAirplayStatusChanged(self, self.currentSource, false)
-                    }
-                    else {
-                        // New Airplay ports
-                        if self.activeAirplayPorts.isEmpty {
-                            self.onAirplayStatusChanged(self, self.currentSource, true)
+                DispatchQueue.main.async { [weak self] in
+                    guard let `self` = self else { return }
+                    /// Playcall update when Airplaying should not trigger on
+                    /// 1. playbackState == .notStarted
+                    ///     Airplay was activated before playcall was made, use that playcall
+                    ///
+                    /// 2. Handoff between two Airplaying devices
+                    ///     Switching between two AppleTVs fire a "handoff" event, which takes care of the output while the second AppleTV readies itself.
+                    ///     Ignore and wait for the "correct" trigger
+                    ///
+                    if let new = change.new as? Bool {
+                        let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
+                        guard !isHandoffTrigger else { return }
+                        
+                        let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSession.Port.airPlay }
+                        
+                        if connectedAirplayPorts.isEmpty {
+                            // Disconnected Airplay
+                            self.activeAirplayPorts = []
+                            self.onAirplayStatusChanged(self, self.currentSource, false)
                         }
-                        self.activeAirplayPorts = connectedAirplayPorts
-                    }
-                    
-                    let started = (self.playbackState == .notStarted)
-                    if !started {
-                        self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
+                        else {
+                            // New Airplay ports
+                            if self.activeAirplayPorts.isEmpty {
+                                self.onAirplayStatusChanged(self, self.currentSource, true)
+                            }
+                            self.activeAirplayPorts = connectedAirplayPorts
+                        }
+                        
+                        let started = (self.playbackState == .notStarted)
+                        if !started {
+                            self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
+                        }
                     }
                 }
             }
         }
-    }
+        #elseif os(tvOS)
+            
+            // Shoudn't have effect on airplaying as oS is TVOS
+            playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new]) { [weak self] player, change in
+                guard let `self` = self else { return }
+                DispatchQueue.main.async { [weak self] in
+                    guard let `self` = self else { return }
+                    /// Playcall update when Airplaying should not trigger on
+                    /// 1. playbackState == .notStarted
+                    ///     Airplay was activated before playcall was made, use that playcall
+                    ///
+                    /// 2. Handoff between two Airplaying devices
+                    ///     Switching between two AppleTVs fire a "handoff" event, which takes care of the output while the second AppleTV readies itself.
+                    ///     Ignore and wait for the "correct" trigger
+                    ///
+                    if let new = change.new as? Bool {
+                        let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
+                        guard !isHandoffTrigger else { return }
+                        
+                        let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSession.Port.airPlay }
+                        
+                        if connectedAirplayPorts.isEmpty {
+                            // Disconnected Airplay
+                            self.activeAirplayPorts = []
+                            self.onAirplayStatusChanged(self, self.currentSource, false)
+                        }
+                        else {
+                            // New Airplay ports
+                            if self.activeAirplayPorts.isEmpty {
+                                self.onAirplayStatusChanged(self, self.currentSource, true)
+                            }
+                            self.activeAirplayPorts = connectedAirplayPorts
+                        }
+                        
+                        let started = (self.playbackState == .notStarted)
+                        if !started {
+                            self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
+                        }
+                    }
+                }
+            }
+            #endif
+        }
 }
 
 extension HLSNative {

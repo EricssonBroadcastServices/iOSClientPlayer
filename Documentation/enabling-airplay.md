@@ -7,7 +7,15 @@ airplayButton.showsVolumeSlider = false
 view.addSubview(airplayButton)
 ```
 
+**Note : From `iOS 13.0+` developers need to use `AVAudioSessionRouteSharingPolicyLongFormVideo` to play to the same output as other long-form video apps, such as the built-in TV app.These apps should also set the `AVInitialRouteSharingPolicy` key in their Info.plist to `LongFormVideo.`**
+
+```
+AirPlay optimization policy : Long Form Video
+```
+
 For applications targeting `iOS 11.0+` there is an additional option in the form of `AVRoutePickerView`.
+
+
 
 #### Background Modes
 Client applications who wish to continue *Airplay* once a user locks their screen or navigates from the app need to set the relevant `Capabilities` in their *Xcode* project.
