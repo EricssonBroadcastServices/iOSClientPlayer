@@ -145,26 +145,26 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             let asset = AVURLAsset(url: source.url, options: nil)
             
             /* if !asset.resourceLoader.preloadsEligibleContentKeys {
-                asset.resourceLoader.preloadsEligibleContentKeys = true
-            } */
+             asset.resourceLoader.preloadsEligibleContentKeys = true
+             } */
             
-
+            
             if fairplayRequester != nil {
                 asset.resourceLoader.setDelegate(fairplayRequester, queue: DispatchQueue(label: source.playSessionId + "-fairplayLoader"))
             }
             urlAsset = asset
             
             playerItem = AVPlayerItem(asset: asset)
-
+            
             if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
-
+            
         }
         
         // MARK: Change Observation
         /// Wrapper observing changes to the underlying `AVPlayerItem`
         lazy internal var itemObserver: PlayerItemObserver = { [unowned self] in
             return PlayerItemObserver()
-            }()
+        }()
         
         deinit {
             print("MediaAsset deinit")
@@ -294,7 +294,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Enabling this function will cause HLSNative to continuously dispatch all error events encountered, including recoverable errors not resulting in playback to stop, to the associated `MediaSource`s analytics providers.
     @available(*, deprecated: 2.0.86, message: "Use DEBUG only `LogLevel` instead")
     public var continuouslyDispatchErrorLogEvents: Bool = false
-
+    
     /// Internal log level
     internal var logLevel: LogLevel = .none
     
@@ -320,9 +320,9 @@ extension HLSNative {
     /// - parameter onLoaded: Callback that fires when the loading proceedure has completed
     public func load(source: Context.Source, configuration: HLSNativeConfiguration, onLoaded: @escaping () -> Void = { }) {
         let mediaAsset = assetGenerator(source, configuration)
-
+        
         if let inPreparation = assetInPreparation {
-
+            
             let warning = PlayerWarning<HLSNative, Context>.tech(warning: HLSNative.TechWarning.mediaPreparationAbandoned(playSessionId: inPreparation.source.playSessionId, url: inPreparation.source.url))
             eventDispatcher.onWarning(self, inPreparation.source, warning)
             inPreparation.source.analyticsConnector.onSourcePreparationAbandoned(ofSource: inPreparation.source, byTech: self)
@@ -371,7 +371,7 @@ extension HLSNative {
             // At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
             weakSelf.eventDispatcher.onPlaybackPrepared(weakSelf, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onPrepared(tech: weakSelf, source: mediaAsset.source)
-
+            
             weakSelf.readyPlayback(with: mediaAsset, callback: onLoaded)
         }
     }
@@ -387,7 +387,7 @@ extension HLSNative {
         let mediaAsset = assetGenerator(source, configuration)
         
         if let inPreparation = assetInPreparation {
-
+            
             let warning = PlayerWarning<HLSNative, Context>.tech(warning: HLSNative.TechWarning.mediaPreparationAbandoned(playSessionId: inPreparation.source.playSessionId, url: inPreparation.source.url))
             eventDispatcher.onWarning(self, inPreparation.source, warning)
             inPreparation.source.analyticsConnector.onSourcePreparationAbandoned(ofSource: inPreparation.source, byTech: self)
@@ -404,7 +404,7 @@ extension HLSNative {
         avPlayer.pause()
         
         if let current = currentAsset {
-
+            
             eventDispatcher.onPlaybackAborted(self, current.source)
             current.source.analyticsConnector.onAborted(tech: self, source: current.source)
             current.abandoned = true
@@ -420,7 +420,7 @@ extension HLSNative {
         playbackState = .notStarted
         
         mediaAsset.prepare(loading: [.duration, .tracks, .playable]) { [weak self] error in
-
+            
             guard let weakSelf = self else {
                 // If the player is torn down before asset preparation is complete, there
                 mediaAsset.source.analyticsConnector.onTechDeallocated(beforeMediaPreparationFinalizedOf: mediaAsset.source)
@@ -428,12 +428,12 @@ extension HLSNative {
             }
             
             /* guard error == nil else {
-                let techError = PlayerError<HLSNative<Context>,Context>.tech(error: error!)
-                weakSelf.eventDispatcher.onError(weakSelf, mediaAsset.source, techError)
-                mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
-                mediaAsset.source.analyticsConnector.onError(tech: weakSelf, source: mediaAsset.source, error: techError)
-                return
-            } */
+             let techError = PlayerError<HLSNative<Context>,Context>.tech(error: error!)
+             weakSelf.eventDispatcher.onError(weakSelf, mediaAsset.source, techError)
+             mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
+             mediaAsset.source.analyticsConnector.onError(tech: weakSelf, source: mediaAsset.source, error: techError)
+             return
+             } */
             // At this point event listeners (*KVO* and *Notifications*) for the media in preparation have not registered. `AVPlayer` has not yet replaced the current (if any) `AVPlayerItem`.
             weakSelf.eventDispatcher.onPlaybackPrepared(weakSelf, mediaAsset.source)
             mediaAsset.source.analyticsConnector.onPrepared(tech: weakSelf, source: mediaAsset.source)
@@ -455,7 +455,7 @@ extension HLSNative {
             guard let `self` = self else { return }
             
             guard !mediaAsset.abandoned else {
-
+                
                 if let inPreparation = self.assetInPreparation, inPreparation.source.playSessionId == mediaAsset.source.playSessionId {
                     self.assetInPreparation = nil
                 }
@@ -471,26 +471,26 @@ extension HLSNative {
             // asynchronously; observe the currentItem property to find out when the
             // replacement will/did occur
             self.avPlayer.replaceCurrentItem(with: mediaAsset.playerItem)
-  
+            
             // Apply preferred audio and subtitles
             /// NOTE: It seems we cant reliably select subs and audio until after `replaceCurrentItem(with:)` is called
             self.applyLanguagePreferences(on: mediaAsset)
- 
+            
         }) {
             self.finalizePlayback(mediaAsset: mediaAsset, callback: callback)
         }
-
+        
         airplayWorkaroundObserver.unsubscribeAll()
         airplayWorkaroundObserver.stopObservingAll()
         
         // Note : This should be fixed with the latest iOS version 12 & up : This caused airplay to stop working when recreating playback on third party airplay devices
         /* startTimeWorkaroundAirplay{ [weak self, weak mediaAsset] in
-            guard let `self` = self, let mediaAsset = mediaAsset else {
-                return
-            }
-            
-            self.finalizePlayback(mediaAsset: mediaAsset, callback: callback)
-        } */
+         guard let `self` = self, let mediaAsset = mediaAsset else {
+         return
+         }
+         
+         self.finalizePlayback(mediaAsset: mediaAsset, callback: callback)
+         } */
         
         // Observe BitRate changes
         handleBitrateChangedEvent(mediaAsset: mediaAsset)
@@ -596,8 +596,6 @@ extension HLSNative {
                             return
                         }
                     case .failed:
-                        
-                        print("Failed ", item.errorLog())
                         self.handleStartTime(mediaAsset: mediaAsset, callback: onReady)
                     }
                 }
@@ -999,33 +997,47 @@ extension HLSNative {
 extension HLSNative {
     /// Subscribes to and handles `AVPlayer.isExternalPlaybackActive` changes.
     fileprivate func handleExternalPlayback() {
- 
-        /// Note : Use `prepareRouteSelectionForPlayback` for checking external playback rather than using playerObserver
         
-        #if os(iOS)
+#if os(iOS)
         if #available(iOS 13.0, *) {
-            AVAudioSession.sharedInstance().prepareRouteSelectionForPlayback(completionHandler: { (shouldStartPlayback, routeSelection) in
-                if shouldStartPlayback {
-                    switch routeSelection {
-                    case .local:
-                        // playing locally
-                        break
-                    case .external:
-                        // add a small delay to prevent dismissing already started playback session
-                        self.airplayHandler?.handleAirplayEvent(active: true, tech: self, source: self.currentSource)
-                    case .none:
-                        fallthrough
-                    @unknown default:
-                        // Cancelling playback
-                        break
-                    }
-                } else {
-                    // Cancelling playback
+            playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new]) { [weak self] player, change in
+                guard let `self` = self else { return }
+                DispatchQueue.main.async { [weak self] in
+                    guard let `self` = self else { return }
+                    
+                    AVAudioSession.sharedInstance().prepareRouteSelectionForPlayback(completionHandler: { (shouldStartPlayback, routeSelection) in
+                        
+                        if shouldStartPlayback {
+                            switch routeSelection {
+                            case .local:
+                                self.onAirplayStatusChanged(self, self.currentSource, false)
+                                break
+                            case .external:
+                                
+                                // Pass onAirplayStatusChanged event
+                                self.onAirplayStatusChanged(self, self.currentSource, true)
+                                
+                                // Send the anlytics
+                                self.airplayHandler?.sendAirplayAnalytics(active: true, tech: self, source: self.currentSource)
+                            
+                            case .none:
+                                self.onAirplayStatusChanged(self, self.currentSource, false)
+                                fallthrough
+                            @unknown default:
+                                // default
+                                self.onAirplayStatusChanged(self, self.currentSource, false)
+                                break
+                            }
+                        } else {
+                            // Cancelling playback
+                            self.onAirplayStatusChanged(self, self.currentSource, false)
+                        }
+                    })
                 }
-            })
+            }
+            
         } else {
-            
-            /// Note : Use playerObserver for old iOS versions 
+            /// Note : Use playerObserver for old iOS versions
             playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new]) { [weak self] player, change in
                 guard let `self` = self else { return }
                 DispatchQueue.main.async { [weak self] in
@@ -1065,49 +1077,48 @@ extension HLSNative {
                 }
             }
         }
-        #elseif os(tvOS)
-            
-            // Shoudn't have effect on airplaying as oS is TVOS
-            playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new]) { [weak self] player, change in
+#elseif os(tvOS)
+        // Shoudn't have effect on airplaying as oS is TVOS
+        playerObserver.observe(path: .isExternalPlaybackActive, on: avPlayer, with: [.new]) { [weak self] player, change in
+            guard let `self` = self else { return }
+            DispatchQueue.main.async { [weak self] in
                 guard let `self` = self else { return }
-                DispatchQueue.main.async { [weak self] in
-                    guard let `self` = self else { return }
-                    /// Playcall update when Airplaying should not trigger on
-                    /// 1. playbackState == .notStarted
-                    ///     Airplay was activated before playcall was made, use that playcall
-                    ///
-                    /// 2. Handoff between two Airplaying devices
-                    ///     Switching between two AppleTVs fire a "handoff" event, which takes care of the output while the second AppleTV readies itself.
-                    ///     Ignore and wait for the "correct" trigger
-                    ///
-                    if let new = change.new as? Bool {
-                        let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
-                        guard !isHandoffTrigger else { return }
-                        
-                        let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSession.Port.airPlay }
-                        
-                        if connectedAirplayPorts.isEmpty {
-                            // Disconnected Airplay
-                            self.activeAirplayPorts = []
-                            self.onAirplayStatusChanged(self, self.currentSource, false)
+                /// Playcall update when Airplaying should not trigger on
+                /// 1. playbackState == .notStarted
+                ///     Airplay was activated before playcall was made, use that playcall
+                ///
+                /// 2. Handoff between two Airplaying devices
+                ///     Switching between two AppleTVs fire a "handoff" event, which takes care of the output while the second AppleTV readies itself.
+                ///     Ignore and wait for the "correct" trigger
+                ///
+                if let new = change.new as? Bool {
+                    let isHandoffTrigger = AVAudioSession.sharedInstance().currentRoute.outputs.reduce(false) { $0 || $1.portName == "AirPlayHandoffDevice" }
+                    guard !isHandoffTrigger else { return }
+                    
+                    let connectedAirplayPorts = AVAudioSession.sharedInstance().currentRoute.outputs.filter{ $0.portType == AVAudioSession.Port.airPlay }
+                    
+                    if connectedAirplayPorts.isEmpty {
+                        // Disconnected Airplay
+                        self.activeAirplayPorts = []
+                        self.onAirplayStatusChanged(self, self.currentSource, false)
+                    }
+                    else {
+                        // New Airplay ports
+                        if self.activeAirplayPorts.isEmpty {
+                            self.onAirplayStatusChanged(self, self.currentSource, true)
                         }
-                        else {
-                            // New Airplay ports
-                            if self.activeAirplayPorts.isEmpty {
-                                self.onAirplayStatusChanged(self, self.currentSource, true)
-                            }
-                            self.activeAirplayPorts = connectedAirplayPorts
-                        }
-                        
-                        let started = (self.playbackState == .notStarted)
-                        if !started {
-                            self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
-                        }
+                        self.activeAirplayPorts = connectedAirplayPorts
+                    }
+                    
+                    let started = (self.playbackState == .notStarted)
+                    if !started {
+                        self.airplayHandler?.handleAirplayEvent(active: new, tech: self, source: self.currentSource)
                     }
                 }
             }
-            #endif
         }
+#endif
+    }
 }
 
 extension HLSNative {
@@ -1124,7 +1135,7 @@ extension HLSNative {
         // Trigger on-ready callbacks and autoplay if available
         self.eventDispatcher.onPlaybackReady(self, mediaAsset.source)
         mediaAsset.source.analyticsConnector.onReady(tech: self
-            , source: mediaAsset.source)
+                                                     , source: mediaAsset.source)
         if self.autoplay {
             // EMP-11587: If the audio session has been interrupted autoplay should be disabled.
             // Disabling autoplay avoids issues where freshly loaded sources ready for playback during for example an incomming phone call. Without disabling autoplay, the source may start playing over the phones ringtone.
@@ -1280,7 +1291,7 @@ extension HLSNative {
     public func removePeriodicTimeObserverToPlayer() {
         if let timeObserverToken = timeObserverToken {
             self.avPlayer.removeTimeObserver(timeObserverToken)
-                self.timeObserverToken = nil
+            self.timeObserverToken = nil
         }
     }
 }
@@ -1316,10 +1327,10 @@ internal class BackgroundWatcher {
     /// Handles *Audio Session Interruption* events by resuming playback if instructed to do so.
     @objc internal func audioSessionInterruption(notification: Notification) {
         guard let userInfo = notification.userInfo,
-            let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-            let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
-                return
-        }
+              let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+                  return
+              }
         switch type {
         case .began:
             onAudioSessionInterruption(.began)

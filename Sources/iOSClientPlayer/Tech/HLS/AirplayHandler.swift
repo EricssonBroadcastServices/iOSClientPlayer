@@ -15,4 +15,11 @@ public protocol AirplayHandler: class {
     /// - parameter tech: The tech used to play `source`
     /// - parameter source: The `Source` currently under playback for which the airplay event occured.
     func handleAirplayEvent<Tech, Source>(active: Bool, tech: Tech, source: Source?) where Tech: PlaybackTech, Source: MediaSource
+    
+    /// Send analytics events related to Airplay
+    ///
+    /// - parameter active: If *Airplay* was tuned on of off
+    /// - parameter tech: The tech used to play `source`
+    /// - parameter source: The `Source` currently under playback for which the airplay event occured.
+    func sendAirplayAnalytics<Tech, Source>(active: Bool, tech: Tech, source: Source?) where Tech: PlaybackTech, Source: MediaSource
 }
