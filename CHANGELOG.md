@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `3.0.80` Release - [3.0.800](#30800)
 * `3.0.70` Release - [3.0.700](#30700)
 * `3.0.60` Release - [3.0.600](#30600)
 * `3.0.50` Release - [3.0.500](#30500)
@@ -36,6 +37,9 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
+## 3.0.800
+#### Bug Fixes
+* `EMP-18512` Add missing Airplay analytics events after fixing airplay smart tv issue
 
 ## 3.0.700
 #### Bug Fixes
