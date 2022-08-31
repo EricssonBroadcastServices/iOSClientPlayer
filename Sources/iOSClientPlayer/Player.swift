@@ -222,4 +222,20 @@ extension Player {
         }
         return self
     }
+    
+    /// Sets the callback to fire once the current playback `DateRangeMetadata` changes.
+    ///
+    /// #EXT-X-DATERANGE tag will be used to define date range metadata in a media playlist.
+    /// This tag is useful for defining timed metadata for interstitial regions such as advertisements, but can be used to define any timed metadata needed by your stream.
+    ///
+    /// - parameter callback: callback to fire once the event is fired.
+    /// - returns: `Self`
+    @discardableResult
+    public func onDateRangeMetadataChanged(callback: @escaping ([AVDateRangeMetadataGroup]) -> Void) -> Self {
+        tech.eventDispatcher.onDateRangeMetadataChanged = { [weak self] metadata in
+            guard let `self` = self else { return }
+            callback(metadata)
+        }
+        return self
+    }
 }

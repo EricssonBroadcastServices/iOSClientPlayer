@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 /// Dispatch class used by the player to trigger registered event callbacks.
 ///
@@ -106,4 +107,7 @@ public class EventDispatcher<Context: MediaContext, Tech: PlaybackTech> {
     /// - parameter source: `MediaSource` causing the event
     /// - parameter warning: `Warning` encountered
     internal(set) public var onWarning: (Tech, Context.Source?, PlayerWarning<Tech, Context>) -> Void = { _,_,_ in }
+    
+    /// Should be triggered when a *DateRangeMetadataChanged*.
+    internal(set) public var onDateRangeMetadataChanged: (_ metaDataGroup: [AVDateRangeMetadataGroup]) -> Void = { _ in }
 }

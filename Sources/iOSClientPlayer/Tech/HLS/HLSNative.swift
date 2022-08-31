@@ -10,6 +10,7 @@ import AVFoundation
 import UIKit
 
 public final class HLSNative<Context: MediaContext>: PlaybackTech {
+    
     public typealias Configuration = HLSNativeConfiguration
     public typealias TechError = HLSNativeError
     public typealias TechWarning = HLSNativeWarning
@@ -21,6 +22,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     
     /// Triggered when encountering new Timed Metadata
     public var onTimedMetadataChanged: (HLSNative<Context>, Context.Source?, [AVMetadataItem]?) -> Void = { _,_,_ in }
+    
+    public var onDateRangeMetadataChanged: (HLSNative<Context>, Context.Source?, [AVDateRangeMetadataGroup]?) -> Void = { _,_,_ in }
     
     /// Optionally deal with airplay events through this delegate
     public weak var airplayHandler: AirplayHandler?
@@ -121,7 +124,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
     ///
     /// *Fairplay* protected media is processed by the supplied FairplayRequester
-    internal class MediaAsset<Source: MediaSource> {
+    internal class MediaAsset<Source: MediaSource> : DateMetaDataParser {
+       
         /// Specifies the asset which is about to be loaded.
         internal var urlAsset: AVURLAsset
         
@@ -134,15 +138,33 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         /// Source used to create this media asset
         internal let source: Source
         
+        var metadataCollector: AVPlayerItemMetadataCollector!
+        
+        var metaDataCollectorClass: DateRangeMetadataCollector?
+        
+        var datePaerDelegate: DateMetaDataParser?
+
+        var eventDispatcher: EventDispatcher<Context, HLSNative<Context>>?
+        
+        
+        /// Date Range Meta data did collect
+        /// - Parameter dateRangeMetadataGroups: array of `AVDateRangeMetadataGroup`s
+        internal func dateMetaDataDidCollect(dateRangeMetadataGroups: [AVDateRangeMetadataGroup]) {
+            self.eventDispatcher?.onDateRangeMetadataChanged(dateRangeMetadataGroups)
+        }
+        
         /// Creates the media asset
         ///
         /// - parameter source: `MediaSource` defining the playback
         /// - parameter configuration: HLS specific configuration
-        internal init(source: Source, configuration: HLSNativeConfiguration) {
+        internal init(source: Source, configuration: HLSNativeConfiguration, eventDispatcher:EventDispatcher<Context, HLSNative<Context>>? = nil, metadataIdentifiers: [String]? = nil  ) {
             self.source = source
             self.fairplayRequester = configuration.drm
+            self.eventDispatcher = eventDispatcher
             
-            let asset = AVURLAsset(url: source.url, options: nil)
+           let asset = AVURLAsset(url: source.url, options: nil)
+            
+
             
             /* if !asset.resourceLoader.preloadsEligibleContentKeys {
              asset.resourceLoader.preloadsEligibleContentKeys = true
@@ -156,6 +178,21 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             
             playerItem = AVPlayerItem(asset: asset)
             
+            var identifiers: [String] = []
+            if let metadataIdentifiers = metadataIdentifiers {
+                for metadataIdentifier in metadataIdentifiers {
+                    let adID = AVMetadataItem.identifier(forKey: metadataIdentifier,keySpace: AVMetadataKeySpace.hlsDateRange)!
+                    identifiers.append(adID.rawValue)
+                }
+            }
+
+            metadataCollector = AVPlayerItemMetadataCollector(identifiers: identifiers,
+                                                              classifyingLabels: nil)
+            metaDataCollectorClass = DateRangeMetadataCollector()
+            metaDataCollectorClass?.setDelegate(metadataCollector)
+            playerItem.add(metadataCollector)
+            metaDataCollectorClass?.parserDelegate = self
+    
             if let bitrateLimitation = configuration.preferredMaxBitrate { playerItem.preferredPeakBitRate = Double(bitrateLimitation) }
             
         }
@@ -171,6 +208,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             itemObserver.stopObservingAll()
             itemObserver.unsubscribeAll()
         }
+        
         
         /// Prepares and loads media `properties` relevant to playback. This is an asynchronous process.
         ///
@@ -241,8 +279,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     }
     
     /// Generates a fresh MediaAsset to use for loading and preparation of the specified `Source`.
-    internal var assetGenerator: (Context.Source, HLSNativeConfiguration) -> MediaAsset<Context.Source> = { source, configuration in
-        return MediaAsset<Context.Source>(source: source, configuration: configuration)
+    internal var assetGenerator: (Context.Source, HLSNativeConfiguration,EventDispatcher?, [String]? ) -> MediaAsset<Context.Source> = { source, configuration, eventDispatcher, metadataIdentifiers in
+        return MediaAsset<Context.Source>(source: source, configuration: configuration, eventDispatcher: eventDispatcher, metadataIdentifiers: metadataIdentifiers )
     }
     
     fileprivate var airplayWorkaroundObserver: PlayerObserver = PlayerObserver()
@@ -318,8 +356,8 @@ extension HLSNative {
     /// - parameter source: MediaSource to load
     /// - parameter configuration: Specifies the configuration options
     /// - parameter onLoaded: Callback that fires when the loading proceedure has completed
-    public func load(source: Context.Source, configuration: HLSNativeConfiguration, onLoaded: @escaping () -> Void = { }) {
-        let mediaAsset = assetGenerator(source, configuration)
+    public func load(source: Context.Source, configuration: HLSNativeConfiguration, metadataIdentifiers: [String]? = nil ,  onLoaded: @escaping () -> Void = { }) {
+        let mediaAsset = assetGenerator(source, configuration, eventDispatcher, metadataIdentifiers)
         
         if let inPreparation = assetInPreparation {
             
@@ -383,8 +421,8 @@ extension HLSNative {
     ///   - source: MediaSource to load
     ///   - configuration: Specifies the configuration options
     ///   - onLoaded: Callback that fires when the loading proceedure has completed
-    public func loadOffline(source: Context.Source, configuration: HLSNativeConfiguration, onLoaded: @escaping () -> Void = { }) {
-        let mediaAsset = assetGenerator(source, configuration)
+    public func loadOffline(source: Context.Source, configuration: HLSNativeConfiguration, metadataIdentifiers: [String]? = nil , onLoaded: @escaping () -> Void = { }) {
+        let mediaAsset = assetGenerator(source, configuration, eventDispatcher, metadataIdentifiers)
         
         if let inPreparation = assetInPreparation {
             
@@ -470,6 +508,7 @@ extension HLSNative {
             // Replace the player item with a new player item. The item replacement occurs
             // asynchronously; observe the currentItem property to find out when the
             // replacement will/did occur
+            
             self.avPlayer.replaceCurrentItem(with: mediaAsset.playerItem)
             
             // Apply preferred audio and subtitles
@@ -515,7 +554,7 @@ extension HLSNative {
     }
 }
 
-// MARK: - Preferred Language
+// MARK: - Metadata collection
 extension HLSNative {
     fileprivate func applyLanguagePreferences(on mediaAsset: MediaAsset<Context.Source>) {
         // 1. Preferred
@@ -684,13 +723,12 @@ extension HLSNative {
             }
         }
         
-        
         mediaAsset.itemObserver.observe(path: .isPlaybackBufferFull, on: mediaAsset.playerItem) { item, change in
-            
         }
         
         mediaAsset.itemObserver.observe(path: .isPlaybackBufferEmpty, on: mediaAsset.playerItem) { [weak self] item, change in
             guard let `self` = self else { return }
+
             if item.isPlaybackBufferEmpty && !change.isPrior {
                 DispatchQueue.main.async { [weak self] in
                     guard let `self` = self else { return }
@@ -925,6 +963,7 @@ extension HLSNative {
                     case .preparing:
                         self.playbackState = .playing
                         if let mediaAsset = self.currentAsset {
+                            
                             /// Track the internal `X-Playback-Session-Id`
                             self.assignInternalPlaybackSessionId(toSourceFor: mediaAsset)
                             self.eventDispatcher.onPlaybackStarted(self, mediaAsset.source)
@@ -1013,7 +1052,6 @@ extension HLSNative {
                                 self.onAirplayStatusChanged(self, self.currentSource, false)
                                 break
                             case .external:
-                                
                                 // Pass onAirplayStatusChanged event
                                 self.onAirplayStatusChanged(self, self.currentSource, true)
                                 

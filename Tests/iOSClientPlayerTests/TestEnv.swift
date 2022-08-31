@@ -34,7 +34,7 @@ class TestEnv {
         player.tech.avPlayer = mockedPlayer
     }
 
-    func mockAsset(callback: @escaping (Manifest, HLSNativeConfiguration) -> HLSNative<ManifestContext>.MediaAsset<Manifest>) {
+    func mockAsset(callback: @escaping (Manifest, HLSNativeConfiguration, EventDispatcher) -> HLSNative<ManifestContext>.MediaAsset<Manifest>) {
         player.tech.assetGenerator = callback
     }
 
