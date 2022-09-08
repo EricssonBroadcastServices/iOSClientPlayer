@@ -48,6 +48,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             airplayWorkaroundObserver.stopObservingAll()
             
             handlePlaybackStateChanges()
+            handlePlaybackTimeControlStatusChanges()
             handleStatusChange()
         }
     }
@@ -253,6 +254,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         avPlayer.allowsExternalPlayback = true
         
         handlePlaybackStateChanges()
+        handlePlaybackTimeControlStatusChanges()
         handleStatusChange()
         handleExternalPlayback()
         
@@ -908,8 +910,48 @@ extension HLSNative {
 
 /// Playback State Changes
 extension HLSNative {
+    
+    /// Subscribes to and handles `AVPlayerTimeControlStatus` changes.
+    fileprivate func handlePlaybackTimeControlStatusChanges() {
+        playerObserver.observe(path: .timeControlStatus, on: avPlayer) { [weak self] player, change in
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                    if let newValue = change.new as? Int, let status = AVPlayer.TimeControlStatus(rawValue: newValue) {
+                        switch status {
+                        case .waitingToPlayAtSpecifiedRate:
+                            if !(self.playbackState == .preparing || self.playbackState == .notStarted) {
+                                self.playbackState = .paused
+                            }
+                            return
+                        case .playing:
+                            if !(self.playbackState == .preparing || self.playbackState == .notStarted) {
+                                self.playbackState = .playing
+                                if let source = self.currentAsset?.source {
+                                    self.eventDispatcher.onPlaybackResumed(self, source)
+                                    source.analyticsConnector.onResumed(tech: self, source: source)
+                                }
+                            }
+                           
+                            return
+                        case .paused:
+                            if !(self.playbackState == .preparing || self.playbackState == .notStarted) {
+                                self.playbackState = .paused
+                                if let source = self.currentAsset?.source {
+                                    self.eventDispatcher.onPlaybackPaused(self, source)
+                                    source.analyticsConnector.onPaused(tech: self, source: source)
+                                }
+                            }
+                            return
+
+                        }
+                    }
+                }
+            }
+    }
+    
     /// Subscribes to and handles `AVPlayer.rate` changes.
     fileprivate func handlePlaybackStateChanges() {
+
         playerObserver.observe(path: .rate, on: avPlayer) { [weak self] player, change in
             guard let `self` = self else { return }
             DispatchQueue.main.async { [weak self] in
@@ -917,25 +959,23 @@ extension HLSNative {
                 guard let newRate = change.new as? Float else {
                     return
                 }
-                
+
                 if newRate < 0 || 0 < newRate {
                     switch self.playbackState {
                     case .notStarted:
                         return
                     case .preparing:
+
                         self.playbackState = .playing
                         if let mediaAsset = self.currentAsset {
                             /// Track the internal `X-Playback-Session-Id`
                             self.assignInternalPlaybackSessionId(toSourceFor: mediaAsset)
                             self.eventDispatcher.onPlaybackStarted(self, mediaAsset.source)
                             mediaAsset.source.analyticsConnector.onStarted(tech: self, source: mediaAsset.source)
+                            
                         }
                     case .paused:
-                        self.playbackState = .playing
-                        if let source = self.currentAsset?.source {
-                            self.eventDispatcher.onPlaybackResumed(self, source)
-                            source.analyticsConnector.onResumed(tech: self, source: source)
-                        }
+                        return
                     case .playing:
                         return
                     case .stopped:
@@ -951,11 +991,7 @@ extension HLSNative {
                     case .paused:
                         return
                     case .playing:
-                        self.playbackState = .paused
-                        if let source = self.currentAsset?.source {
-                            self.eventDispatcher.onPlaybackPaused(self, source)
-                            source.analyticsConnector.onPaused(tech: self, source: source)
-                        }
+                        return
                     case .stopped:
                         return
                     }
