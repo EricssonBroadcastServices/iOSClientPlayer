@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `3.0.90` Release - [3.0.900](#30900)
 * `3.0.80` Release - [3.0.800](#30800)
 * `3.0.70` Release - [3.0.700](#30700)
 * `3.0.60` Release - [3.0.600](#30600)
@@ -36,6 +37,11 @@
 * `0.72.x` Releases - [0.72.0](#07200)
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
+
+## 3.0.900
+#### Bug Fixes
+* `EMP-18637` Use `AVPlayerTimeControlStatus` for handling player's play / pause events rather than using the `AVPlayer.rate`. When Airplaying `AVPlayer.rate` can be unstable. 
+* Bump the minimum support iOS / tvOS version to iOS 10  / tvOS 10
 
 ## 3.0.800
 #### Bug Fixes
