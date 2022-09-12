@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `3.1.00` Release - [3.1.000](#31000)
 * `3.0.90` Release - [3.0.900](#30900)
 * `3.0.80` Release - [3.0.800](#30800)
 * `3.0.70` Release - [3.0.700](#30700)
@@ -37,6 +38,10 @@
 * `0.72.x` Releases - [0.72.0](#07200)
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
+
+## 3.1.000
+#### Features
+* `EMP-18532.` Add metadata collector to AVPlayerItem & Pass dateRangeMetada groups to the client. 
 
 ## 3.0.900
 #### Bug Fixes
