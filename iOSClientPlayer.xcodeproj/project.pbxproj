@@ -129,6 +129,8 @@
 		7831100D27EB67F8009B3114 /* TimedMetadataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78310F9127EB67F8009B3114 /* TimedMetadataProvider.swift */; };
 		7831101227EB687D009B3114 /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 7831101127EB687D009B3114 /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7831101327EB687D009B3114 /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 7831101127EB687D009B3114 /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7860868328CB739700BC3BA1 /* DateRangeMetadataCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7860868228CB739700BC3BA1 /* DateRangeMetadataCollector.swift */; };
+		7860868428CB739700BC3BA1 /* DateRangeMetadataCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7860868228CB739700BC3BA1 /* DateRangeMetadataCollector.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -209,6 +211,7 @@
 		78310F9127EB67F8009B3114 /* TimedMetadataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimedMetadataProvider.swift; sourceTree = "<group>"; };
 		7831101127EB687D009B3114 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		7831101527EB6897009B3114 /* iOSClientPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iOSClientPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7860868228CB739700BC3BA1 /* DateRangeMetadataCollector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateRangeMetadataCollector.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -412,6 +415,7 @@
 		78310F7A27EB67F8009B3114 /* Observation */ = {
 			isa = PBXGroup;
 			children = (
+				7860868228CB739700BC3BA1 /* DateRangeMetadataCollector.swift */,
 				78310F7B27EB67F8009B3114 /* Observer.swift */,
 				78310F7C27EB67F8009B3114 /* KVOChange.swift */,
 				78310F7D27EB67F8009B3114 /* NotificationObserver.swift */,
@@ -587,6 +591,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				78310FD927EB67F8009B3114 /* HLSNative+MediaPlayback.swift in Sources */,
+				7860868428CB739700BC3BA1 /* DateRangeMetadataCollector.swift in Sources */,
 				78310FC327EB67F8009B3114 /* HLSNative.swift in Sources */,
 				78310FE927EB67F8009B3114 /* KVOChange.swift in Sources */,
 				78310FD327EB67F8009B3114 /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */,
@@ -654,6 +659,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				78310FD827EB67F8009B3114 /* HLSNative+MediaPlayback.swift in Sources */,
+				7860868328CB739700BC3BA1 /* DateRangeMetadataCollector.swift in Sources */,
 				78310FC227EB67F8009B3114 /* HLSNative.swift in Sources */,
 				78310FE827EB67F8009B3114 /* KVOChange.swift in Sources */,
 				78310FD227EB67F8009B3114 /* AVPlayerItemErrorLogEvent+Extensions.swift in Sources */,
@@ -741,9 +747,9 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/iOSClientPlayer/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 3.0.800;
+				MARKETING_VERSION = 3.1.000;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = iOSClientPlayer;
@@ -754,7 +760,7 @@
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
@@ -780,9 +786,9 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/iOSClientPlayer/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 3.0.800;
+				MARKETING_VERSION = 3.1.000;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
@@ -793,7 +799,7 @@
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Release;
 		};
@@ -844,7 +850,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -898,7 +904,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -933,7 +939,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/Frameworks";
-				MARKETING_VERSION = 3.0.800;
+				MARKETING_VERSION = 3.1.000;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = iOSClientPlayer;
@@ -971,7 +977,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks @executable_path/Frameworks";
-				MARKETING_VERSION = 3.0.800;
+				MARKETING_VERSION = 3.1.000;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emp.Player;
 				PRODUCT_NAME = iOSClientPlayer;

@@ -17,6 +17,8 @@ class TestEnv {
     }
     
     let player: Player<HLSNative<ManifestContext>>
+    public var eventDispatcher: EventDispatcher<ManifestContext, HLSNative<ManifestContext>> = EventDispatcher()
+    
     init() {
         let tech = HLSNative<ManifestContext>()
         let context = ManifestContext()
@@ -34,14 +36,14 @@ class TestEnv {
         player.tech.avPlayer = mockedPlayer
     }
 
-    func mockAsset(callback: @escaping (Manifest, HLSNativeConfiguration, EventDispatcher) -> HLSNative<ManifestContext>.MediaAsset<Manifest>) {
+    func mockAsset(callback: @escaping (Manifest, HLSNativeConfiguration, EventDispatcher<ManifestContext, HLSNative<ManifestContext>>? , [String]? ) -> HLSNative<ManifestContext>.MediaAsset<Manifest>) {
         player.tech.assetGenerator = callback
     }
 
-    func defaultAssetMock(currentDate: Int64, bufferDuration: Int64, callback: @escaping (MockedAVURLAsset, MockedAVPlayerItem) -> Void = { _,_ in }) -> (Manifest, HLSNativeConfiguration) -> HLSNative<ManifestContext>.MediaAsset<Manifest> {
-        return { source, configuration in
+    func defaultAssetMock(currentDate: Int64, bufferDuration: Int64, callback: @escaping (MockedAVURLAsset, MockedAVPlayerItem) -> Void = { _,_ in }) -> (Manifest, HLSNativeConfiguration, EventDispatcher<ManifestContext, HLSNative<ManifestContext>>?, [String]? ) -> HLSNative<ManifestContext>.MediaAsset<Manifest> {
+        return { source, configuration,eventDispatcher, metadataGroup in
             // MediaAsset
-            let media = HLSNative<ManifestContext>.MediaAsset<Manifest>(source: source, configuration: configuration)
+            let media = HLSNative<ManifestContext>.MediaAsset<Manifest>(source: source, configuration: configuration, metadataIdentifiers: metadataGroup)
             
             // AVURLAsset
             let urlAsset = MockedAVURLAsset(url: source.url)
@@ -87,8 +89,8 @@ class TestEnv {
             return media
         }
     }
-    func maxBitrateMock(callback: @escaping (MockedAVURLAsset, MockedAVPlayerItem) -> Void) -> (Manifest, HLSNativeConfiguration) -> HLSNative<ManifestContext>.MediaAsset<Manifest> {
-        return { source, configuration in
+    func maxBitrateMock(callback: @escaping (MockedAVURLAsset, MockedAVPlayerItem) -> Void) -> (Manifest, HLSNativeConfiguration, EventDispatcher<ManifestContext, HLSNative<ManifestContext>>?,  [String]? ) -> HLSNative<ManifestContext>.MediaAsset<Manifest> {
+        return { source, configuration, eventDispatcher, medataDataIdentifiers in
             // MediaAsset
             let media = HLSNative<ManifestContext>.MediaAsset<Manifest>(source: source, configuration: configuration)
             
