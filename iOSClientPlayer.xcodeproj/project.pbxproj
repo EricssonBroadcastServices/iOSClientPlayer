@@ -131,6 +131,8 @@
 		7831101327EB687D009B3114 /* Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 7831101127EB687D009B3114 /* Player.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7860868328CB739700BC3BA1 /* DateRangeMetadataCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7860868228CB739700BC3BA1 /* DateRangeMetadataCollector.swift */; };
 		7860868428CB739700BC3BA1 /* DateRangeMetadataCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7860868228CB739700BC3BA1 /* DateRangeMetadataCollector.swift */; };
+		78FD65FF28E2E6810074B31E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FD65FE28E2E6810074B31E /* Version.swift */; };
+		78FD660028E2E6810074B31E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FD65FE28E2E6810074B31E /* Version.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -212,6 +214,7 @@
 		7831101127EB687D009B3114 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		7831101527EB6897009B3114 /* iOSClientPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iOSClientPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7860868228CB739700BC3BA1 /* DateRangeMetadataCollector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateRangeMetadataCollector.swift; sourceTree = "<group>"; };
+		78FD65FE28E2E6810074B31E /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,6 +278,7 @@
 				78310F5F27EB67F8009B3114 /* Views */,
 				78310F6127EB67F8009B3114 /* Tech */,
 				78310F8527EB67F8009B3114 /* Info.plist */,
+				78FD65FE28E2E6810074B31E /* Version.swift */,
 				78310F8627EB67F8009B3114 /* Warning.swift */,
 				78310F8727EB67F8009B3114 /* Analytics */,
 			);
@@ -648,6 +652,7 @@
 				78310FFD27EB67F8009B3114 /* Warning.swift in Sources */,
 				78310FA927EB67F8009B3114 /* Error+Extensions.swift in Sources */,
 				78310FC927EB67F8009B3114 /* AVMediaSelectionGroup+Extensions.swift in Sources */,
+				78FD660028E2E6810074B31E /* Version.swift in Sources */,
 				78310FF527EB67F8009B3114 /* PlayerObserver.swift in Sources */,
 				78310F9727EB67F8009B3114 /* HLSNative+ManifestContext+Airplay.swift in Sources */,
 				78310FF727EB67F8009B3114 /* KeyValueObserver.swift in Sources */,
@@ -716,6 +721,7 @@
 				78310FFC27EB67F8009B3114 /* Warning.swift in Sources */,
 				78310FA827EB67F8009B3114 /* Error+Extensions.swift in Sources */,
 				78310FC827EB67F8009B3114 /* AVMediaSelectionGroup+Extensions.swift in Sources */,
+				78FD65FF28E2E6810074B31E /* Version.swift in Sources */,
 				78310FF427EB67F8009B3114 /* PlayerObserver.swift in Sources */,
 				78310F9627EB67F8009B3114 /* HLSNative+ManifestContext+Airplay.swift in Sources */,
 				78310FF627EB67F8009B3114 /* KeyValueObserver.swift in Sources */,
