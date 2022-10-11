@@ -876,6 +876,17 @@ extension HLSNative {
                         }
                         self.stop()
                     }
+                } else if event.errorDomain == "CoreMediaErrorDomain" {
+                    
+                    // Pass all the `CoreMediaErrorDomain` errors :
+                    // Client developers suppose to handle them accordingly.
+                    DispatchQueue.main.async { [weak self] in
+                        guard let `self` = self else { return }
+                        let error = HLSAVPlayerItemErrorLogEventError(code: event.errorStatusCode, message: "PLAYER_ITEM_ERROR_LOG_ENTRY : CoreMediaErrorDomain", domain: event.errorDomain, info: event.errorComment)
+                        let techError = PlayerError<HLSNative<Context>,Context>.tech(error:  HLSNativeError.coreMediaErrorDomain(error: error))
+                        self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
+        
+                    }
                 }
                 
                 if self.logLevel == .debug {
