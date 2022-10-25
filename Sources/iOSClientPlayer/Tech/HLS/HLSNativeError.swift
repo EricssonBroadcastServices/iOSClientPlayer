@@ -54,10 +54,6 @@ public enum HLSNativeError: ExpandedError {
     /// Content Key Validation failed with the specified error, or `nil` if the underlyig error is expected.
     case failedToValdiateContentKey(error: Error?)
     
-    
-    /// Content Key Validation failed with the specified error, or `nil` if the underlyig error is expected.
-    case coreMediaErrorDomain(error: Error?)
-    
     /// Media preparation finished after `Tech` was torn down
     @available(*, deprecated: 2.0.85, message: "Deallocation of HLSNative during the media preparation phase is no longer considered an `Error`.")
     case techDeallocated
@@ -74,7 +70,6 @@ extension HLSNativeError {
         case .failedToCompletePlayback(error: _): return "FAILED_TO_COMPLETE_PLAYBACK"
         case .failedToValdiateContentKey(error: _): return "FAILED_TO_VALIDATE_CONTENT_KEY"
         case .techDeallocated: return "TECH_DEALLOCATED"
-        case .coreMediaErrorDomain(error: let error): if let error = error as? HLSAVPlayerItemErrorLogEventError { return error.message } else { return "PLAYER_ITEM_ERROR_LOG_ENTRY : CoreMediaErrorDomain" }
         }
     }
     
@@ -88,7 +83,6 @@ extension HLSNativeError {
         case .failedToCompletePlayback(error: let error): return error.debugInfoString
         case .failedToValdiateContentKey(error: let error): return error != nil ? error!.debugInfoString : "Unknown error"
         case .techDeallocated: return "Media preparation finished after Tech was deallocated"
-        case .coreMediaErrorDomain(error: let error): if let error = error as? HLSAVPlayerItemErrorLogEventError { return error.info } else { return nil }
         }
     }
 }
@@ -104,9 +98,6 @@ extension HLSNativeError {
         case .failedToCompletePlayback(error: _): return 105
         case .failedToValdiateContentKey(error: _): return 106
         case .techDeallocated: return 107
-        case .coreMediaErrorDomain(error: let error ):
-            if let error = error as? HLSAVPlayerItemErrorLogEventError { return error.code } else { return 0 }
-            
         }
     }
 }
@@ -125,7 +116,6 @@ extension HLSNativeError {
         case .failedToCompletePlayback(error: let error): return error
         case .failedToValdiateContentKey(error: let error): return error
         case .techDeallocated: return nil
-        case .coreMediaErrorDomain(error: let error): if let error = error as? HLSAVPlayerItemErrorLogEventError { return error } else { return nil }
         }
     }
 }

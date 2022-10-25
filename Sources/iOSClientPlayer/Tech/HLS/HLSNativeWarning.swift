@@ -24,6 +24,10 @@ public enum HLSNativeWarning: WarningMessage {
     
     /// Another media source was loaded before the currently loading source finalized preparation
     case mediaPreparationAbandoned(playSessionId: String, url: URL)
+    
+    /// Content Key Validation failed with the specified error, or `nil` if the underlyig error is expected.
+    case coreMediaErrorDomain(error: Error?)
+    
 }
 
 extension HLSNativeWarning {
@@ -34,6 +38,7 @@ extension HLSNativeWarning {
         case .seekTimeBeyondLivePoint(timestamp: let timestamp, livePoint: let live): return "Requested seek time \(timestamp) was beyond live point \(live)"
         case .invalidStartTime(startTime: let time, seekableRanges: let ranges): return "Invalid start time, \(time) set beyond seekable ranges, \(ranges)"
         case .mediaPreparationAbandoned(playSessionId: let sessionId, url: let url): return "Preparation of media source with playsessionId: \(sessionId) was abandoned before finalizing. Url: \(url)"
+        case .coreMediaErrorDomain(error: let error): if let error = error as? HLSAVPlayerItemErrorLogEventError { return "PLAYER_ITEM_ERROR_LOG_ENTRY : CoreMediaErrorDomain : \n info: \(error.info) \n message : \(error.message) \n code: \(error.code) \n Error : \(error)"  } else { return "PLAYER_ITEM_ERROR_LOG_ENTRY : CoreMediaErrorDomain" }
         }
     }
 }
