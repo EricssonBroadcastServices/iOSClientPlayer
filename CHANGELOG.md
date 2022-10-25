@@ -42,7 +42,7 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
-## 3.1.200
+## 3.1.300
 #### Changes
 * `EMP-18831` Pass `CoreMediaErrorDomain` errors from  AVPlayerItemErrorLogEvent to the client as `warnings`. Client developers can track those erros in `player.onWarning`. ( Prevent passing these log errors as Player Errors , but rather warnings   )
 
