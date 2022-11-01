@@ -23,8 +23,6 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Triggered when encountering new Timed Metadata
     public var onTimedMetadataChanged: (HLSNative<Context>, Context.Source?, [AVMetadataItem]?) -> Void = { _,_,_ in }
     
-    public var onDateRangeMetadataChanged: (HLSNative<Context>, Context.Source?, [AVDateRangeMetadataGroup]?) -> Void = { _,_,_ in }
-    
     /// Optionally deal with airplay events through this delegate
     public weak var airplayHandler: AirplayHandler?
     
@@ -150,8 +148,8 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         
         /// Date Range Meta data did collect
         /// - Parameter dateRangeMetadataGroups: array of `AVDateRangeMetadataGroup`s
-        internal func dateMetaDataDidCollect(dateRangeMetadataGroups: [AVDateRangeMetadataGroup]) {
-            self.eventDispatcher?.onDateRangeMetadataChanged(dateRangeMetadataGroups)
+        internal func dateMetaDataDidCollect(dateRangeMetadataGroups: [AVDateRangeMetadataGroup], indexesOfNewGroups: IndexSet , indexesOfModifiedGroups: IndexSet ) {
+            self.eventDispatcher?.onDateRangeMetadataChanged(dateRangeMetadataGroups, indexesOfNewGroups, indexesOfModifiedGroups)
         }
         
         /// Creates the media asset
