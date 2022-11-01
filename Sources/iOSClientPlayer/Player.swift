@@ -233,10 +233,10 @@ extension Player {
     /// - parameter callback: callback to fire once the event is fired.
     /// - returns: `Self`
     @discardableResult
-    public func onDateRangeMetadataChanged(callback: @escaping ([AVDateRangeMetadataGroup]) -> Void) -> Self {
-        tech.eventDispatcher.onDateRangeMetadataChanged = { [weak self] metadata in
+    public func onDateRangeMetadataChanged(callback: @escaping ([AVDateRangeMetadataGroup], IndexSet, IndexSet) -> Void) -> Self {
+        tech.eventDispatcher.onDateRangeMetadataChanged = { [weak self] metadata, indexesOfNewGroups, indexesOfModifiedGroups in
             guard let `self` = self else { return }
-            callback(metadata)
+            callback(metadata, indexesOfNewGroups, indexesOfModifiedGroups)
         }
         return self
     }

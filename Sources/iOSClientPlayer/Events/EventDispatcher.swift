@@ -109,5 +109,5 @@ public class EventDispatcher<Context: MediaContext, Tech: PlaybackTech> {
     internal(set) public var onWarning: (Tech, Context.Source?, PlayerWarning<Tech, Context>) -> Void = { _,_,_ in }
     
     /// Should be triggered when a *DateRangeMetadataChanged*.
-    internal(set) public var onDateRangeMetadataChanged: (_ metaDataGroup: [AVDateRangeMetadataGroup]) -> Void = { _ in }
+    internal(set) public var onDateRangeMetadataChanged: (_ metaDataGroup: [AVDateRangeMetadataGroup], _ indexesOfNewGroups: IndexSet, _ indexesOfModifiedGroups: IndexSet ) -> Void = { _, _, _  in }
 }

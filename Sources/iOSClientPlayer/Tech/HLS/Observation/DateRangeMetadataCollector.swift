@@ -16,7 +16,7 @@ public protocol DateMetaDataRequester:  AVPlayerItemMetadataCollectorPushDelegat
 
 /// AVDateRangeMetadataGroup Parser
 public protocol DateMetaDataParser {
-    func dateMetaDataDidCollect(dateRangeMetadataGroups: [AVDateRangeMetadataGroup] )
+    func dateMetaDataDidCollect(dateRangeMetadataGroups: [AVDateRangeMetadataGroup], indexesOfNewGroups: IndexSet, indexesOfModifiedGroups: IndexSet )
 }
 
 
@@ -45,7 +45,7 @@ class DateRangeMetadataCollector : NSObject, DateMetaDataRequester {
                                     indexesOfModifiedGroups: IndexSet) {
         
         guard let delegate = self.parserDelegate else { return }
-        delegate.dateMetaDataDidCollect(dateRangeMetadataGroups: metadataGroups)
+        delegate.dateMetaDataDidCollect(dateRangeMetadataGroups: metadataGroups, indexesOfNewGroups: indexesOfNewGroups , indexesOfModifiedGroups: indexesOfModifiedGroups)
         
     }
 }
