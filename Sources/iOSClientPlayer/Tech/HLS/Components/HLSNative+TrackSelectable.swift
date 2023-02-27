@@ -167,6 +167,19 @@ extension HLSNative: TrackSelectable {
     private func select(track: MediaTrack?, inGroup group: AVMediaSelectionGroup?) {
         guard let group = group else { return }
         currentAsset?.playerItem.select(track?.mediaOption, in: group)
+        
+        // Keep the selected subtitle in the userdefaults for downloaded assets
+        // This is required for fast seeking as AVFoundation can loose the subtitle track sometimes.
+        if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
+            if accetCache.isPlayableOffline {
+                // Add the current selected subtitle track to the userdefaults
+                UserDefaults.standard.set(track?.extendedLanguageTag , forKey: "prefferedMediaSelection")
+            } else {
+               // do nothing
+            }
+        }
+        
+       
     }
 
     /// Convenience method for setting PeakBitRate in the currrentPlayerItem
