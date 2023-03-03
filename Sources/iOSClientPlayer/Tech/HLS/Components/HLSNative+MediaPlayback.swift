@@ -114,6 +114,8 @@ extension HLSNative: MediaPlayback {
             mediaSelectionGroup = group
             selectedOption = playerItem.currentMediaSelection.selectedMediaOption(in: group)
             playerItem.select(nil, in: group)
+            
+            
         }
         
         let seekTime = position > 0 ? position : 0
@@ -121,7 +123,7 @@ extension HLSNative: MediaPlayback {
         
         let item = currentAsset?.playerItem
         
-        // Check if there is any previosly assigned chaseTime available
+        // Check if there is any previously assigned chaseTime available
         if CMTimeCompare(cmTime, chaseTime) != 0 {
             chaseTime = cmTime;
             if !isSeekInProgress {
@@ -162,11 +164,20 @@ extension HLSNative: MediaPlayback {
                 return }
             
             if CMTimeCompare(seekTimeInProgress, self.chaseTime) == 0 {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5 ) {
                     if self.avPlayer.currentItem?.status == .readyToPlay {
                         
-                        if let group = self.mediaSelectionGroup {
-                            self.avPlayer.currentItem?.select(self.selectedOption, in: group)
+                        if let group = self.currentAsset?.urlAsset.mediaSelectionGroup(forMediaCharacteristic: AVMediaCharacteristic.legible) {
+                            
+                            // Check for the selectedMediaOption : text value from the userdefaults
+                            if let identifier = UserDefaults.standard.value(forKey: "prefferedMediaSelection") as? String {
+                                let locale = Locale(identifier: identifier)
+                                let options =
+                                    AVMediaSelectionGroup.mediaSelectionOptions(from: group.options, with: locale)
+                                if let option = options.first {
+                                    self.avPlayer.currentItem?.select(option, in: group)
+                                }
+                            }
                         }
                         self.avPlayer.play()
                     } else {
