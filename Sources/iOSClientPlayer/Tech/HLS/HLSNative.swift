@@ -803,7 +803,9 @@ extension HLSNative {
                     let techError = PlayerError<HLSNative<Context>,Context>.tech(error: HLSNativeError.failedToCompletePlayback(error: error))
                     self.eventDispatcher.onError(self, self.currentAsset?.source, techError)
                     if let mediaAsset = self.currentAsset {
-                        mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
+                        if !mediaAsset.prepareTrace().isEmpty {
+                            mediaAsset.prepareTrace().forEach{ mediaAsset.source.analyticsConnector.onTrace(tech: self, source: mediaAsset.source, data: $0) }
+                        }
                         mediaAsset.source.analyticsConnector.onError(tech: self, source: mediaAsset.source, error: techError)
                     }
                     self.stop()

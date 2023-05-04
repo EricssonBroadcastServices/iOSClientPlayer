@@ -54,7 +54,7 @@ Once you have your Swift package set up, adding `iOSClientPlayer` as a dependenc
 
 ```sh
 dependencies: [
-    .package(url: "https://github.com/EricssonBroadcastServices/iOSClientPlayer", from: "3.1.5")
+    .package(url: "https://github.com/EricssonBroadcastServices/iOSClientPlayer", from: "3.1.6")
 ]
 ```
 
@@ -82,7 +82,7 @@ Finaly, make sure you add the `.framework`s to your targets *General -> Embedded
 CocoaPods is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate `iOSClientPlayer` into your Xcode project using CocoaPods, specify it in your Podfile:
 
 ```sh
-pod 'iOSClientPlayer', '~>  3.1.5'
+pod 'iOSClientPlayer', '~>  3.1.6'
 ```
 
 ## Release Notes
