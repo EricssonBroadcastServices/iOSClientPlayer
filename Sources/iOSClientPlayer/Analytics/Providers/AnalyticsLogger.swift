@@ -10,6 +10,8 @@ import Foundation
 
 /// Simple `AnalyticsProvider` that logs any events it receives to the console.
 public struct AnalyticsLogger: AnalyticsProvider {
+
+    
     public init() { }
     public func onCreated<Tech, Source>(tech: Tech, source: Source) where Tech : PlaybackTech, Source : MediaSource {
         print("🏷 AnalyticsLogger",type(of: tech),"🏗 onCreated",source.playSessionId)
@@ -69,5 +71,17 @@ public struct AnalyticsLogger: AnalyticsProvider {
     
     public func onWarning<Tech, Source, Context>(tech: Tech, source: Source?, warning: PlayerWarning<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
         print("🏷 AnalyticsLogger",type(of: tech),"⚠️ onWarning",warning.message,source?.playSessionId ?? "")
+    }
+    
+    public func onAppDidEnterBackground<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
+        print("🏷 AnalyticsLogger",type(of: tech),"⍂ onAppDidEnterBackground",source?.playSessionId ?? "" )
+    }
+    
+    public func onGracePeriodStarted<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
+        print("🏷 AnalyticsLogger",type(of: tech),"⏳ onGracePeriodStarted",source?.playSessionId ?? "" )
+    }
+    
+    public func onGracePeriodEnded<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
+        print("🏷 AnalyticsLogger",type(of: tech),"⌛️ onGracePeriodEnded",source?.playSessionId ?? "" )
     }
 }

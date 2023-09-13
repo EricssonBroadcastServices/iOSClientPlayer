@@ -103,4 +103,28 @@ public protocol EventResponder {
     /// - parameter source: `MediaSource` causing the event
     /// - parameter warning: `Warning` encountered
     func onWarning<Tech, Source, Context>(tech: Tech, source: Source?, warning: PlayerWarning<Tech, Context>) where Tech: PlaybackTech, Source: MediaSource, Context: MediaContext
+    
+    
+    
+    /// Triggered when the app did enter background.
+    /// - Parameters:
+    ///   - tech: Tech` broadcasting the event
+    ///   - source: `MediaSource` causing the event
+    func onAppDidEnterBackground<Tech, Source>(tech: Tech, source: Source?) where Tech: PlaybackTech, Source: MediaSource
+    
+    //// Triggered when the grace period satrted
+    /// - Parameters:
+    ///   - tech: Tech` broadcasting the event
+    ///   - source: `MediaSource` causing the event
+    func onGracePeriodStarted<Tech, Source>(tech: Tech, source: Source?) where Tech: PlaybackTech, Source: MediaSource
+    
+    /// Triggered when the grace period ended
+    /// - Parameters:
+    ///   - tech: Tech` broadcasting the event
+    ///   - source: `MediaSource` causing the event
+    func onGracePeriodEnded<Tech, Source>(tech: Tech, source: Source?) where Tech: PlaybackTech, Source: MediaSource
+    
+    
+    
+
 }

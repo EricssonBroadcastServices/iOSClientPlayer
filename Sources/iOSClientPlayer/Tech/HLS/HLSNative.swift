@@ -160,7 +160,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             self.source = source
             self.fairplayRequester = configuration.drm
             self.eventDispatcher = eventDispatcher
-            
+
             let asset = AVURLAsset(url: source.url, options: nil)
             
             /* if !asset.resourceLoader.preloadsEligibleContentKeys {
@@ -294,22 +294,51 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         handleExternalPlayback()
         
         backgroundWatcher.handleWillTerminate { [weak self] in self?.stop() }
-        backgroundWatcher.handleWillEnterForeground { }
+        backgroundWatcher.handleWillEnterForeground { [weak self] in
+            self?.endGracePeriod()
+        }
         backgroundWatcher.handleDidEnterBackground { [weak self] in
             /// `Dispatcher` (`Exposure` module) will force flush event queue on `.UIApplicationDidEnterBackground`
             guard let `self` = self else { return }
+            
+            eventDispatcher.onAppDidEnterBackground(self, self.currentSource)
+            self.currentAsset?.source.analyticsConnector.onAppDidEnterBackground(tech: self, source: self.currentSource)
+            
+            /// Note :
+            /// When App did went to background, user may have enabled the picture in picture mode. In this case player will keep playing & we should not enable the grace period.
+            ///
+            /// Wait until a second to check the avplayer status ( paying / paused ) . If PIP in not enabled , player will change it's status to `paused`.
+            ///
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1 ) {
+                if self.avPlayer.timeControlStatus == .paused {
+                    self.startGracePeriod()
+                } else {
+                    // App went to background & PIP is enabled. Do nothing.
+                }
+            }
+            
             if !self.avPlayer.isExternalPlaybackActive {
-                // self.pause()  ( when player is on picture on picture mode , it should keep playing )
             }
         }
         backgroundWatcher.handleWillResignActive { }
         backgroundWatcher.handleAudioSessionInteruption { [weak self] event in
             switch event {
             case .began:
+
+                // Audio interuption starts
                 self?.hasAudioSessionBeenInterupted = true
+                
+                // Start grace period
+                self?.startGracePeriod()
                 return
             case .ended(shouldResume: let shouldResume):
+                
+                // Audio interuption ends
                 self?.hasAudioSessionBeenInterupted = false
+                
+                // Should end grace period
+                self?.endGracePeriod()
+                
                 if shouldResume { self?.play() }
             }
         }
@@ -333,7 +362,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public var continuouslyDispatchErrorLogEvents: Bool = false
     
     /// Internal log level
-    internal var logLevel: LogLevel = .none
+    internal var logLevel: LogLevel = .debug
     
     /// LogLevel option
     internal enum LogLevel {
@@ -343,6 +372,10 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         /// HLSNative will continuously print all error and access log events encountered to the console, including recoverable errors not resulting in playback failure.
         case debug
     }
+    
+    /// Grace period start / end times
+    internal var gracePeriodStartTime = Date()
+    internal var gracePeriodEndTime = Date()
 }
 
 // MARK: - Load Source
@@ -1357,6 +1390,53 @@ extension HLSNative {
 }
 
 
+// MARK: = Grace Period handler
+extension HLSNative {
+    
+    /// Start the grace period for audio interuptions / app background etc
+    internal func startGracePeriod() {
+        self.gracePeriodStartTime = Date()
+        self.currentSource?.analyticsConnector.onGracePeriodStarted(tech: self, source: self.currentSource)
+    }
+    
+    
+    /// End the grace period.
+    internal func endGracePeriod() {
+        
+        // Note:
+        // When the app transitions from the background to an active state, this code will be executed. However, if the Picture-in-Picture (PIP) mode was active while the app was in the background, it will result in 'gracePeriodStartTime' being equal to 'gracePeriodEndTime'
+        // Means we should only handle the gracePeriod time when 'gracePeriodStartTime' does not equal 'gracePeriodEndTime,' which only occurs when audio disruption occurs or when PIP was not active.
+        //
+        if self.gracePeriodStartTime != self.gracePeriodEndTime {
+            // Add current timestamp as GracePeriod EndTime
+            self.gracePeriodEndTime = Date()
+            // Handle the grace period
+            self.gracePeriodHandler()
+        }
+    }
+    
+    /// Handle the grace period
+    ///
+    /// If the time the app was in the background exceeded 60 minutes, inform the analytics connector that the grace period has ended.
+    /// If the time the app was in the background was less than 60 minutes, reset the grace period start/end times.
+    ///
+    internal func gracePeriodHandler() {
+        
+        let diffSeconds = gracePeriodEndTime.timeIntervalSinceReferenceDate - gracePeriodStartTime.timeIntervalSinceReferenceDate
+        
+        // get the minutes passed from when the grace period was started
+        let minutesPassedInBackground = diffSeconds/60
+
+        // If the grace period has passsed or equal 60 minutes, pass `onGracePeriodEnded` event via analyticsConnector
+        if minutesPassedInBackground >= 60 {
+            self.currentSource?.analyticsConnector.onGracePeriodEnded(tech: self, source: self.currentSource)
+        }
+        
+        // Invalidate graceperiod time values
+        self.gracePeriodEndTime = Date()
+        self.gracePeriodStartTime = Date()
+    }
+}
 
 extension HLSNative {
     public func addPeriodicTimeObserverToPlayer(callback: @escaping (CMTime) -> Void) {

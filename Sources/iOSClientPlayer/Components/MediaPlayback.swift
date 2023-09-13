@@ -71,6 +71,8 @@ public protocol MediaPlayback: class {
     
     /// avplayer playerItem
     var playerItem: AVPlayerItem? { get }
+    
+    var isOfflinePlayable: Bool { get }
 }
 
 extension Player {
@@ -187,5 +189,11 @@ extension Player {
     /// Should returns the AVPlayerItem associated with the avplayer
     public var playerItem: AVPlayerItem?{
         return tech.playerItem
+    }
+    
+    public var isOfflinePlayable: Bool {
+        get {
+            return tech.isOfflinePlayable
+        }
     }
 }

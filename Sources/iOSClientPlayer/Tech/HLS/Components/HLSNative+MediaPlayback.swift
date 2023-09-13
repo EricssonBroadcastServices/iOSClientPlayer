@@ -12,7 +12,6 @@ import AVFoundation
 /// `HLSNative` adoption of `MediaPlayback`
 extension HLSNative: MediaPlayback {
     
-    
     /// Starts or resumes playback.
     public func play() {
         switch playbackState {
@@ -309,8 +308,8 @@ extension HLSNative: MediaPlayback {
             
             // Offline seek HACK :
             if #available(iOS 10.0, tvOS 10.0, *) {
-                if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
-                    if accetCache.isPlayableOffline {
+                if let urlAsset = currentAsset?.urlAsset, let assetCache = urlAsset.assetCache {
+                    if assetCache.isPlayableOffline {
                         offlineSeek(position)
                     } else {
                         seekToTimeWhenExternalPlayback(cmTime, timeInterval, callback: callback)
@@ -408,6 +407,16 @@ extension HLSNative: MediaPlayback {
     public var playerItem: AVPlayerItem? {
         get {
             return avPlayer.currentItem
+        }
+    }
+    
+    public var isOfflinePlayable: Bool {
+        get {
+            if let urlAsset = currentAsset?.urlAsset, let assetCache = urlAsset.assetCache {
+                return assetCache.isPlayableOffline
+            } else {
+                return false
+            }
         }
     }
 }
