@@ -29,6 +29,9 @@ class TestAnalyticsProvider: AnalyticsProvider {
     var scrubbedTo: Int64? = nil
     var durationChanged = false
     var warningReceived = false
+    var appDidEnterBackground = false
+    var gracePeriodStarted = false
+    var gracePeriodEnded = false
     
     public init() { }
     
@@ -90,6 +93,18 @@ class TestAnalyticsProvider: AnalyticsProvider {
     
     func onWarning<Tech, Source, Context>(tech: Tech, source: Source?, warning: PlayerWarning<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
         warningReceived = true
+    }
+    
+    func onAppDidEnterBackground<Tech, Source>(tech: Tech, source: Source?) where Tech : iOSClientPlayer.PlaybackTech, Source : iOSClientPlayer.MediaSource {
+        appDidEnterBackground = true
+    }
+    
+    func onGracePeriodStarted<Tech, Source>(tech: Tech, source: Source?) where Tech : iOSClientPlayer.PlaybackTech, Source : iOSClientPlayer.MediaSource {
+        gracePeriodStarted = true
+    }
+    
+    func onGracePeriodEnded<Tech, Source>(tech: Tech, source: Source?) where Tech : iOSClientPlayer.PlaybackTech, Source : iOSClientPlayer.MediaSource {
+        gracePeriodEnded = true
     }
 }
 
