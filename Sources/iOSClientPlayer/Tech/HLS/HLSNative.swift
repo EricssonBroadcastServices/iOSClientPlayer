@@ -294,6 +294,11 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         handleExternalPlayback()
         
         backgroundWatcher.handleWillTerminate { [weak self] in self?.stop() }
+        
+        backgroundWatcher.handleDidRefreshedInBackground { [weak self] in
+            self?.endGracePeriod()
+        }
+        
         backgroundWatcher.handleWillEnterForeground { [weak self] in
             self?.endGracePeriod()
         }
@@ -362,7 +367,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public var continuouslyDispatchErrorLogEvents: Bool = false
     
     /// Internal log level
-    internal var logLevel: LogLevel = .debug
+    internal var logLevel: LogLevel = .none
     
     /// LogLevel option
     internal enum LogLevel {
@@ -1410,6 +1415,7 @@ extension HLSNative {
         if self.gracePeriodStartTime != self.gracePeriodEndTime {
             // Add current timestamp as GracePeriod EndTime
             self.gracePeriodEndTime = Date()
+            
             // Handle the grace period
             self.gracePeriodHandler()
         }
@@ -1481,6 +1487,9 @@ internal class BackgroundWatcher {
     /// Closure to fire when the app is about to loose focus
     fileprivate var onWillResignActive: () -> Void = { }
     
+    /// Closure to fire when the app is about to loose focus
+    fileprivate var onDidBackgroundAppRefresh: () -> Void = { }
+    
     /// Subscribes to *Audio Session Interruption* `Notification`s.
     internal func handleAudioSessionInteruption(callback: @escaping (AudioSessionInterruption) -> Void) {
         onAudioSessionInterruption = callback
@@ -1513,6 +1522,11 @@ extension BackgroundWatcher {
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appDidEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
+    internal func handleDidRefreshedInBackground(callback: @escaping () -> Void) {
+        onDidBackgroundAppRefresh = callback
+        NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appDidRefreshedInBackground), name: NSNotification.Name(rawValue:"didRefreshedInBackgroundNotification"), object: nil)
+    }
+    
     internal func handleWillResignActive(callback: @escaping () -> Void) {
         onWillResignActive = callback
         NotificationCenter.default.addObserver(self, selector: #selector(BackgroundWatcher.appWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
@@ -1543,5 +1557,9 @@ extension BackgroundWatcher {
     /// Any attached `AnalyticsProvider` should hopefully be given enough time to finalize.
     @objc internal func appWillTerminate() {
         onWillTerminate()
+    }
+    
+    @objc internal func appDidRefreshedInBackground() {
+        onDidBackgroundAppRefresh()
     }
 }
