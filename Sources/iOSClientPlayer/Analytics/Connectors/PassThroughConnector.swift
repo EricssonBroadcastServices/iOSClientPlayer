@@ -86,6 +86,10 @@ public class PassThroughConnector: AnalyticsConnector {
         providers.forEach{ $0.onAppDidEnterBackground(tech: tech, source: source) }
     }
     
+    public func onAppDidEnterForeground<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
+        providers.forEach{ $0.onAppDidEnterForeground(tech: tech, source: source) }
+    }
+    
     public func onGracePeriodStarted<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
         providers.forEach{ $0.onGracePeriodStarted(tech: tech, source: source) }
     }

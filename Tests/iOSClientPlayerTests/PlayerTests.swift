@@ -30,6 +30,7 @@ class TestAnalyticsProvider: AnalyticsProvider {
     var durationChanged = false
     var warningReceived = false
     var appDidEnterBackground = false
+    var appDidEnterForeground = false
     var gracePeriodStarted = false
     var gracePeriodEnded = false
     
@@ -97,6 +98,10 @@ class TestAnalyticsProvider: AnalyticsProvider {
     
     func onAppDidEnterBackground<Tech, Source>(tech: Tech, source: Source?) where Tech : iOSClientPlayer.PlaybackTech, Source : iOSClientPlayer.MediaSource {
         appDidEnterBackground = true
+    }
+    
+    func onAppDidEnterForeground<Tech, Source>(tech: Tech, source: Source?) where Tech : iOSClientPlayer.PlaybackTech, Source : iOSClientPlayer.MediaSource {
+        appDidEnterForeground = true
     }
     
     func onGracePeriodStarted<Tech, Source>(tech: Tech, source: Source?) where Tech : iOSClientPlayer.PlaybackTech, Source : iOSClientPlayer.MediaSource {

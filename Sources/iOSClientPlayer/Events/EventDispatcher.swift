@@ -129,4 +129,11 @@ public class EventDispatcher<Context: MediaContext, Tech: PlaybackTech> {
     /// - parameter tech: `Tech` broadcasting the event
     /// - parameter source: `MediaSource` causing the event
     internal(set) public var onAppDidEnterBackground: (Tech, Context.Source?) -> Void = { _,_ in }
+    
+    
+    /// Should be triggered when the *AppDidEnterForeground*.
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    internal(set) public var onAppDidEnterForeground: (Tech, Context.Source?) -> Void = { _,_ in }
 }

@@ -77,6 +77,10 @@ public struct AnalyticsLogger: AnalyticsProvider {
         print("🏷 AnalyticsLogger",type(of: tech),"⍂ onAppDidEnterBackground",source?.playSessionId ?? "" )
     }
     
+    public func onAppDidEnterForeground<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
+        print("🏷 AnalyticsLogger",type(of: tech),"⍂ onAppDidEnterForeground",source?.playSessionId ?? "" )
+    }
+    
     public func onGracePeriodStarted<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
         print("🏷 AnalyticsLogger",type(of: tech),"⏳ onGracePeriodStarted",source?.playSessionId ?? "" )
     }

@@ -112,6 +112,13 @@ public protocol EventResponder {
     ///   - source: `MediaSource` causing the event
     func onAppDidEnterBackground<Tech, Source>(tech: Tech, source: Source?) where Tech: PlaybackTech, Source: MediaSource
     
+    
+    /// Triggered when the app did enter foreground.
+    /// - Parameters:
+    ///   - tech: Tech` broadcasting the event
+    ///   - source: `MediaSource` causing the event
+    func onAppDidEnterForeground<Tech, Source>(tech: Tech, source: Source?) where Tech: PlaybackTech, Source: MediaSource
+    
     //// Triggered when the grace period satrted
     /// - Parameters:
     ///   - tech: Tech` broadcasting the event
