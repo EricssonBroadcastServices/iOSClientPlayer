@@ -12,7 +12,6 @@ import AVFoundation
 /// `HLSNative` adoption of `MediaPlayback`
 extension HLSNative: MediaPlayback {
     
-    
     /// Starts or resumes playback.
     public func play() {
         switch playbackState {
@@ -128,7 +127,7 @@ extension HLSNative: MediaPlayback {
             chaseTime = cmTime;
             if !isSeekInProgress {
                 if let playerStatus = item?.status {
-                    trySeekToChaseTime(playerStatus)
+                    trySeekToChaseTime(playerStatus, seekTime: seekTime)
                 }
                 
             }
@@ -139,21 +138,21 @@ extension HLSNative: MediaPlayback {
 
     /// Try to do the seek
     /// - Parameter playerCurrentItemStatus: AVPlayerItem.Status
-    func trySeekToChaseTime( _ playerCurrentItemStatus: AVPlayerItem.Status) {
+    func trySeekToChaseTime( _ playerCurrentItemStatus: AVPlayerItem.Status, seekTime: Int64? = nil ) {
         if playerCurrentItemStatus == .unknown {
             // wait until item becomes ready (KVO player.currentItem.status)
             print("! wait until item becomes ready! ")
             print("\n")
         }
         else if playerCurrentItemStatus == .readyToPlay {
-            actuallySeekToTime() { _ in }
+            actuallySeekToTime(seekTime: seekTime) { _ in }
         }
     }
     
     
     /// Seek to Time in the player & assigned the text track back
     /// - Parameter callback: callback
-    private func actuallySeekToTime(callback: @escaping (Bool) -> Void = { _ in }) {
+    private func actuallySeekToTime(seekTime:Int64? = nil , callback: @escaping (Bool) -> Void = { _ in }) {
         
         self.isSeekInProgress = true
         let seekTimeInProgress = self.chaseTime
@@ -192,6 +191,11 @@ extension HLSNative: MediaPlayback {
                 }
             }
             
+            if success {
+                if let source = `self`.currentAsset?.source {
+                    `self`.eventDispatcher.onPlaybackScrubbed(`self`, source, seekTime ?? Int64(self.chaseTime.seconds))
+                    source.analyticsConnector.onScrubbedTo(tech: `self`, source: source, offset:seekTime ?? Int64(self.chaseTime.seconds)) }
+            }
             callback(success)
         }
         
@@ -309,8 +313,8 @@ extension HLSNative: MediaPlayback {
             
             // Offline seek HACK :
             if #available(iOS 10.0, tvOS 10.0, *) {
-                if let urlAsset = currentAsset?.urlAsset, let accetCache = urlAsset.assetCache {
-                    if accetCache.isPlayableOffline {
+                if let urlAsset = currentAsset?.urlAsset, let assetCache = urlAsset.assetCache {
+                    if assetCache.isPlayableOffline {
                         offlineSeek(position)
                     } else {
                         seekToTimeWhenExternalPlayback(cmTime, timeInterval, callback: callback)
@@ -408,6 +412,16 @@ extension HLSNative: MediaPlayback {
     public var playerItem: AVPlayerItem? {
         get {
             return avPlayer.currentItem
+        }
+    }
+    
+    public var isOfflinePlayable: Bool {
+        get {
+            if let urlAsset = currentAsset?.urlAsset, let assetCache = urlAsset.assetCache {
+                return assetCache.isPlayableOffline
+            } else {
+                return false
+            }
         }
     }
 }

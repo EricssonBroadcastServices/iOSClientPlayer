@@ -10,6 +10,8 @@ import Foundation
 
 /// Simple `AnalyticsConnector` that forwards all events to the specified `AnalyticsProvider`s
 public class PassThroughConnector: AnalyticsConnector {
+
+    
     public init(providers: [AnalyticsProvider] = []) {
         self.providers = providers
     }
@@ -78,5 +80,21 @@ public class PassThroughConnector: AnalyticsConnector {
     
     public func onWarning<Tech, Source, Context>(tech: Tech, source: Source?, warning: PlayerWarning<Tech, Context>) where Tech : PlaybackTech, Source : MediaSource, Context : MediaContext {
         providers.forEach{ $0.onWarning(tech: tech, source: source, warning: warning) }
+    }
+    
+    public func onAppDidEnterBackground<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
+        providers.forEach{ $0.onAppDidEnterBackground(tech: tech, source: source) }
+    }
+    
+    public func onAppDidEnterForeground<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
+        providers.forEach{ $0.onAppDidEnterForeground(tech: tech, source: source) }
+    }
+    
+    public func onGracePeriodStarted<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
+        providers.forEach{ $0.onGracePeriodStarted(tech: tech, source: source) }
+    }
+    
+    public func onGracePeriodEnded<Tech, Source>(tech: Tech, source: Source?) where Tech : PlaybackTech, Source : MediaSource {
+        providers.forEach{ $0.onGracePeriodEnded(tech: tech, source: source) }
     }
 }

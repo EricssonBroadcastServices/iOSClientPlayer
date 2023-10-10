@@ -110,4 +110,30 @@ public class EventDispatcher<Context: MediaContext, Tech: PlaybackTech> {
     
     /// Should be triggered when a *DateRangeMetadataChanged*.
     internal(set) public var onDateRangeMetadataChanged: (_ metaDataGroup: [AVDateRangeMetadataGroup], _ indexesOfNewGroups: IndexSet, _ indexesOfModifiedGroups: IndexSet ) -> Void = { _, _, _  in }
+    
+    /// Should be triggered when the *GracePeriodStarted*.
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    internal(set) public var onGracePeriodStarted: (Tech, Context.Source?) -> Void = { _,_ in }
+
+    /// Should be triggered when the *GracePeriodEnded*.
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    internal(set) public var onGracePeriodEnded: (Tech, Context.Source?) -> Void = { _,_ in }
+    
+    
+    /// Should be triggered when the *AppDidEnterBackground*.
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    internal(set) public var onAppDidEnterBackground: (Tech, Context.Source?) -> Void = { _,_ in }
+    
+    
+    /// Should be triggered when the *AppDidEnterForeground*.
+    ///
+    /// - parameter tech: `Tech` broadcasting the event
+    /// - parameter source: `MediaSource` causing the event
+    internal(set) public var onAppDidEnterForeground: (Tech, Context.Source?) -> Void = { _,_ in }
 }
