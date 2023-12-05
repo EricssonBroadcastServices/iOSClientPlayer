@@ -301,7 +301,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
         
         backgroundWatcher.handleWillEnterForeground { [weak self] in
             guard let `self` = self else { return }
-            eventDispatcher.onAppDidEnterForeground(self, self.currentSource)
+            self.eventDispatcher.onAppDidEnterForeground(self, self.currentSource)
             self.currentAsset?.source.analyticsConnector.onAppDidEnterForeground(tech: self, source: self.currentSource)
             self.endGracePeriod()
         }
@@ -309,7 +309,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
             /// `Dispatcher` (`Exposure` module) will force flush event queue on `.UIApplicationDidEnterBackground`
             guard let `self` = self else { return }
             
-            eventDispatcher.onAppDidEnterBackground(self, self.currentSource)
+            self.eventDispatcher.onAppDidEnterBackground(self, self.currentSource)
             self.currentAsset?.source.analyticsConnector.onAppDidEnterBackground(tech: self, source: self.currentSource)
             
             /// Note :
