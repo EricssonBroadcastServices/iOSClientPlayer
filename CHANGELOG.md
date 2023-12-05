@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `3.2.2` Release - [3.2.2](#322)
 * `3.2.1` Release - [3.2.1](#321)
 * `3.2.0` Release - [3.2.0](#320)
 * `3.1.60` Release - [3.1.600](#31600)
@@ -46,6 +47,11 @@
 * `0.72.x` Releases - [0.72.0](#07200)
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
+
+## 3.2.2
+#### Changes
+* Fix the compile issue on older swift versions on Xcode 14.2 or older 
+
 
 ## 3.2.1
 #### Changes
