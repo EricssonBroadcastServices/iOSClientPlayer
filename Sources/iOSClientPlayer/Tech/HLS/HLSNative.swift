@@ -129,7 +129,7 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     public enum LanguageFallbackType {
         /// Default fallback to stream language
         case streamBased
-        /// Fallback to device language. then to stream language
+        /// Fallback to device language, then to stream language
         case localeThenStream
     }
     
