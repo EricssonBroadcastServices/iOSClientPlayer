@@ -28,8 +28,10 @@ internal extension AVMediaSelectionGroup {
     }
     
     /// Convenience method selecting a track in a group
-    func track(forLanguage language: String) -> AVMediaSelectionOption? {
-        return options.filter{ $0.extendedLanguageTag == language }.first
+    func track(forLanguage language: String, andType mediaType: AVMediaType?) -> AVMediaSelectionOption? {
+        let tracksForLanguage = options.filter { $0.extendedLanguageTag == language }
+        let trackForMediaType = tracksForLanguage.first { $0.mediaType == mediaType }
+        return trackForMediaType ?? tracksForLanguage.first
     }
     
     /// Convenience method selecting a track using `mediaTrackId`

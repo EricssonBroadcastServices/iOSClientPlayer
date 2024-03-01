@@ -119,6 +119,20 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Should set the preferred text language tag as defined by RFC 4646 standards
     public var preferredTextLanguage: String?
     
+    /// Sets the preferred type of text, like subtitle or closed-caption
+    public var preferredTextType: AVMediaType?
+    
+    /// Sets the preferred fallback type for audio and subtitles
+    public var languageFallbackType: LanguageFallbackType = .streamBased
+    
+    /// Fallback type for audio and subtitles
+    public enum LanguageFallbackType {
+        /// Default fallback to stream language
+        case streamBased
+        /// Fallback to device language, then to stream language
+        case localeThenStream
+    }
+    
     // MARK: MediaAsset
     /// `MediaAsset` contains and handles all information used for loading and preparing an asset.
     ///
@@ -598,18 +612,65 @@ extension HLSNative {
 
 // MARK: - Metadata collection
 extension HLSNative {
-    fileprivate func applyLanguagePreferences(on mediaAsset: MediaAsset<Context.Source>) {
-        // 1. Preferred
-        // 2. Default (stream based), if any
-        handle(preference: preferredTextLanguage, in: mediaAsset.playerItem.textGroup, for: mediaAsset)
-        handle(preference: preferredAudioLanguage, in: mediaAsset.playerItem.audioGroup, for: mediaAsset)
+    private enum MediaSelectionType {
+        case audio
+        case text
     }
     
-    private func handle(preference: String?,  in group: MediaGroup?, for mediaAsset: MediaAsset<Context.Source>) {
-        guard let group = group else { return }
-        if let preferedLanguage = preference, let preferedOption = group.mediaSelectionOption(forLanguage: preferedLanguage) {
-            mediaAsset.playerItem.select(preferedOption, in: group.mediaGroup)
+    fileprivate func applyLanguagePreferences(on mediaAsset: MediaAsset<Context.Source>) {
+        handle(preference: preferredAudioLanguage, in: mediaAsset.playerItem.audioGroup, for: mediaAsset, andType: .audio)
+        handle(preference: preferredTextLanguage, in: mediaAsset.playerItem.textGroup, for: mediaAsset, andType: .text)
+    }
+    
+    private func handle(
+        preference: String?,
+        in group: MediaGroup?,
+        for mediaAsset: MediaAsset<Context.Source>,
+        andType type: MediaSelectionType
+    ) {
+        guard let group else {
+            return
         }
+        
+        switch languageFallbackType {
+        case .streamBased:
+            if let preferedLanguage = preference, let preferedOption = group.mediaSelectionOption(forLanguage: preferedLanguage) {
+                mediaAsset.playerItem.select(preferedOption, in: group.mediaGroup)
+            }
+        case .localeThenStream:
+            switch type {
+            case .audio:
+                let userPreferredOption = group.mediaSelectionOption(forLanguage: preference ?? "")
+                let deviceLanguageOption = group.mediaSelectionOption(forLanguage: deviceLanguage ?? "")
+                
+                if let option = userPreferredOption ?? deviceLanguageOption {
+                    mediaAsset.playerItem.select(option, in: group.mediaGroup)
+                }
+            case .text:
+                let userPreferredOption = group.mediaSelectionOption(
+                    forLanguage: preference ?? "",
+                    andType: preferredTextType
+                )
+                let selectedAudioLanguage = mediaAsset.playerItem.audioGroup?.selectedTrack?.extendedLanguageTag
+                
+                if let userPreferredOption {
+                    mediaAsset.playerItem.select(userPreferredOption, in: group.mediaGroup)
+                } else if selectedAudioLanguage != deviceLanguage {
+                    let deviceLanguageOption = group.mediaSelectionOption(
+                        forLanguage: deviceLanguage ?? "",
+                        andType: preferredTextType
+                    )
+                    mediaAsset.playerItem.select(deviceLanguageOption, in: group.mediaGroup)
+                }
+            }
+        }
+    }
+    
+    private var deviceLanguage: String? {
+        guard let preferredIdentifier = Locale.preferredLanguages.first else {
+            return Locale.current.languageCode
+        }
+        return Locale(identifier: preferredIdentifier).languageCode
     }
 }
 
