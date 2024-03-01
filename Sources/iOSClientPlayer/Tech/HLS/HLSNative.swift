@@ -612,12 +612,22 @@ extension HLSNative {
 
 // MARK: - Metadata collection
 extension HLSNative {
-    fileprivate func applyLanguagePreferences(on mediaAsset: MediaAsset<Context.Source>) {
-        handle(preference: preferredAudioLanguage, in: mediaAsset.playerItem.audioGroup, for: mediaAsset, isAudio: true)
-        handle(preference: preferredTextLanguage, in: mediaAsset.playerItem.textGroup, for: mediaAsset, isAudio: false)
+    private enum MediaSelectionType {
+        case audio
+        case text
     }
     
-    private func handle(preference: String?, in group: MediaGroup?, for mediaAsset: MediaAsset<Context.Source>, isAudio: Bool) {
+    fileprivate func applyLanguagePreferences(on mediaAsset: MediaAsset<Context.Source>) {
+        handle(preference: preferredAudioLanguage, in: mediaAsset.playerItem.audioGroup, for: mediaAsset, andType: .audio)
+        handle(preference: preferredTextLanguage, in: mediaAsset.playerItem.textGroup, for: mediaAsset, andType: .text)
+    }
+    
+    private func handle(
+        preference: String?,
+        in group: MediaGroup?,
+        for mediaAsset: MediaAsset<Context.Source>,
+        andType type: MediaSelectionType
+    ) {
         guard let group else {
             return
         }
@@ -628,28 +638,28 @@ extension HLSNative {
                 mediaAsset.playerItem.select(preferedOption, in: group.mediaGroup)
             }
         case .localeThenStream:
-            if isAudio {
+            switch type {
+            case .audio:
                 let userPreferredOption = group.mediaSelectionOption(forLanguage: preference ?? "")
                 let deviceLanguageOption = group.mediaSelectionOption(forLanguage: deviceLanguage ?? "")
                 
                 if let option = userPreferredOption ?? deviceLanguageOption {
                     mediaAsset.playerItem.select(option, in: group.mediaGroup)
                 }
-            } else {
+            case .text:
                 let userPreferredOption = group.mediaSelectionOption(
                     forLanguage: preference ?? "",
                     andType: preferredTextType
                 )
-                let deviceLanguageOption = group.mediaSelectionOption(
-                    forLanguage: deviceLanguage ?? "",
-                    andType: preferredTextType
-                )
-                
                 let selectedAudioLanguage = mediaAsset.playerItem.audioGroup?.selectedTrack?.extendedLanguageTag
                 
                 if let userPreferredOption {
                     mediaAsset.playerItem.select(userPreferredOption, in: group.mediaGroup)
                 } else if selectedAudioLanguage != deviceLanguage {
+                    let deviceLanguageOption = group.mediaSelectionOption(
+                        forLanguage: deviceLanguage ?? "",
+                        andType: preferredTextType
+                    )
                     mediaAsset.playerItem.select(deviceLanguageOption, in: group.mediaGroup)
                 }
             }
