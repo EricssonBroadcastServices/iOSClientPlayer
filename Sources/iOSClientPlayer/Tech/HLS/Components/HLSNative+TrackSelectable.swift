@@ -126,6 +126,7 @@ extension HLSNative: TrackSelectable {
     public func selectText(track: MediaTrack?) {
         select(track: track, inGroup: textGroup?.mediaGroup)
         UserDefaults.standard.set(track?.extendedLanguageTag, forKey: "lastSelectedTextTrackLanguageTag")
+        UserDefaults.standard.set(track?.mediaOption.mediaType.rawValue, forKey: "lastSelectedTextTrackMediaType")
     }
     
     /// Selects the specified text language if available or, if `allowsEmptyTextSelection` == true, select no text track
