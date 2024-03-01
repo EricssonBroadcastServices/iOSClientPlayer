@@ -119,6 +119,9 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Should set the preferred text language tag as defined by RFC 4646 standards
     public var preferredTextLanguage: String?
     
+    /// Sets the preferred type of text, like subtitle or closed-caption
+    public var preferredTextType: AVMediaType?
+    
     /// Sets the preferred fallback type for audio and subtitles
     public var languageFallbackType: LanguageFallbackType = .streamBased
     
@@ -625,14 +628,23 @@ extension HLSNative {
                 mediaAsset.playerItem.select(preferedOption, in: group.mediaGroup)
             }
         case .localeThenStream:
-            let userPreferredOption = group.mediaSelectionOption(forLanguage: preference ?? "")
-            let deviceLanguageOption = group.mediaSelectionOption(forLanguage: deviceLanguage ?? "")
-            
             if isAudio {
+                let userPreferredOption = group.mediaSelectionOption(forLanguage: preference ?? "")
+                let deviceLanguageOption = group.mediaSelectionOption(forLanguage: deviceLanguage ?? "")
+                
                 if let option = userPreferredOption ?? deviceLanguageOption {
                     mediaAsset.playerItem.select(option, in: group.mediaGroup)
                 }
             } else {
+                let userPreferredOption = group.mediaSelectionOption(
+                    forLanguage: preference ?? "",
+                    andType: preferredTextType
+                )
+                let deviceLanguageOption = group.mediaSelectionOption(
+                    forLanguage: deviceLanguage ?? "",
+                    andType: preferredTextType
+                )
+                
                 let selectedAudioLanguage = mediaAsset.playerItem.audioGroup?.selectedTrack?.extendedLanguageTag
                 
                 if let userPreferredOption {
