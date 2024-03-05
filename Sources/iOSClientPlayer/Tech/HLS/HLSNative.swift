@@ -119,6 +119,12 @@ public final class HLSNative<Context: MediaContext>: PlaybackTech {
     /// Should set the preferred text language tag as defined by RFC 4646 standards
     public var preferredTextLanguage: String?
     
+    /// Indicates whether audio description is preferred
+    public var isAudioDescriptionPreferred: Bool?
+    
+    /// Indicates whether dialog transcription is preferred
+    public var isDialogTranscribePreferred: Bool?
+    
     /// Sets the preferred type of text, like subtitle or closed-caption
     public var preferredTextType: AVMediaType?
     
@@ -640,8 +646,14 @@ extension HLSNative {
         case .localeThenStream:
             switch type {
             case .audio:
-                let userPreferredOption = group.mediaSelectionOption(forLanguage: preference ?? "")
-                let deviceLanguageOption = group.mediaSelectionOption(forLanguage: deviceLanguage ?? "")
+                let userPreferredOption = group.mediaSelectionOption(
+                    forLanguage: preference ?? "",
+                    shouldDescribeVideo: isAudioDescriptionPreferred
+                )
+                let deviceLanguageOption = group.mediaSelectionOption(
+                    forLanguage: deviceLanguage ?? "",
+                    shouldDescribeVideo: isAudioDescriptionPreferred
+                )
                 
                 if let option = userPreferredOption ?? deviceLanguageOption {
                     mediaAsset.playerItem.select(option, in: group.mediaGroup)
@@ -649,7 +661,8 @@ extension HLSNative {
             case .text:
                 let userPreferredOption = group.mediaSelectionOption(
                     forLanguage: preference ?? "",
-                    andType: preferredTextType
+                    andType: preferredTextType,
+                    shouldTranscribeDialog: isDialogTranscribePreferred
                 )
                 let selectedAudioLanguage = mediaAsset.playerItem.audioGroup?.selectedTrack?.extendedLanguageTag
                 
@@ -658,7 +671,8 @@ extension HLSNative {
                 } else if selectedAudioLanguage != deviceLanguage {
                     let deviceLanguageOption = group.mediaSelectionOption(
                         forLanguage: deviceLanguage ?? "",
-                        andType: preferredTextType
+                        andType: preferredTextType,
+                        shouldTranscribeDialog: isDialogTranscribePreferred
                     )
                     mediaAsset.playerItem.select(deviceLanguageOption, in: group.mediaGroup)
                 }

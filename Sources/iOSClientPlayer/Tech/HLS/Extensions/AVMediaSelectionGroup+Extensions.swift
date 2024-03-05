@@ -28,10 +28,22 @@ internal extension AVMediaSelectionGroup {
     }
     
     /// Convenience method selecting a track in a group
-    func track(forLanguage language: String, andType mediaType: AVMediaType?) -> AVMediaSelectionOption? {
-        let tracksForLanguage = options.filter { $0.extendedLanguageTag == language }
-        let trackForMediaType = tracksForLanguage.first { $0.mediaType == mediaType }
-        return trackForMediaType ?? tracksForLanguage.first
+    func track(
+        forLanguage language: String,
+        andType mediaType: AVMediaType?,
+        shouldDescribeVideo: Bool?,
+        shouldTranscribeDialog: Bool?
+    ) -> AVMediaSelectionOption? {
+        let filteredTracks = options.filter { $0.extendedLanguageTag == language }
+        let bestTrack = filteredTracks.first { track in
+            let isMediaTypeMatched = mediaType.map { $0 == track.mediaType } ?? true
+            let isTrackDescribingVideo = track.hasMediaCharacteristic(.describesVideoForAccessibility)
+            let isDescribeVideoMatched = shouldDescribeVideo.map { isTrackDescribingVideo == $0 } ?? true
+            let isTrackTranscribingDialog = track.hasMediaCharacteristic(.transcribesSpokenDialogForAccessibility)
+            let isTranscribeDialogMatched = shouldTranscribeDialog.map { isTrackTranscribingDialog == $0 } ?? true
+            return isMediaTypeMatched && isDescribeVideoMatched && isTranscribeDialogMatched
+        }
+        return bestTrack ?? filteredTracks.first
     }
     
     /// Convenience method selecting a track using `mediaTrackId`
