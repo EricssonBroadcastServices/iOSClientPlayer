@@ -34,6 +34,11 @@ public struct MediaTrack: Track, Equatable {
         return mediaOption.value(forKey: "title") as? String
     }
     
+    /// Boolean value telling if subtitles are forced one
+    public var isForcedSubtitle: Bool {
+        mediaOption.hasMediaCharacteristic(.containsOnlyForcedSubtitles)
+    }
+    
     /// Returns the id value for the track
     public var mediaTrackId: Int? {
         if let id = id {
