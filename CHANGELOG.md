@@ -1,5 +1,6 @@
 # CHANGELOG
 
+* `3.4.0` Release - [3.4.0](#340)
 * `3.3.0` Release - [3.3.0](#330)
 * `3.2.2` Release - [3.2.2](#322)
 * `3.2.1` Release - [3.2.1](#321)
@@ -49,7 +50,11 @@
 * `0.2.x` Releases - [0.2.0](#020)
 * `0.1.x` Releases - [0.1.0](#010) | [0.1.1](#011) | [0.1.2](#012) | [0.1.3](#013) | [0.1.4](#014) | [0.1.5](#015)
 
-## 3.0.0
+## 3.4.0
+#### Changes
+* [EMP-21286] feat: Add forced subtitle boolean parameter to the returned response for SubtitleTrack
+
+## 3.3.0
 #### Changes
 * [EMP-17547] feat: User preferred audio and subtitles 
 
