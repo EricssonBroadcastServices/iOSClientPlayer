@@ -8,4 +8,4 @@
 import Foundation
 
 /// Global constant for framework version
-public let PlayerVersion = "3.3.0"
+public let PlayerVersion = "3.4.0"
