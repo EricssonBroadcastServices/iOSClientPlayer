@@ -38,9 +38,19 @@ public struct MediaGroup {
         return mediaGroup.allowsEmptySelection
     }
     
-    /// Filters the associated `AVMediaSelectionOption`s on the `extendedLanguageTag`
-    internal func mediaSelectionOption(forLanguage language: String, andType mediaType: AVMediaType? = nil) -> AVMediaSelectionOption? {
-        return mediaGroup.track(forLanguage: language, andType: mediaType)
+    /// Filters the associated `AVMediaSelectionOption`s on the `extendedLanguageTag` and other optional parameters
+    internal func mediaSelectionOption(
+        forLanguage language: String,
+        andType mediaType: AVMediaType? = nil,
+        shouldDescribeVideo: Bool? = nil,
+        shouldTranscribeDialog: Bool? = nil
+    ) -> AVMediaSelectionOption? {
+        return mediaGroup.track(
+            forLanguage: language,
+            andType: mediaType,
+            shouldDescribeVideo: shouldDescribeVideo,
+            shouldTranscribeDialog: shouldTranscribeDialog
+        )
     }
     
     /// Filters the associated `AVMediaSelectionOption`s on the `mediaTrackId`
