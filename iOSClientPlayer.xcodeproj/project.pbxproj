@@ -133,6 +133,8 @@
 		7860868428CB739700BC3BA1 /* DateRangeMetadataCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7860868228CB739700BC3BA1 /* DateRangeMetadataCollector.swift */; };
 		78FD65FF28E2E6810074B31E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FD65FE28E2E6810074B31E /* Version.swift */; };
 		78FD660028E2E6810074B31E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FD65FE28E2E6810074B31E /* Version.swift */; };
+		DC0D6C6A2BD0F52A00D8E3F7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC0D6C692BD0F52A00D8E3F7 /* PrivacyInfo.xcprivacy */; };
+		DC0D6C6B2BD0F52A00D8E3F7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC0D6C692BD0F52A00D8E3F7 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -215,6 +217,7 @@
 		7831101527EB6897009B3114 /* iOSClientPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iOSClientPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7860868228CB739700BC3BA1 /* DateRangeMetadataCollector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateRangeMetadataCollector.swift; sourceTree = "<group>"; };
 		78FD65FE28E2E6810074B31E /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
+		DC0D6C692BD0F52A00D8E3F7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -279,6 +282,7 @@
 				78310F6127EB67F8009B3114 /* Tech */,
 				78310F8527EB67F8009B3114 /* Info.plist */,
 				78FD65FE28E2E6810074B31E /* Version.swift */,
+				DC0D6C692BD0F52A00D8E3F7 /* PrivacyInfo.xcprivacy */,
 				78310F8627EB67F8009B3114 /* Warning.swift */,
 				78310F8727EB67F8009B3114 /* Analytics */,
 			);
@@ -577,6 +581,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC0D6C6B2BD0F52A00D8E3F7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -584,6 +589,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC0D6C6A2BD0F52A00D8E3F7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
