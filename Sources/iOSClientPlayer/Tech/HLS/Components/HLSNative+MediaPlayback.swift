@@ -209,7 +209,11 @@ extension HLSNative: MediaPlayback {
     public func seek(toPosition position: Int64, callback: @escaping (Bool) -> Void = { _ in }) {
         let seekTime = position > 0 ? position : 0
         let cmTime = CMTime(value: seekTime, timescale: 1000)
-        currentAsset?.playerItem.seek(to: cmTime) { [weak self] success in
+        currentAsset?.playerItem.seek(
+            to: cmTime,
+            toleranceBefore:  .zero,
+            toleranceAfter: .zero
+        ) { [weak self] success in
             guard let `self` = self else { return }
             if success {
                 if let source = `self`.currentAsset?.source {
